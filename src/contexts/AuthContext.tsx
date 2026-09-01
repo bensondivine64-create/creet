@@ -1,0 +1,123 @@
+'use client';
+
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
+import { apiCall } from '@/lib/api';
+import {
+  User,
+  AuthResponse,
+  LoginPayload,
+  SignupPayload,
+  OtpVerifyPayload,
+  ForgotPasswordPayload,
+  ResetPasswordPayload,
+} from '@/types/auth';
+
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  login: (payload: LoginPayload) => Promise<AuthResponse>;
+  signup: (payload: SignupPayload) => Promise<{ success: boolean; message: string; email: string }>;
+  verifyOtp: (payload: OtpVerifyPayload) => Promise<AuthResponse>;
+  resendOtp: (email: string) => Promise<{ success: boolean }>;
+  forgotPassword: (payload: ForgotPasswordPayload) => Promise<{ success: boolean; message: string }>;
+  resetPassword: (payload: ResetPasswordPayload) => Promise<{ success: boolean; message: string }>;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('creet_token');
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+    apiCall<User>('/auth/me')
+      .then((data) => setUser(data))
+      .catch(() => {
+        localStorage.removeItem('creet_token');
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  async function login(payload: LoginPayload) {
+    const data = await apiCall<AuthResponse>('/auth/login', {
+      method: 'POST',
+      body: payload,
+      auth: false,
+    });
+    localStorage.setItem('creet_token', data.access_token);
+    setUser(data.user);
+    return data;
+  }
+
+  async function signup(payload: SignupPayload) {
+    const data = await apiCall<{ success: boolean; message: string; email: string }>('/auth/signup', {
+      method: 'POST',
+      body: payload,
+      auth: false,
+    });
+    return data;
+  }
+
+  async function verifyOtp(payload: OtpVerifyPayload) {
+    const data = await apiCall<AuthResponse>('/auth/verify-otp', {
+      method: 'POST',
+      body: payload,
+      auth: false,
+    });
+    localStorage.setItem('creet_token', data.access_token);
+    setUser(data.user);
+    return data;
+  }
+
+  async function resendOtp(email: string) {
+    return apiCall<{ success: boolean }>('/auth/resend-otp', {
+      method: 'POST',
+      body: { email },
+      auth: false,
+    });
+  }
+
+  async function forgotPassword(payload: ForgotPasswordPayload) {
+    return apiCall<{ success: boolean; message: string }>('/auth/forgot-password', {
+      method: 'POST',
+      body: payload,
+      auth: false,
+    });
+  }
+
+  async function resetPassword(payload: ResetPasswordPayload) {
+    return apiCall<{ success: boolean; message: string }>('/auth/reset-password', {
+      method: 'POST',
+      body: payload,
+      auth: false,
+    });
+  }
+
+  function logout() {
+    localStorage.removeItem('creet_token');
+    setUser(null);
+    router.push('/');
+  }
+
+  return (
+    <AuthContext.Provider
+      value={{ user, loading, login, signup, verifyOtp, resendOtp, forgotPassword, resetPassword, logout }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  return ctx;
+}
