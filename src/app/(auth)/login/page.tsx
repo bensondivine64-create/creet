@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Recaptcha from '@/components/Recaptcha';
+import GoogleButton from '@/components/GoogleButton';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const router = useRouter();
   const [form, setForm] = useState({ email: '', password: '' });
   const [captchaToken, setCaptchaToken] = useState('');
@@ -32,6 +33,21 @@ export default function LoginPage() {
     }
   }
 
+  async function handleGoogle(credential: string) {
+    setError('');
+    try {
+      const res = await loginWithGoogle(credential);
+      router.push(`/dashboard/${res.user.role}`);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Something went wrong';
+      if (message.toLowerCase().includes('choose an account type')) {
+        router.push('/');
+      } else {
+        setError(message);
+      }
+    }
+  }
+
   return (
     <div>
       <h1 className="font-display text-xl font-bold text-ink mb-1">Log in to CREET</h1>
@@ -42,6 +58,14 @@ export default function LoginPage() {
           {error}
         </div>
       )}
+
+      <GoogleButton onCredential={handleGoogle} />
+
+      <div className="flex items-center gap-3 my-5">
+        <div className="h-px bg-line flex-1" />
+        <span className="text-xs text-ink/40">or</span>
+        <div className="h-px bg-line flex-1" />
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Recaptcha from '@/components/Recaptcha';
+import GoogleButton from '@/components/GoogleButton';
 
 export default function BuyerSignupPage() {
-  const { signup } = useAuth();
+  const { signup, loginWithGoogle } = useAuth();
   const router = useRouter();
   const [form, setForm] = useState({ full_name: '', username: '', email: '', password: '' });
   const [agreed, setAgreed] = useState(false);
@@ -33,6 +34,16 @@ export default function BuyerSignupPage() {
     }
   }
 
+  async function handleGoogle(credential: string) {
+    setError('');
+    try {
+      const res = await loginWithGoogle(credential, 'buyer');
+      router.push(`/dashboard/${res.user.role}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong');
+    }
+  }
+
   const canSubmit = agreed && captchaToken.length > 0;
 
   return (
@@ -45,6 +56,14 @@ export default function BuyerSignupPage() {
           {error}
         </div>
       )}
+
+      <GoogleButton onCredential={handleGoogle} />
+
+      <div className="flex items-center gap-3 my-5">
+        <div className="h-px bg-line flex-1" />
+        <span className="text-xs text-ink/40">or</span>
+        <div className="h-px bg-line flex-1" />
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

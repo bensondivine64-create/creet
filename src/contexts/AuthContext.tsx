@@ -11,6 +11,7 @@ import {
   OtpVerifyPayload,
   ForgotPasswordPayload,
   ResetPasswordPayload,
+  Role,
 } from '@/types/auth';
 
 interface AuthContextType {
@@ -22,6 +23,7 @@ interface AuthContextType {
   resendOtp: (email: string) => Promise<{ success: boolean }>;
   forgotPassword: (payload: ForgotPasswordPayload) => Promise<{ success: boolean; message: string }>;
   resetPassword: (payload: ResetPasswordPayload) => Promise<{ success: boolean; message: string }>;
+  loginWithGoogle: (credential: string, role?: Role) => Promise<AuthResponse>;
   logout: () => void;
 }
 
@@ -101,6 +103,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }
 
+  async function loginWithGoogle(credential: string, role?: Role) {
+    const data = await apiCall<AuthResponse>('/auth/google', {
+      method: 'POST',
+      body: { credential, role },
+      auth: false,
+    });
+    localStorage.setItem('creet_token', data.access_token);
+    setUser(data.user);
+    return data;
+  }
+
   function logout() {
     localStorage.removeItem('creet_token');
     setUser(null);
@@ -109,7 +122,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, signup, verifyOtp, resendOtp, forgotPassword, resetPassword, logout }}
+      value={{
+        user,
+        loading,
+        login,
+        signup,
+        verifyOtp,
+        resendOtp,
+        forgotPassword,
+        resetPassword,
+        loginWithGoogle,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
