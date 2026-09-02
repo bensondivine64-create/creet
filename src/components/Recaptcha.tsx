@@ -9,7 +9,12 @@ declare global {
       ready: (cb: () => void) => void;
       render: (
         container: HTMLElement,
-        options: { sitekey: string; callback: (token: string) => void; 'expired-callback'?: () => void }
+        options: {
+          sitekey: string;
+          callback: (token: string) => void;
+          'expired-callback'?: () => void;
+          theme?: 'light' | 'dark';
+        }
       ) => number;
     };
   }
@@ -35,9 +40,9 @@ export default function Recaptcha({ onVerify, onExpire }: RecaptchaProps) {
           if (containerRef.current && widgetId.current === null) {
             widgetId.current = window.grecaptcha.render(containerRef.current, {
               sitekey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '',
-              theme: 'dark',
               callback: onVerify,
               'expired-callback': onExpire,
+              theme: 'dark',
             });
           }
         });
