@@ -1,4 +1,4 @@
-export type Role = 'buyer' | 'freelancer' | 'vendor' | 'admin';
+export type Role = 'buyer' | 'freelancer' | 'vendor';
 
 export interface User {
   id: number;
@@ -6,6 +6,7 @@ export interface User {
   email: string;
   full_name: string;
   role: Role;
+  is_admin: boolean;
   is_verified: boolean;
   is_premium: boolean;
   avatar?: string | null;
