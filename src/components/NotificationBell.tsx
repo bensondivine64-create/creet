@@ -19,7 +19,7 @@ export default function NotificationBell() {
   return (
     <Link
       href="/notifications"
-      className="relative h-8 w-8 rounded-full bg-mist flex items-center justify-center text-ink/60"
+      className="relative h-8 w-8 rounded-full bg-mist flex items-center justify-center text-fg/60"
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
         <path

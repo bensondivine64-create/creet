@@ -10,7 +10,7 @@ export default function VendorDashboard() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-ink/40 text-sm font-mono">
+      <div className="min-h-screen flex items-center justify-center text-fg/40 text-sm font-mono">
         Loading...
       </div>
     );
@@ -19,14 +19,14 @@ export default function VendorDashboard() {
   return (
     <div className="min-h-screen bg-paper">
       <header className="border-b border-line px-5 py-4 flex items-center justify-between">
-        <span className="font-display text-lg font-bold tracking-tight text-ink">CREET</span>
-        <button onClick={logout} className="text-sm text-ink/50 hover:text-blue transition-colors">
+        <span className="font-display text-lg font-bold tracking-tight text-fg">CREET</span>
+        <button onClick={logout} className="text-sm text-fg/50 hover:text-blue transition-colors">
           Log out
         </button>
       </header>
       <main className="max-w-2xl mx-auto px-5 py-10">
-        <h1 className="font-display text-2xl font-bold text-ink">Welcome, {user.full_name}</h1>
-        <p className="text-ink/50 mt-1 mb-6">Vendor dashboard — coming soon.</p>
+        <h1 className="font-display text-2xl font-bold text-fg">Welcome, {user.full_name}</h1>
+        <p className="text-fg/50 mt-1 mb-6">Vendor dashboard — coming soon.</p>
 
         <div className="space-y-3">
           <Link
@@ -41,8 +41,8 @@ export default function VendorDashboard() {
             href="/requests"
             className="block border border-line rounded-xl px-4 py-4 hover:border-ink transition-colors"
           >
-            <div className="font-semibold text-ink">Browse open requests</div>
-            <div className="text-sm text-ink/50 mt-0.5">See what buyers are looking for.</div>
+            <div className="font-semibold text-fg">Browse open requests</div>
+            <div className="text-sm text-fg/50 mt-0.5">See what buyers are looking for.</div>
           </Link>
         </div>
       </main>

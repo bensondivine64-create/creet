@@ -47,21 +47,21 @@ export default function PostProductPage() {
   }
 
   if (authLoading || !user) {
-    return <div className="min-h-screen flex items-center justify-center text-ink/40 text-sm">Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-fg/40 text-sm">Loading...</div>;
   }
 
   return (
     <main className="min-h-screen bg-paper">
       <div className="flex items-center justify-between px-5 py-4 border-b border-line">
-        <Link href="/dashboard/vendor" className="text-sm text-ink/50 hover:text-ink transition-colors">
+        <Link href="/dashboard/vendor" className="text-sm text-fg/50 hover:text-fg transition-colors">
           ← Back
         </Link>
-        <span className="font-display text-lg font-bold text-ink">Post a product</span>
+        <span className="font-display text-lg font-bold text-fg">Post a product</span>
         <span className="w-10" />
       </div>
 
       <div className="max-w-2xl mx-auto px-5 py-6">
-        <p className="text-sm text-ink/50 mb-6">List a physical product for sale.</p>
+        <p className="text-sm text-fg/50 mb-6">List a physical product for sale.</p>
 
         {error && (
           <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
@@ -71,18 +71,18 @@ export default function PostProductPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-ink/70 mb-1">Title</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1">Title</label>
             <input
               name="title"
               value={form.title}
               onChange={handleChange}
               required
               placeholder="iPhone 13 Pro, 128GB"
-              className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-ink/70 mb-1">Description</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1">Description</label>
             <textarea
               name="description"
               value={form.description}
@@ -90,23 +90,23 @@ export default function PostProductPage() {
               required
               rows={4}
               placeholder="Describe the product's condition, specs, and details..."
-              className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink placeholder:text-ink/30 resize-none focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 resize-none focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-ink/70 mb-1">Category</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1">Category</label>
             <input
               name="category"
               value={form.category}
               onChange={handleChange}
               required
               placeholder="Electronics"
-              className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-ink/70 mb-1">Price (₦)</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1">Price (₦)</label>
               <input
                 name="price"
                 type="number"
@@ -114,11 +114,11 @@ export default function PostProductPage() {
                 onChange={handleChange}
                 required
                 min={0}
-                className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+                className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-ink/70 mb-1">Stock</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1">Stock</label>
               <input
                 name="stock"
                 type="number"
@@ -126,17 +126,17 @@ export default function PostProductPage() {
                 onChange={handleChange}
                 required
                 min={0}
-                className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+                className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-ink/70 mb-1">Condition</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1">Condition</label>
             <select
               name="condition"
               value={form.condition}
               onChange={handleChange}
-              className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
             >
               <option value="new">New</option>
               <option value="used">Used</option>

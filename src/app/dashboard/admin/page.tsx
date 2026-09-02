@@ -9,7 +9,7 @@ export default function AdminDashboard() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-ink/40 text-sm font-mono">
+      <div className="min-h-screen flex items-center justify-center text-fg/40 text-sm font-mono">
         Loading...
       </div>
     );
@@ -26,8 +26,8 @@ export default function AdminDashboard() {
         </button>
       </header>
       <main className="max-w-2xl mx-auto px-5 py-10">
-        <h1 className="font-display text-2xl font-bold text-ink">Welcome, {user.full_name}</h1>
-        <p className="text-ink/50 mt-1">Admin dashboard — coming soon.</p>
+        <h1 className="font-display text-2xl font-bold text-fg">Welcome, {user.full_name}</h1>
+        <p className="text-fg/50 mt-1">Admin dashboard — coming soon.</p>
       </main>
     </div>
   );

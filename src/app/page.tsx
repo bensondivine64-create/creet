@@ -1,78 +1,79 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import IntroSplash from '@/components/IntroSplash';
-
-const roles = [
-  {
-    key: 'buyer',
-    name: 'Buyer',
-    desc: 'Browse products and freelancers, message sellers directly.',
-  },
-  {
-    key: 'freelancer',
-    name: 'Freelancer',
-    desc: 'Offer your skills, manage jobs, and get paid.',
-  },
-  {
-    key: 'vendor',
-    name: 'Vendor',
-    desc: 'Open a storefront and sell physical products.',
-  },
-];
 
 export default function HomePage() {
   return (
-    <>
-      <IntroSplash />
-      <main className="min-h-screen bg-paper flex flex-col">
-        <header className="border-b border-line">
-          <div className="max-w-2xl mx-auto px-5 py-5 flex items-center justify-between">
-            <span className="font-display text-lg font-bold tracking-tight text-ink">
-              CREET
-            </span>
-            <Link
-              href="/login"
-              className="text-sm font-medium text-ink/60 hover:text-blue transition-colors"
-            >
-              Log in
-            </Link>
-          </div>
-        </header>
+    <main className="relative min-h-screen w-full overflow-hidden bg-ink text-white">
+      <Image
+        src="/hero.jpg"
+        alt=""
+        fill
+        priority
+        className="object-cover"
+      />
 
-        <section className="max-w-2xl mx-auto w-full px-5 pt-14 pb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-ink leading-tight">
-            Get hired. Get paid.
-            <br />
-            Get it sold.
-          </h1>
-          <p className="mt-4 text-ink/60 text-base leading-relaxed max-w-md">
-            One platform for buyers, freelancers, and vendors — every deal
-            handled through a single inbox.
-          </p>
-        </section>
+      {/* Dark scrim: light at top for the header, solid toward the bottom for text */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
 
-        <section className="max-w-2xl mx-auto w-full px-5 pb-16 flex-1">
-          <span className="text-sm text-ink/50">Choose your path</span>
+      {/* Header */}
+      <header className="relative z-10 flex items-center justify-between px-6 pt-6">
+        <span className="text-xl font-bold tracking-tight">CREET</span>
+        <Link
+          href="/login"
+          className="text-sm font-medium text-white/80 transition hover:text-white"
+        >
+          Log in
+        </Link>
+      </header>
 
-          <div className="mt-3 space-y-3">
-            {roles.map((r) => (
-              <Link
-                key={r.key}
-                href={`/${r.key}/signup`}
-                className="block border border-line rounded-xl px-4 py-4 hover:border-ink transition-colors"
-              >
-                <div className="font-semibold text-ink">{r.name}</div>
-                <div className="text-sm text-ink/50 mt-0.5">{r.desc}</div>
-              </Link>
-            ))}
-          </div>
-        </section>
+      {/* Bottom content */}
+      <div className="absolute inset-x-0 bottom-0 z-10 px-6 pb-8 sm:px-10 sm:pb-12">
+        <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+          Choose your role.
+        </h1>
 
-        <footer className="border-t border-line">
-          <div className="max-w-2xl mx-auto px-5 py-6">
-            <span className="text-xs text-ink/30">© 2026 CREET</span>
-          </div>
-        </footer>
-      </main>
-    </>
+        <p className="mt-3 max-w-sm text-base leading-relaxed text-white/70">
+          One marketplace. Choose how you want to use it.
+        </p>
+
+        <div className="mt-8 grid grid-cols-2 gap-3">
+          <RolePill href="/freelancer/signup" label="I'm a Freelancer" />
+          <RolePill href="/buyer/signup" label="I'm a Buyer" />
+        </div>
+
+        <div className="mt-3">
+          <RolePill href="/vendor/signup" label="I'm a Vendor" full />
+        </div>
+
+        <p className="mt-5 text-center text-xs text-white/50">
+          Already have an account?{' '}
+          <Link href="/login" className="text-white/80 underline underline-offset-2 hover:text-white">
+            Log in
+          </Link>
+        </p>
+      </div>
+    </main>
+  );
+}
+
+function RolePill({
+  href,
+  label,
+  full = false,
+}: {
+  href: string;
+  label: string;
+  full?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`flex items-center justify-center rounded-full border border-white/30 bg-white/5 px-5 py-4 text-center text-sm font-semibold backdrop-blur-sm transition hover:border-blue hover:bg-white/10 sm:text-base ${
+        full ? 'w-full' : ''
+      }`}
+    >
+      {label}
+    </Link>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
 import { AuthProvider } from "@/contexts/AuthContext";
+import IntroSplash from "@/components/IntroSplash";
 import "./globals.css";
 
 const display = Space_Grotesk({
@@ -30,7 +31,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${display.variable} ${body.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-body text-ink bg-paper">
+      <body className="min-h-full flex flex-col font-body text-fg bg-paper">
+        <IntroSplash />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

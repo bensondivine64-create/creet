@@ -26,12 +26,12 @@ export default function BrowsePage() {
   return (
     <main className="min-h-screen bg-paper pb-20">
       <div className="flex items-center justify-between px-5 pt-5 pb-4">
-        <span className="font-display text-xl font-bold tracking-tight text-ink">CREET</span>
+        <span className="font-display text-xl font-bold tracking-tight text-fg">CREET</span>
         <div className="flex items-center gap-2">
           <NotificationBell />
           <Link
             href="/login"
-            className="h-8 w-8 rounded-full bg-mist flex items-center justify-center text-ink/50"
+            className="h-8 w-8 rounded-full bg-mist flex items-center justify-center text-fg/50"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0" />
@@ -43,7 +43,7 @@ export default function BrowsePage() {
       <div className="px-5">
         <div className="relative">
           <svg
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ink/30"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-fg/30"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -56,7 +56,7 @@ export default function BrowsePage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={tab === 'gig' ? 'Search services' : 'Search products'}
-            className="w-full rounded-2xl border-0 bg-mist pl-10 pr-4 py-3.5 text-sm text-ink placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
+            className="w-full rounded-2xl border-0 bg-mist pl-10 pr-4 py-3.5 text-sm text-fg placeholder:text-fg/40 focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
           />
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function BrowsePage() {
         <button
           onClick={() => setTab('gig')}
           className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            tab === 'gig' ? 'bg-ink text-white' : 'bg-mist text-ink/50'
+            tab === 'gig' ? 'bg-ink text-white' : 'bg-mist text-fg/50'
           }`}
         >
           Freelancers
@@ -73,7 +73,7 @@ export default function BrowsePage() {
         <button
           onClick={() => setTab('product')}
           className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            tab === 'product' ? 'bg-ink text-white' : 'bg-mist text-ink/50'
+            tab === 'product' ? 'bg-ink text-white' : 'bg-mist text-fg/50'
           }`}
         >
           Products
@@ -81,20 +81,20 @@ export default function BrowsePage() {
       </div>
 
       <section className="px-5 pt-4">
-        <h2 className="font-display font-bold text-ink text-lg mb-3">
+        <h2 className="font-display font-bold text-fg text-lg mb-3">
           {tab === 'gig' ? 'Popular freelancers' : 'Popular products'}
         </h2>
 
-        {loading && <p className="text-sm text-ink/40 text-center py-16">Loading...</p>}
+        {loading && <p className="text-sm text-fg/40 text-center py-16">Loading...</p>}
 
         {!loading && error && (
-          <p className="text-sm text-ink/40 text-center py-16">
+          <p className="text-sm text-fg/40 text-center py-16">
             Couldn&apos;t load listings right now.
           </p>
         )}
 
         {!loading && !error && listings.length === 0 && (
-          <p className="text-sm text-ink/40 text-center py-16">
+          <p className="text-sm text-fg/40 text-center py-16">
             No {tab === 'gig' ? 'freelancers' : 'products'} found.
           </p>
         )}
@@ -106,7 +106,7 @@ export default function BrowsePage() {
                 <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-mist">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <svg
-                      className="h-8 w-8 text-ink/15"
+                      className="h-8 w-8 text-fg/15"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -119,7 +119,7 @@ export default function BrowsePage() {
                       />
                     </svg>
                   </div>
-                  <span className="absolute top-2 right-2 bg-white/90 rounded-full px-2 py-0.5 text-[11px] font-bold text-ink">
+                  <span className="absolute top-2 right-2 bg-white/90 rounded-full px-2 py-0.5 text-[11px] font-bold text-fg">
                     {item.currency} {item.price.toLocaleString()}
                   </span>
                   <div className="absolute bottom-0 left-0 right-0 bg-black/65 px-2.5 py-2">

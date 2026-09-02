@@ -46,9 +46,9 @@ function VerifyForm() {
 
   return (
     <div>
-      <h1 className="font-display text-xl font-bold text-ink mb-1">Check your email</h1>
-      <p className="text-sm text-ink/50 mb-6">
-        Enter the code we sent to <span className="text-ink">{email || 'your email'}</span>
+      <h1 className="font-display text-xl font-bold text-fg mb-1">Check your email</h1>
+      <p className="text-sm text-fg/50 mb-6">
+        Enter the code we sent to <span className="text-fg">{email || 'your email'}</span>
       </p>
 
       {error && (
@@ -64,7 +64,7 @@ function VerifyForm() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-ink/70 mb-1">Verification code</label>
+          <label className="block text-sm font-medium text-fg/70 mb-1">Verification code</label>
           <input
             type="text"
             inputMode="numeric"
@@ -73,7 +73,7 @@ function VerifyForm() {
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
             required
             placeholder="123456"
-            className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-center text-lg tracking-[0.4em] text-ink placeholder:text-ink/20 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+            className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-center text-lg tracking-[0.4em] text-fg placeholder:text-fg/20 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
           />
         </div>
 
@@ -86,7 +86,7 @@ function VerifyForm() {
         </button>
       </form>
 
-      <p className="text-sm text-ink/50 text-center mt-6">
+      <p className="text-sm text-fg/50 text-center mt-6">
         Didn&apos;t get a code?{' '}
         <button
           onClick={handleResend}
@@ -102,7 +102,7 @@ function VerifyForm() {
 
 export default function VerifyPage() {
   return (
-    <Suspense fallback={<div className="text-sm text-ink/40">Loading...</div>}>
+    <Suspense fallback={<div className="text-sm text-fg/40">Loading...</div>}>
       <VerifyForm />
     </Suspense>
   );

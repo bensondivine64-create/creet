@@ -8,10 +8,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        ink: '#0B0E14',
-        paper: '#FFFFFF',
-        mist: '#F5F6F8',
-        line: '#E3E6EB',
+        ink: '#F4F5F7',
+        paper: '#000000',
+        mist: '#161B24',
+        line: '#2A303C',
+        fg: '#F4F5F7',
         blue: {
           DEFAULT: '#1546F5',
           deep: '#0A1F73',

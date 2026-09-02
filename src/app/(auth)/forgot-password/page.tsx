@@ -28,8 +28,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <div>
-      <h1 className="font-display text-xl font-bold text-ink mb-1">Reset your password</h1>
-      <p className="text-sm text-ink/50 mb-6">
+      <h1 className="font-display text-xl font-bold text-fg mb-1">Reset your password</h1>
+      <p className="text-sm text-fg/50 mb-6">
         We&apos;ll email you a code to reset your password.
       </p>
 
@@ -41,13 +41,13 @@ export default function ForgotPasswordPage() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-ink/70 mb-1">Email</label>
+          <label className="block text-sm font-medium text-fg/70 mb-1">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+            className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
           />
         </div>
 
@@ -60,7 +60,7 @@ export default function ForgotPasswordPage() {
         </button>
       </form>
 
-      <p className="text-sm text-ink/50 text-center mt-6">
+      <p className="text-sm text-fg/50 text-center mt-6">
         <Link href="/login" className="text-blue font-medium hover:underline">
           Back to login
         </Link>

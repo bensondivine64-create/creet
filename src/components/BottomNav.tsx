@@ -49,7 +49,7 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-line">
+    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-mist border-t border-line">
       <div className="max-w-2xl mx-auto grid grid-cols-4">
         {tabs.map((tab, i) => {
           const active = pathname === tab.href;
@@ -60,7 +60,7 @@ export default function BottomNav() {
               className="flex flex-col items-center justify-center gap-1 py-2.5"
             >
               <Icon name={tab.icon} active={active} />
-              <span className={`text-[10px] ${active ? 'text-blue font-medium' : 'text-ink/40'}`}>
+              <span className={`text-[10px] ${active ? 'text-blue font-medium' : 'text-fg/40'}`}>
                 {tab.label}
               </span>
             </Link>

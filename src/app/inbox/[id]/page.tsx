@@ -45,25 +45,25 @@ export default function ConversationPage() {
   }
 
   if (authLoading || !user) {
-    return <div className="min-h-screen flex items-center justify-center text-ink/40 text-sm">Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-fg/40 text-sm">Loading...</div>;
   }
 
   return (
     <main className="min-h-screen bg-paper flex flex-col">
       <div className="flex items-center gap-3 px-5 py-4 border-b border-line">
-        <Link href="/inbox" className="text-sm text-ink/50 hover:text-ink transition-colors">
+        <Link href="/inbox" className="text-sm text-fg/50 hover:text-fg transition-colors">
           ←
         </Link>
-        <span className="font-display font-semibold text-ink">Conversation</span>
+        <span className="font-display font-semibold text-fg">Conversation</span>
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 py-4 space-y-2">
-        {loading && <p className="text-sm text-ink/40 text-center py-10">Loading...</p>}
+        {loading && <p className="text-sm text-fg/40 text-center py-10">Loading...</p>}
         {!loading && error && (
-          <p className="text-sm text-ink/40 text-center py-10">Couldn&apos;t load this conversation.</p>
+          <p className="text-sm text-fg/40 text-center py-10">Couldn&apos;t load this conversation.</p>
         )}
         {!loading && !error && messages.length === 0 && (
-          <p className="text-sm text-ink/40 text-center py-10">Say hello 👋</p>
+          <p className="text-sm text-fg/40 text-center py-10">Say hello 👋</p>
         )}
         {!loading &&
           !error &&
@@ -73,7 +73,7 @@ export default function ConversationPage() {
               <div key={m.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
                 <div
                   className={`max-w-[75%] rounded-2xl px-3.5 py-2 text-sm ${
-                    mine ? 'bg-blue text-white' : 'bg-mist text-ink'
+                    mine ? 'bg-blue text-white' : 'bg-mist text-fg'
                   }`}
                 >
                   {m.content}
@@ -90,7 +90,7 @@ export default function ConversationPage() {
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder="Message..."
-          className="flex-1 rounded-full border border-line bg-mist px-4 py-2.5 text-sm text-ink placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
+          className="flex-1 rounded-full border border-line bg-mist px-4 py-2.5 text-sm text-fg placeholder:text-fg/40 focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
         />
         <button
           type="submit"

@@ -35,6 +35,7 @@ export default function Recaptcha({ onVerify, onExpire }: RecaptchaProps) {
           if (containerRef.current && widgetId.current === null) {
             widgetId.current = window.grecaptcha.render(containerRef.current, {
               sitekey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '',
+              theme: 'dark',
               callback: onVerify,
               'expired-callback': onExpire,
             });

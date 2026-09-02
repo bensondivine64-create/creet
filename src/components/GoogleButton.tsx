@@ -35,7 +35,7 @@ export default function GoogleButton({ onCredential }: GoogleButtonProps) {
           callback: (response) => onCredential(response.credential),
         });
         window.google.accounts.id.renderButton(containerRef.current, {
-          theme: 'outline',
+          theme: 'filled_black',
           size: 'large',
           width: 320,
           text: 'continue_with',
