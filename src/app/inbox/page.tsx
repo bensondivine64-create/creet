@@ -6,6 +6,7 @@ import { getConversations } from '@/lib/messages';
 import { Conversation } from '@/types/message';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import BottomNav from '@/components/BottomNav';
+import EmptyState from '@/components/EmptyState';
 
 export default function InboxPage() {
   const { user, loading: authLoading } = useRequireAnyAuth();
@@ -22,23 +23,33 @@ export default function InboxPage() {
   }, [user]);
 
   if (authLoading || !user) {
-    return <div className="min-h-screen flex items-center justify-center text-fg/40 text-sm">Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-ink/40 text-sm">Loading...</div>;
   }
 
   return (
     <main className="min-h-screen bg-paper pb-20">
       <div className="flex items-center justify-between px-5 py-4 border-b border-line">
-        <span className="font-display text-lg font-bold text-fg">Inbox</span>
+        <span className="font-display text-lg font-bold text-ink">Inbox</span>
       </div>
 
-      {loading && <p className="text-sm text-fg/40 text-center py-16">Loading...</p>}
+      {loading && <p className="text-sm text-ink/40 text-center py-16">Loading...</p>}
 
       {!loading && error && (
-        <p className="text-sm text-fg/40 text-center py-16">Couldn&apos;t load your inbox.</p>
+        <EmptyState
+          icon="inbox"
+          title="Couldn't load your inbox"
+          subtitle="Check your connection and try again."
+        />
       )}
 
       {!loading && !error && conversations.length === 0 && (
-        <p className="text-sm text-fg/40 text-center py-16">No conversations yet.</p>
+        <EmptyState
+          icon="inbox"
+          title="No conversations yet"
+          subtitle="When you message a seller or someone reaches out, it'll show up here."
+          ctaLabel="Browse the marketplace"
+          ctaHref="/browse"
+        />
       )}
 
       {!loading && !error && conversations.length > 0 && (
@@ -49,12 +60,12 @@ export default function InboxPage() {
               href={`/inbox/${c.id}`}
               className="flex items-center gap-3 px-5 py-4 border-b border-line hover:bg-mist transition-colors"
             >
-              <span className="h-11 w-11 rounded-full bg-ink text-white text-sm font-bold flex items-center justify-center shrink-0">
+              <span className="h-11 w-11 rounded-full bg-blue text-white text-sm font-bold flex items-center justify-center shrink-0">
                 {c.participant.full_name.charAt(0).toUpperCase()}
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-fg truncate flex items-center gap-1">
+                  <span className="text-sm font-semibold text-ink truncate flex items-center gap-1">
                     {c.participant.full_name}
                     {c.participant.verified && <span className="text-blue text-xs">✓</span>}
                   </span>
@@ -63,9 +74,9 @@ export default function InboxPage() {
                   )}
                 </div>
                 {c.listing_title && (
-                  <div className="text-xs text-fg/40 truncate">Re: {c.listing_title}</div>
+                  <div className="text-xs text-ink/40 truncate">Re: {c.listing_title}</div>
                 )}
-                <div className="text-sm text-fg/50 truncate mt-0.5">{c.last_message}</div>
+                <div className="text-sm text-ink/50 truncate mt-0.5">{c.last_message}</div>
               </div>
             </Link>
           ))}

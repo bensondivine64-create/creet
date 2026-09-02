@@ -7,6 +7,7 @@ import { useRequireAuth } from '@/contexts/useRequireAuth';
 import { getMyListings } from '@/lib/listings';
 import { Listing } from '@/types/listing';
 import BottomNav from '@/components/BottomNav';
+import EmptyState from '@/components/EmptyState';
 
 export default function FreelancerDashboard() {
   const { user, loading } = useRequireAuth('freelancer');
@@ -46,9 +47,10 @@ export default function FreelancerDashboard() {
         {user.is_admin && (
           <Link
             href="/admin"
-            className="block bg-mist border border-line rounded-xl px-4 py-3.5 mb-3 hover:border-ink transition-colors"
+            className="flex items-center justify-between bg-mist rounded-xl px-4 py-3.5 mb-3 hover:bg-mist/70 transition-colors"
           >
-            <div className="font-semibold text-ink text-sm">Admin System</div>
+            <span className="font-semibold text-ink text-sm">Admin System</span>
+            <span className="text-ink/40 text-sm">→</span>
           </Link>
         )}
 
@@ -62,7 +64,7 @@ export default function FreelancerDashboard() {
           </Link>
           <Link
             href="/requests"
-            className="border border-line rounded-xl px-4 py-4 hover:border-ink transition-colors"
+            className="bg-mist hover:bg-mist/70 rounded-xl px-4 py-4 transition-colors"
           >
             <div className="font-semibold text-ink text-sm">Open requests</div>
             <div className="text-xs text-ink/50 mt-0.5">See what buyers need</div>
@@ -79,12 +81,13 @@ export default function FreelancerDashboard() {
         {listingsLoading && <p className="text-sm text-ink/40 py-8 text-center">Loading...</p>}
 
         {!listingsLoading && listings.length === 0 && (
-          <div className="border border-dashed border-line rounded-xl px-4 py-8 text-center">
-            <p className="text-sm text-ink/50">You haven&apos;t posted any gigs yet.</p>
-            <Link href="/post-gig" className="text-sm text-blue font-medium mt-1 inline-block">
-              Post your first gig
-            </Link>
-          </div>
+          <EmptyState
+            icon="listing"
+            title="No gigs posted yet"
+            subtitle="Post a gig to start getting hired."
+            ctaLabel="Post your first gig"
+            ctaHref="/post-gig"
+          />
         )}
 
         {!listingsLoading && listings.length > 0 && (
@@ -93,7 +96,7 @@ export default function FreelancerDashboard() {
               <Link
                 key={item.id}
                 href={`/listing/${item.id}`}
-                className="block border border-line rounded-xl px-4 py-3.5 hover:border-ink transition-colors"
+                className="block bg-mist rounded-xl px-4 py-3.5 hover:bg-mist/70 transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-ink truncate">{item.title}</span>
