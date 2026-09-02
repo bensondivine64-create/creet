@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import BottomNav from '@/components/BottomNav';
+import VerifiedBadge from '@/components/VerifiedBadge';
 
 export default function ProfilePage() {
   const { user, loading } = useRequireAnyAuth();
@@ -33,9 +34,7 @@ export default function ProfilePage() {
           <div>
             <div className="flex items-center gap-1.5">
               <h1 className="font-display text-lg font-bold text-ink">{user.full_name}</h1>
-              {user.is_verified && (
-                <span className="text-blue text-sm" title="Verified">✓</span>
-              )}
+              {user.is_verified && <VerifiedBadge size={16} />}
             </div>
             <div className="text-sm text-ink/50">@{user.username}</div>
             <div className="text-xs text-ink/40 capitalize mt-0.5">{user.role}</div>
@@ -46,9 +45,9 @@ export default function ProfilePage() {
           {user.is_admin && (
             <Link
               href="/admin"
-              className="flex items-center justify-between bg-mist rounded-xl px-4 py-3.5 hover:bg-mist/70 transition-colors"
+              className="flex items-center justify-between bg-mist rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform"
             >
-              <div className="font-semibold text-ink text-sm">Admin System</div>
+              <span className="font-semibold text-ink text-sm">Admin System</span>
               <span className="text-ink/40 text-sm">→</span>
             </Link>
           )}
@@ -56,7 +55,7 @@ export default function ProfilePage() {
           {!user.is_verified && (
             <Link
               href="/verify-identity"
-              className="flex items-center justify-between bg-mist rounded-xl px-4 py-3.5 hover:bg-mist/70 transition-colors"
+              className="flex items-center justify-between bg-mist rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform"
             >
               <div>
                 <div className="font-semibold text-ink text-sm">Get Verified</div>
@@ -71,7 +70,7 @@ export default function ProfilePage() {
           {!user.is_premium && (
             <Link
               href="/premium"
-              className="flex items-center justify-between rounded-xl px-4 py-3.5 bg-blue hover:bg-blue-deep transition-colors"
+              className="flex items-center justify-between rounded-xl px-4 py-3.5 bg-blue active:scale-[0.98] transition-transform"
             >
               <div>
                 <div className="font-semibold text-white text-sm flex items-center gap-1.5">
