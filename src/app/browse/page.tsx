@@ -6,6 +6,7 @@ import { getListings } from '@/lib/listings';
 import { Listing, ListingKind } from '@/types/listing';
 import BottomNav from '@/components/BottomNav';
 import NotificationBell from '@/components/NotificationBell';
+import EmptyState from '@/components/EmptyState';
 
 export default function BrowsePage() {
   const [tab, setTab] = useState<ListingKind>('gig');
@@ -64,16 +65,16 @@ export default function BrowsePage() {
       <div className="flex gap-2 px-5 pt-4 pb-2 overflow-x-auto">
         <button
           onClick={() => setTab('gig')}
-          className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            tab === 'gig' ? 'bg-ink text-white' : 'bg-mist text-fg/50'
+          className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
+            tab === 'gig' ? 'bg-blue text-white' : 'bg-mist text-fg/50'
           }`}
         >
           Freelancers
         </button>
         <button
           onClick={() => setTab('product')}
-          className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            tab === 'product' ? 'bg-ink text-white' : 'bg-mist text-fg/50'
+          className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
+            tab === 'product' ? 'bg-blue text-white' : 'bg-mist text-fg/50'
           }`}
         >
           Products
@@ -88,52 +89,64 @@ export default function BrowsePage() {
         {loading && <p className="text-sm text-fg/40 text-center py-16">Loading...</p>}
 
         {!loading && error && (
-          <p className="text-sm text-fg/40 text-center py-16">
-            Couldn&apos;t load listings right now.
-          </p>
+          <EmptyState
+            icon="search"
+            title="Couldn't load listings"
+            subtitle="Check your connection and try again."
+          />
         )}
 
         {!loading && !error && listings.length === 0 && (
-          <p className="text-sm text-fg/40 text-center py-16">
-            No {tab === 'gig' ? 'freelancers' : 'products'} found.
-          </p>
+          <EmptyState
+            icon="search"
+            title={`No ${tab === 'gig' ? 'freelancers' : 'products'} found`}
+            subtitle="Try a different search, or check back soon as more people join."
+          />
         )}
 
         {!loading && !error && listings.length > 0 && (
-          <div className="grid grid-cols-2 gap-3">
-            {listings.map((item) => (
-              <Link key={item.id} href={`/listing/${item.id}`} className="block">
-                <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-mist">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <svg
-                      className="h-8 w-8 text-fg/15"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z"
-                      />
-                    </svg>
-                  </div>
-                  <span className="absolute top-2 right-2 bg-white/90 rounded-full px-2 py-0.5 text-[11px] font-bold text-fg">
-                    {item.currency} {item.price.toLocaleString()}
-                  </span>
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/65 px-2.5 py-2">
-                    <div className="text-white text-xs font-semibold line-clamp-1">
-                      {item.title}
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              {listings.map((item) => (
+                <Link key={item.id} href={`/listing/${item.id}`} className="block active:scale-[0.98] transition-transform">
+                  <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-mist">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <svg
+                        className="h-8 w-8 text-fg/15"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={1.5}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z"
+                        />
+                      </svg>
                     </div>
-                    <div className="text-white/70 text-[11px] mt-0.5">
-                      {item.seller.full_name}
+                    <span className="absolute top-2 right-2 bg-white rounded-full px-2 py-0.5 text-[11px] font-bold text-black">
+                      {item.currency} {item.price.toLocaleString()}
+                    </span>
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/70 px-2.5 py-2">
+                      <div className="text-white text-xs font-semibold line-clamp-1">
+                        {item.title}
+                      </div>
+                      <div className="text-white/70 text-[11px] mt-0.5">
+                        {item.seller.full_name}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+
+            {listings.length < 4 && (
+              <p className="text-center text-xs text-fg/30 mt-6">
+                More {tab === 'gig' ? 'freelancers' : 'products'} joining soon.
+              </p>
+            )}
+          </>
         )}
       </section>
 

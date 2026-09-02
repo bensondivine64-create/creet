@@ -7,6 +7,7 @@ import { useRequireAuth } from '@/contexts/useRequireAuth';
 import { getMyListings } from '@/lib/listings';
 import { Listing } from '@/types/listing';
 import BottomNav from '@/components/BottomNav';
+import EmptyState from '@/components/EmptyState';
 
 export default function BuyerDashboard() {
   const { user, loading } = useRequireAuth('buyer');
@@ -46,23 +47,24 @@ export default function BuyerDashboard() {
         {user.is_admin && (
           <Link
             href="/admin"
-            className="block bg-mist border border-line rounded-xl px-4 py-3.5 mb-3 hover:border-ink transition-colors"
+            className="flex items-center justify-between bg-mist rounded-xl px-4 py-3.5 mb-3 active:scale-[0.98] transition-transform"
           >
-            <div className="font-semibold text-ink text-sm">Admin System</div>
+            <span className="font-semibold text-ink text-sm">Admin System</span>
+            <span className="text-ink/40 text-sm">→</span>
           </Link>
         )}
 
         <div className="grid grid-cols-2 gap-3 mb-8">
           <Link
             href="/post-request"
-            className="bg-blue hover:bg-blue-deep text-white rounded-xl px-4 py-4 transition-colors"
+            className="bg-blue active:scale-[0.98] transition-transform text-white rounded-xl px-4 py-4"
           >
             <div className="font-semibold text-sm">Post a request</div>
             <div className="text-xs text-white/70 mt-0.5">Say what you need</div>
           </Link>
           <Link
             href="/browse"
-            className="border border-line rounded-xl px-4 py-4 hover:border-ink transition-colors"
+            className="bg-mist active:scale-[0.98] transition-transform rounded-xl px-4 py-4"
           >
             <div className="font-semibold text-ink text-sm">Browse marketplace</div>
             <div className="text-xs text-ink/50 mt-0.5">Find gigs & products</div>
@@ -74,12 +76,13 @@ export default function BuyerDashboard() {
         {listingsLoading && <p className="text-sm text-ink/40 py-8 text-center">Loading...</p>}
 
         {!listingsLoading && listings.length === 0 && (
-          <div className="border border-dashed border-line rounded-xl px-4 py-8 text-center">
-            <p className="text-sm text-ink/50">You haven&apos;t posted any requests yet.</p>
-            <Link href="/post-request" className="text-sm text-blue font-medium mt-1 inline-block">
-              Post your first request
-            </Link>
-          </div>
+          <EmptyState
+            icon="listing"
+            title="No requests posted yet"
+            subtitle="Tell freelancers and vendors what you need."
+            ctaLabel="Post your first request"
+            ctaHref="/post-request"
+          />
         )}
 
         {!listingsLoading && listings.length > 0 && (
@@ -88,7 +91,7 @@ export default function BuyerDashboard() {
               <Link
                 key={item.id}
                 href={`/listing/${item.id}`}
-                className="block border border-line rounded-xl px-4 py-3.5 hover:border-ink transition-colors"
+                className="block bg-mist rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-ink truncate">{item.title}</span>

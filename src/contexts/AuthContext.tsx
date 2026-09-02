@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { apiCall } from '@/lib/api';
+import { apiCall, ApiError } from '@/lib/api';
 import {
   User,
   AuthResponse,
@@ -29,6 +29,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const MAX_ME_RETRIES = 5;
+const RETRY_DELAY_MS = 5000;
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,12 +43,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
       return;
     }
-    apiCall<User>('/auth/me')
-      .then((data) => setUser(data))
-      .catch(() => {
-        localStorage.removeItem('creet_token');
-      })
-      .finally(() => setLoading(false));
+
+    let cancelled = false;
+
+    async function tryFetchMe(attempt: number) {
+      try {
+        const data = await apiCall<User>('/auth/me');
+        if (!cancelled) {
+          setUser(data);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (cancelled) return;
+
+        if (err instanceof ApiError && err.status === 401) {
+          localStorage.removeItem('creet_token');
+          setLoading(false);
+          return;
+        }
+
+        if (attempt < MAX_ME_RETRIES) {
+          setTimeout(() => tryFetchMe(attempt + 1), RETRY_DELAY_MS);
+        } else {
+          setLoading(false);
+        }
+      }
+    }
+
+    tryFetchMe(0);
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function login(payload: LoginPayload) {
