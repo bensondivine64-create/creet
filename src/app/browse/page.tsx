@@ -7,7 +7,7 @@ import { Listing, ListingKind } from '@/types/listing';
 import BottomNav from '@/components/BottomNav';
 import NotificationBell from '@/components/NotificationBell';
 import EmptyState from '@/components/EmptyState';
-import { SkeletonGrid } from '@/components/Skeleton';
+import VerifiedBadge from '@/components/VerifiedBadge';
 
 export default function BrowsePage() {
   const [tab, setTab] = useState<ListingKind>('gig');
@@ -33,7 +33,7 @@ export default function BrowsePage() {
           <NotificationBell />
           <Link
             href="/login"
-            className="h-8 w-8 rounded-full bg-mist flex items-center justify-center text-fg/50"
+            className="h-8 w-8 rounded-full bg-mist border border-line flex items-center justify-center text-fg/50 active:scale-95 transition-transform"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0" />
@@ -45,7 +45,7 @@ export default function BrowsePage() {
       <div className="px-5">
         <div className="relative">
           <svg
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-fg/30"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -58,7 +58,7 @@ export default function BrowsePage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={tab === 'gig' ? 'Search services' : 'Search products'}
-            className="w-full rounded-2xl border-0 bg-mist pl-10 pr-4 py-3.5 text-sm text-fg placeholder:text-fg/40 focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
+            className="w-full rounded-2xl border border-line bg-mist pl-10 pr-4 py-3.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
           />
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function BrowsePage() {
         <button
           onClick={() => setTab('gig')}
           className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
-            tab === 'gig' ? 'bg-blue text-white' : 'bg-mist text-fg/50'
+            tab === 'gig' ? 'bg-blue text-white' : 'bg-mist border border-line text-muted'
           }`}
         >
           Freelancers
@@ -75,7 +75,7 @@ export default function BrowsePage() {
         <button
           onClick={() => setTab('product')}
           className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
-            tab === 'product' ? 'bg-blue text-white' : 'bg-mist text-fg/50'
+            tab === 'product' ? 'bg-blue text-white' : 'bg-mist border border-line text-muted'
           }`}
         >
           Products
@@ -87,7 +87,7 @@ export default function BrowsePage() {
           {tab === 'gig' ? 'Popular freelancers' : 'Popular products'}
         </h2>
 
-        {loading && <SkeletonGrid count={4} />}
+        {loading && <p className="text-sm text-muted text-center py-16">Loading...</p>}
 
         {!loading && error && (
           <EmptyState
@@ -107,35 +107,51 @@ export default function BrowsePage() {
 
         {!loading && !error && listings.length > 0 && (
           <>
-            <div className="grid grid-cols-2 gap-3 animate-fade-in-up">
+            <div className="grid grid-cols-2 gap-3">
               {listings.map((item) => (
-                <Link key={item.id} href={`/listing/${item.id}`} className="block active:scale-[0.98] transition-transform">
-                  <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-mist">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <svg
-                        className="h-8 w-8 text-fg/15"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1.5}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z"
-                        />
-                      </svg>
-                    </div>
-                    <span className="absolute top-2 right-2 bg-white rounded-full px-2 py-0.5 text-[11px] font-bold text-black">
-                      {item.currency} {item.price.toLocaleString()}
-                    </span>
-                    <div className="absolute bottom-0 left-0 right-0 bg-black/70 px-2.5 py-2">
-                      <div className="text-white text-xs font-semibold line-clamp-1">
-                        {item.title}
-                      </div>
-                      <div className="text-white/70 text-[11px] mt-0.5">
+                <Link
+                  key={item.id}
+                  href={`/listing/${item.id}`}
+                  className="block bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.98] transition-transform"
+                >
+                  <div className="relative aspect-video bg-line/20 flex items-center justify-center">
+                    <svg
+                      className="h-7 w-7 text-fg/15"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z"
+                      />
+                    </svg>
+                  </div>
+                  <div className="p-3">
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <span className="h-5 w-5 rounded-full bg-blue text-white text-[9px] font-bold flex items-center justify-center shrink-0">
+                        {item.seller.full_name.charAt(0).toUpperCase()}
+                      </span>
+                      <span className="text-xs text-muted truncate flex items-center gap-0.5">
                         {item.seller.full_name}
-                      </div>
+                        {item.seller.verified && <VerifiedBadge size={10} />}
+                      </span>
+                    </div>
+                    <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1.5">
+                      {item.title}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted">
+                        ★ {item.rating_avg.toFixed(1)} ({item.rating_count})
+                      </span>
+                    </div>
+                    <div className="text-xs text-muted mt-1.5 pt-1.5 border-t border-line">
+                      From{' '}
+                      <span className="text-sm font-bold text-fg">
+                        {item.currency} {item.price.toLocaleString()}
+                      </span>
                     </div>
                   </div>
                 </Link>
@@ -143,7 +159,7 @@ export default function BrowsePage() {
             </div>
 
             {listings.length < 4 && (
-              <p className="text-center text-xs text-fg/30 mt-6">
+              <p className="text-center text-xs text-muted mt-6">
                 More {tab === 'gig' ? 'freelancers' : 'products'} joining soon.
               </p>
             )}
