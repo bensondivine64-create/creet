@@ -43,7 +43,7 @@ export default function BuyerSignupPage() {
       if (!res.user.profile_completed) {
         router.push('/create-profile');
       } else {
-        router.push(`/dashboard/${res.user.role}`);
+        router.push('/browse');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');

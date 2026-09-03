@@ -26,7 +26,7 @@ function VerifyForm() {
       if (!res.user.profile_completed) {
         router.push('/create-profile');
       } else {
-        router.push(`/dashboard/${res.user.role}`);
+        router.push('/browse');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Invalid or expired code');

@@ -36,6 +36,13 @@ function Icon({ name, active }: { name: string; active: boolean }) {
   );
 }
 
+function postHrefForRole(role?: string) {
+  if (role === 'freelancer') return '/post-gig';
+  if (role === 'vendor') return '/post-product';
+  if (role === 'buyer') return '/post-request';
+  return null;
+}
+
 export default function BottomNav() {
   const pathname = usePathname();
   const { user } = useAuth();
@@ -47,7 +54,21 @@ export default function BottomNav() {
     { href: user ? '/profile' : '/login', label: 'Profile', icon: 'profile' },
   ];
 
+  const postHref = postHrefForRole(user?.role);
+
   return (
+    <>
+      {postHref && (
+        <Link
+          href={postHref}
+          aria-label="Post"
+          className="fixed bottom-20 right-5 z-30 h-14 w-14 rounded-full bg-blue shadow-lg shadow-blue/40 flex items-center justify-center active:scale-95 transition-transform"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.2} strokeLinecap="round">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+        </Link>
+      )}
     <nav className="fixed bottom-0 left-0 right-0 z-20 bg-mist border-t border-line">
       <div className="max-w-2xl mx-auto grid grid-cols-4">
         {tabs.map((tab, i) => {
@@ -67,5 +88,6 @@ export default function BottomNav() {
         })}
       </div>
     </nav>
+    </>
   );
 }

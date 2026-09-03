@@ -32,7 +32,7 @@ export default function CreateProfilePage() {
     try {
       await updateProfile({ bio, location, categories });
       await refreshUser();
-      router.push(`/dashboard/${user?.role}`);
+      router.push('/browse');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not save profile');
       setSaving(false);

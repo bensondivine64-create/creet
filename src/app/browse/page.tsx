@@ -171,13 +171,21 @@ export default function BrowsePage() {
                   </div>
                   <div className="p-3">
                     <div className="flex items-center gap-1.5 mb-1.5">
-                      <span className="h-5 w-5 rounded-full bg-blue text-white text-[9px] font-bold flex items-center justify-center shrink-0">
+                      <Link
+                        href={`/u/${item.seller.username}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="h-5 w-5 rounded-full bg-blue text-white text-[9px] font-bold flex items-center justify-center shrink-0"
+                      >
                         {item.seller.full_name.charAt(0).toUpperCase()}
-                      </span>
-                      <span className="text-xs text-muted truncate flex items-center gap-0.5">
+                      </Link>
+                      <Link
+                        href={`/u/${item.seller.username}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-xs text-muted truncate flex items-center gap-0.5 hover:text-fg transition-colors"
+                      >
                         {item.seller.full_name}
                         {item.seller.verified && <VerifiedBadge size={10} />}
-                      </span>
+                      </Link>
                     </div>
                     <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1.5">
                       {item.title}
