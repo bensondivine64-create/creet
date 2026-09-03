@@ -28,7 +28,7 @@ export default function InboxPage() {
   }
 
   return (
-    <main className="min-h-screen bg-paper pb-20">
+    <main className="min-h-screen bg-paper pb-20 animate-fade-in-up">
       <div className="px-5 py-4">
         <span className="font-display text-xl font-bold text-fg">Inbox</span>
       </div>
@@ -55,11 +55,12 @@ export default function InboxPage() {
 
       {!loading && !error && conversations.length > 0 && (
         <div className="px-5 space-y-3">
-          {conversations.map((c) => (
+          {conversations.map((c, i) => (
             <Link
               key={c.id}
               href={`/inbox/${c.id}`}
-              className="flex items-center gap-3 bg-mist rounded-2xl px-4 py-3.5 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform"
+              style={{ animationDelay: `${i * 60}ms` }}
+              className="flex items-center gap-3 bg-mist rounded-2xl px-4 py-3.5 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform opacity-0 animate-fade-in-up"
             >
               <span className="h-12 w-12 rounded-full bg-blue text-white text-base font-bold flex items-center justify-center shrink-0">
                 {c.participant.full_name.charAt(0).toUpperCase()}

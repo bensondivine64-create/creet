@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import LoadingOverlay from '@/components/LoadingOverlay';
 
 export default function ForgotPasswordPage() {
   const { forgotPassword } = useAuth();
@@ -27,14 +28,16 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div>
+    <div className="animate-fade-in-up">
+      {loading && <LoadingOverlay label="Sending reset code..." />}
+
       <h1 className="font-display text-xl font-bold text-fg mb-1">Reset your password</h1>
       <p className="text-sm text-fg/50 mb-6">
         We&apos;ll email you a code to reset your password.
       </p>
 
       {error && (
-        <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+        <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
           {error}
         </div>
       )}

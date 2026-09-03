@@ -32,7 +32,7 @@ export default function VendorDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-paper pb-20">
+    <div className="min-h-screen bg-paper pb-20 animate-fade-in-up">
       <header className="border-b border-line px-5 py-4 flex items-center justify-between">
         <span className="font-display text-lg font-bold tracking-tight text-fg">CREET</span>
         <button onClick={logout} className="text-sm text-fg/50 hover:text-blue transition-colors">
@@ -54,7 +54,7 @@ export default function VendorDashboard() {
           </Link>
         )}
 
-        <div className="grid grid-cols-2 gap-3 mb-8">
+        <div className="grid grid-cols-2 gap-3 mb-8 opacity-0 animate-fade-in-up" style={{ animationDelay: "80ms" }}>
           <Link
             href="/post-product"
             className="bg-blue shadow-lg shadow-blue/30 active:scale-[0.98] transition-transform text-white rounded-2xl px-4 py-4"
@@ -92,11 +92,12 @@ export default function VendorDashboard() {
 
         {!listingsLoading && listings.length > 0 && (
           <div className="space-y-3">
-            {listings.map((item) => (
+            {listings.map((item, i) => (
               <Link
                 key={item.id}
                 href={`/listing/${item.id}`}
-                className="flex items-center gap-3 bg-mist rounded-2xl p-3 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform"
+                style={{ animationDelay: `${i * 60}ms` }}
+                className="flex items-center gap-3 bg-mist rounded-2xl p-3 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform opacity-0 animate-fade-in-up"
               >
                 <div className="h-14 w-14 rounded-xl bg-line/40 flex items-center justify-center shrink-0">
                   <svg

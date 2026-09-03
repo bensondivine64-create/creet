@@ -45,6 +45,14 @@ module.exports = {
           '0%': { transform: 'scale(0.9)', opacity: '0.8' },
           '100%': { transform: 'scale(1.9)', opacity: '0' },
         },
+        shimmer: {
+          '0%': { backgroundPosition: '-400px 0' },
+          '100%': { backgroundPosition: '400px 0' },
+        },
+        spin: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
       },
       animation: {
         'splash-wordmark': 'splashWordmark 0.6s ease-out 0.1s both',
@@ -52,6 +60,8 @@ module.exports = {
         'splash-out': 'splashOut 0.5s ease-in forwards',
         'fade-in-up': 'fadeInUp 0.4s ease-out both',
         'pulse-ring': 'pulseRing 1.5s ease-out infinite',
+        shimmer: 'shimmer 1.6s linear infinite',
+        'spin-fast': 'spin 0.6s linear infinite',
       },
     },
   },

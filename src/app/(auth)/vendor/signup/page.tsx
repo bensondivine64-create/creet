@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Recaptcha from '@/components/Recaptcha';
 import GoogleButton from '@/components/GoogleButton';
+import LoadingOverlay from '@/components/LoadingOverlay';
 
 export default function VendorSignupPage() {
   const { signup, loginWithGoogle } = useAuth();
@@ -36,23 +37,31 @@ export default function VendorSignupPage() {
 
   async function handleGoogle(credential: string) {
     setError('');
+    setLoading(true);
     try {
       const res = await loginWithGoogle(credential, 'vendor');
-      router.push(`/dashboard/${res.user.role}`);
+      if (!res.user.profile_completed) {
+        router.push('/create-profile');
+      } else {
+        router.push(`/dashboard/${res.user.role}`);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
+      setLoading(false);
     }
   }
 
   const canSubmit = agreed && captchaToken.length > 0;
 
   return (
-    <div>
+    <div className="animate-fade-in-up">
+      {loading && <LoadingOverlay label="Creating your account..." />}
+
       <h1 className="font-display text-xl font-bold text-fg mb-1">Open a store on CREET</h1>
       <p className="text-sm text-fg/50 mb-6">Sell physical products to real buyers.</p>
 
       {error && (
-        <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+        <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
           {error}
         </div>
       )}
