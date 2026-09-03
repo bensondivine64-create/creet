@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       colors: {
         ink: '#F4F5F7',
-        paper: '#0F1419',
+        paper: '#000000',
         mist: '#1A1D24',
         line: 'rgba(255,255,255,0.08)',
         fg: '#F4F5F7',

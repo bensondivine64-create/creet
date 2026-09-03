@@ -5,33 +5,32 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
 function Icon({ name, active }: { name: string; active: boolean }) {
-  const stroke = active ? '#1546F5' : '#0B0E14';
-  const opacity = active ? 1 : 0.4;
+  const stroke = active ? '#1546F5' : '#8B98A5';
   const common = { fill: 'none', stroke, strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
 
   if (name === 'home') {
     return (
-      <svg width="22" height="22" viewBox="0 0 24 24" style={{ opacity }} {...common}>
+      <svg width="22" height="22" viewBox="0 0 24 24" {...common}>
         <path d="M4 11l8-7 8 7M6 9.5V20h12V9.5" />
       </svg>
     );
   }
   if (name === 'inbox') {
     return (
-      <svg width="22" height="22" viewBox="0 0 24 24" style={{ opacity }} {...common}>
+      <svg width="22" height="22" viewBox="0 0 24 24" {...common}>
         <path d="M3 6h18v12H3V6zm0 0l9 7 9-7" />
       </svg>
     );
   }
   if (name === 'search') {
     return (
-      <svg width="22" height="22" viewBox="0 0 24 24" style={{ opacity }} {...common}>
+      <svg width="22" height="22" viewBox="0 0 24 24" {...common}>
         <path d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
       </svg>
     );
   }
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" style={{ opacity }} {...common}>
+    <svg width="22" height="22" viewBox="0 0 24 24" {...common}>
       <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0" />
     </svg>
   );
@@ -60,7 +59,7 @@ export default function BottomNav() {
               className="flex flex-col items-center justify-center gap-1 py-2.5"
             >
               <Icon name={tab.icon} active={active} />
-              <span className={`text-[10px] ${active ? 'text-blue font-medium' : 'text-fg/40'}`}>
+              <span className={`text-[10px] ${active ? 'text-blue font-medium' : 'text-muted'}`}>
                 {tab.label}
               </span>
             </Link>
