@@ -10,6 +10,10 @@ export interface User {
   is_verified: boolean;
   is_premium: boolean;
   avatar?: string | null;
+  bio?: string | null;
+  location?: string | null;
+  categories: string[];
+  profile_completed: boolean;
   created_at: string;
 }
 
@@ -46,4 +50,10 @@ export interface ResetPasswordPayload {
   email: string;
   code: string;
   new_password: string;
+}
+
+export interface UpdateProfilePayload {
+  bio?: string;
+  location?: string;
+  categories?: string[];
 }

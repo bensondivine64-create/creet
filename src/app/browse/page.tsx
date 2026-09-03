@@ -7,6 +7,7 @@ import { Listing, ListingKind } from '@/types/listing';
 import BottomNav from '@/components/BottomNav';
 import NotificationBell from '@/components/NotificationBell';
 import EmptyState from '@/components/EmptyState';
+import { SkeletonGrid } from '@/components/Skeleton';
 
 export default function BrowsePage() {
   const [tab, setTab] = useState<ListingKind>('gig');
@@ -86,7 +87,7 @@ export default function BrowsePage() {
           {tab === 'gig' ? 'Popular freelancers' : 'Popular products'}
         </h2>
 
-        {loading && <p className="text-sm text-fg/40 text-center py-16">Loading...</p>}
+        {loading && <SkeletonGrid count={4} />}
 
         {!loading && error && (
           <EmptyState
@@ -106,7 +107,7 @@ export default function BrowsePage() {
 
         {!loading && !error && listings.length > 0 && (
           <>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 animate-fade-in-up">
               {listings.map((item) => (
                 <Link key={item.id} href={`/listing/${item.id}`} className="block active:scale-[0.98] transition-transform">
                   <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-mist">

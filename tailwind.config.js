@@ -36,11 +36,21 @@ module.exports = {
           '0%': { opacity: '1', transform: 'translateY(0)' },
           '100%': { opacity: '0', transform: 'translateY(-16px)' },
         },
+        fadeInUp: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        pulseRing: {
+          '0%': { transform: 'scale(0.9)', opacity: '0.8' },
+          '100%': { transform: 'scale(1.9)', opacity: '0' },
+        },
       },
       animation: {
         'splash-wordmark': 'splashWordmark 0.6s ease-out 0.1s both',
         'splash-tagline': 'splashTagline 0.8s ease-out 0.5s both',
         'splash-out': 'splashOut 0.5s ease-in forwards',
+        'fade-in-up': 'fadeInUp 0.4s ease-out both',
+        'pulse-ring': 'pulseRing 1.5s ease-out infinite',
       },
     },
   },

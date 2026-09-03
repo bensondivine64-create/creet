@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { getNotifications, markNotificationRead, markAllNotificationsRead } from '@/lib/notifications';
 import { Notification } from '@/types/notification';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
+import EmptyState from '@/components/EmptyState';
 
 export default function NotificationsPage() {
   const { user, loading: authLoading } = useRequireAnyAuth();
@@ -38,7 +39,7 @@ export default function NotificationsPage() {
 
   return (
     <main className="min-h-screen bg-paper pb-10">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line">
+      <div className="flex items-center justify-between px-5 py-4">
         <Link href="/browse" className="text-sm text-fg/50 hover:text-fg transition-colors">
           ← Back
         </Link>
@@ -50,21 +51,21 @@ export default function NotificationsPage() {
 
       {loading && <p className="text-sm text-fg/40 text-center py-16">Loading...</p>}
       {!loading && error && (
-        <p className="text-sm text-fg/40 text-center py-16">Couldn&apos;t load notifications.</p>
+        <EmptyState icon="bell" title="Couldn't load notifications" />
       )}
       {!loading && !error && items.length === 0 && (
-        <p className="text-sm text-fg/40 text-center py-16">You&apos;re all caught up.</p>
+        <EmptyState icon="bell" title="You're all caught up" subtitle="Nothing new right now." />
       )}
 
       {!loading && !error && items.length > 0 && (
-        <div>
+        <div className="px-5 space-y-3">
           {items.map((n) => (
             <Link
               key={n.id}
               href={n.link || '#'}
               onClick={() => handleOpen(n)}
-              className={`flex items-start gap-3 px-5 py-4 border-b border-line ${
-                n.read ? 'bg-paper' : 'bg-blue/5'
+              className={`flex items-start gap-3 rounded-2xl px-4 py-3.5 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform ${
+                n.read ? 'bg-mist' : 'bg-blue/15'
               }`}
             >
               {!n.read && <span className="h-2 w-2 rounded-full bg-blue mt-1.5 shrink-0" />}

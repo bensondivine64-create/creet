@@ -24,6 +24,7 @@ interface AuthContextType {
   forgotPassword: (payload: ForgotPasswordPayload) => Promise<{ success: boolean; message: string }>;
   resetPassword: (payload: ResetPasswordPayload) => Promise<{ success: boolean; message: string }>;
   loginWithGoogle: (credential: string, role?: Role) => Promise<AuthResponse>;
+  refreshUser: () => Promise<void>;
   logout: () => void;
 }
 
@@ -142,6 +143,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return data;
   }
 
+  async function refreshUser() {
+    const data = await apiCall<User>('/auth/me');
+    setUser(data);
+  }
+
   function logout() {
     localStorage.removeItem('creet_token');
     setUser(null);
@@ -160,6 +166,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         forgotPassword,
         resetPassword,
         loginWithGoogle,
+        refreshUser,
         logout,
       }}
     >

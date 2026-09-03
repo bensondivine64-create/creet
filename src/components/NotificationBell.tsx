@@ -19,7 +19,7 @@ export default function NotificationBell() {
   return (
     <Link
       href="/notifications"
-      className="relative h-8 w-8 rounded-full bg-mist flex items-center justify-center text-fg/60"
+      className="relative h-8 w-8 rounded-full bg-mist flex items-center justify-center text-fg/60 active:scale-[0.95] transition-transform"
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
         <path
@@ -29,7 +29,10 @@ export default function NotificationBell() {
         />
       </svg>
       {unread > 0 && (
-        <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-blue border-2 border-white" />
+        <>
+          <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-blue border-2 border-paper z-10" />
+          <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-blue animate-pulse-ring" />
+        </>
       )}
     </Link>
   );
