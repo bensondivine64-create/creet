@@ -88,7 +88,7 @@ export default function LoginPage() {
             value={form.email}
             onChange={handleChange}
             required
-            className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+            className="w-full rounded-lg border border-line bg-black/30 px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
           />
         </div>
         <div>
@@ -104,7 +104,7 @@ export default function LoginPage() {
             value={form.password}
             onChange={handleChange}
             required
-            className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+            className="w-full rounded-lg border border-line bg-black/30 px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
           />
         </div>
 
@@ -113,7 +113,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading || !captchaToken}
-          className="w-full bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-white text-sm font-semibold rounded-lg py-3"
+          className="w-full bg-blue disabled:bg-mist disabled:text-muted active:scale-[0.98] transition-transform text-white text-sm font-semibold rounded-lg py-3"
         >
           Log in
         </button>
