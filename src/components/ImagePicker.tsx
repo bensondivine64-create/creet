@@ -45,7 +45,7 @@ export default function ImagePicker({ images, onChange }: ImagePickerProps) {
       <div className="flex flex-wrap gap-2">
         {images.map((url) => (
           <div key={url} className="relative h-20 w-20 rounded-lg overflow-hidden border border-line">
-            <img src={`${API_ORIGIN}${url}`} alt="" className="h-full w-full object-cover" />
+            <img src={url.startsWith('http') ? url : `${API_ORIGIN}${url}`} alt="" className="h-full w-full object-cover" />
             <button
               type="button"
               onClick={() => removeImage(url)}
