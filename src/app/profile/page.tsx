@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import BottomNav from '@/components/BottomNav';
 import VerifiedBadge from '@/components/VerifiedBadge';
+import Avatar from '@/components/Avatar';
 
 function Chevron() {
   return (
@@ -35,10 +36,11 @@ export default function ProfilePage() {
       </div>
 
       <div className="max-w-2xl mx-auto px-5 py-6">
-        <div className="flex items-center gap-4 bg-mist border border-line rounded-2xl p-4 shadow-lg shadow-black/20 opacity-0 animate-fade-in-up">
-          <span className="h-16 w-16 rounded-full bg-blue text-white text-xl font-bold flex items-center justify-center shrink-0">
-            {user.full_name.charAt(0).toUpperCase()}
-          </span>
+        <Link
+          href={`/u/${user.username}`}
+          className="flex items-center gap-4 bg-mist border border-line rounded-2xl p-4 shadow-lg shadow-black/20 opacity-0 animate-fade-in-up active:scale-[0.98] transition-transform"
+        >
+          <Avatar avatar={user.avatar} name={user.full_name} size={64} />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
               <h1 className="font-display text-lg font-bold text-fg truncate">{user.full_name}</h1>
@@ -47,7 +49,9 @@ export default function ProfilePage() {
             <div className="text-sm text-muted truncate">@{user.username}</div>
             <div className="text-xs text-muted capitalize mt-0.5">{user.role}</div>
           </div>
-        </div>
+          <span className="text-muted shrink-0"><Chevron /></span>
+        </Link>
+        <p className="text-xs text-muted text-center mt-2">Tap to view how others see your profile</p>
 
         <div className="mt-4 space-y-3">
           {/* rows below stagger in via inline delay */}

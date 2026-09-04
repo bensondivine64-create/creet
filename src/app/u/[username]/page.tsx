@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { getPublicProfile, PublicProfile } from '@/lib/profile';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import EmptyState from '@/components/EmptyState';
+import Avatar from '@/components/Avatar';
 
 export default function PublicProfilePage() {
   const params = useParams();
@@ -44,9 +45,7 @@ export default function PublicProfilePage() {
 
       <div className="max-w-2xl mx-auto px-5 py-6">
         <div className="flex items-center gap-4 bg-mist border border-line rounded-2xl p-4 shadow-lg shadow-black/20">
-          <span className="h-16 w-16 rounded-full bg-blue text-white text-xl font-bold flex items-center justify-center shrink-0">
-            {profile.full_name.charAt(0).toUpperCase()}
-          </span>
+          <Avatar avatar={profile.avatar} name={profile.full_name} size={64} />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
               <h1 className="font-display text-lg font-bold text-fg truncate">{profile.full_name}</h1>

@@ -25,3 +25,23 @@ export interface PublicProfile {
 export function getPublicProfile(username: string) {
   return apiCall<PublicProfile>(`/profile/${username}`, { auth: false });
 }
+
+export async function uploadAvatar(file: File): Promise<User> {
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+  const token = typeof window !== 'undefined' ? localStorage.getItem('creet_token') : null;
+
+  const formData = new FormData();
+  formData.append('avatar', file);
+
+  const res = await fetch(`${API_BASE}/profile/avatar`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    body: formData,
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.detail || 'Could not upload photo');
+  }
+  return data as User;
+}

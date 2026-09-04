@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
-import { updateProfile } from '@/lib/profile';
+import { updateProfile, uploadAvatar } from '@/lib/profile';
+import Avatar from '@/components/Avatar';
 import { CATEGORIES } from '@/lib/categories';
 import BottomNav from '@/components/BottomNav';
 
@@ -21,6 +22,25 @@ export default function EditProfilePage() {
   const [categories, setCategories] = useState<string[]>(user?.categories || []);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatar || null);
+
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError('');
+    setAvatarUploading(true);
+    try {
+      const updated = await uploadAvatar(file);
+      setAvatarUrl(updated.avatar || null);
+      await refreshUser();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not upload photo');
+    } finally {
+      setAvatarUploading(false);
+      e.target.value = '';
+    }
+  }
 
   if (loading || !user) {
     return <div className="min-h-screen bg-paper flex items-center justify-center text-muted text-sm">Loading...</div>;
@@ -62,6 +82,29 @@ export default function EditProfilePage() {
             {error}
           </div>
         )}
+
+        <div className="flex flex-col items-center">
+          <div className="relative">
+            <Avatar avatar={avatarUrl} name={fullName || user.full_name} size={88} />
+            <label className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-blue border-2 border-paper flex items-center justify-center cursor-pointer active:scale-90 transition-transform">
+              {avatarUploading ? (
+                <span className="h-3 w-3 rounded-full border-2 border-white/40 border-t-white animate-spin-fast" />
+              ) : (
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
+                </svg>
+              )}
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={handleAvatarChange}
+                disabled={avatarUploading}
+                className="hidden"
+              />
+            </label>
+          </div>
+          <p className="text-xs text-muted mt-2">Tap the + to add a profile photo</p>
+        </div>
 
         <div>
           <label className="block text-sm font-medium text-fg/70 mb-1.5">Full name</label>
