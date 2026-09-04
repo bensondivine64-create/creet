@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { postRequest } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
+import ImagePicker from '@/components/ImagePicker';
 
 export default function PostRequestPage() {
   const { user, loading: authLoading } = useRequireAuth('buyer');
   const router = useRouter();
 
   const [form, setForm] = useState({ title: '', description: '', category: '', price: '', deadline: '' });
+  const [images, setImages] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -29,6 +31,7 @@ export default function PostRequestPage() {
         category: form.category,
         price: Number(form.price) || 0,
         deadline: form.deadline || undefined,
+        images,
       });
       router.push(`/listing/${res.id}`);
     } catch (err) {
@@ -58,7 +61,7 @@ export default function PostRequestPage() {
         </p>
 
         {error && (
-          <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+          <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
             {error}
           </div>
         )}
@@ -122,6 +125,8 @@ export default function PostRequestPage() {
               />
             </div>
           </div>
+
+          <ImagePicker images={images} onChange={setImages} />
 
           <button
             type="submit"

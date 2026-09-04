@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createProduct } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
+import ImagePicker from '@/components/ImagePicker';
 
 export default function PostProductPage() {
   const { user, loading: authLoading } = useRequireAuth('vendor');
@@ -18,6 +19,7 @@ export default function PostProductPage() {
     condition: 'new' as 'new' | 'used',
     stock: '',
   });
+  const [images, setImages] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +39,7 @@ export default function PostProductPage() {
         price: Number(form.price) || 0,
         condition: form.condition,
         stock: Number(form.stock) || 0,
+        images,
       });
       router.push(`/listing/${res.id}`);
     } catch (err) {
@@ -64,7 +67,7 @@ export default function PostProductPage() {
         <p className="text-sm text-fg/50 mb-6">List a physical product for sale.</p>
 
         {error && (
-          <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+          <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
             {error}
           </div>
         )}
@@ -142,6 +145,8 @@ export default function PostProductPage() {
               <option value="used">Used</option>
             </select>
           </div>
+
+          <ImagePicker images={images} onChange={setImages} />
 
           <button
             type="submit"

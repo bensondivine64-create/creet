@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createGig } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
+import ImagePicker from '@/components/ImagePicker';
 
 export default function PostGigPage() {
   const { user, loading: authLoading } = useRequireAuth('freelancer');
   const router = useRouter();
 
   const [form, setForm] = useState({ title: '', description: '', category: '', price: '', delivery_days: '' });
+  const [images, setImages] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -29,6 +31,7 @@ export default function PostGigPage() {
         category: form.category,
         price: Number(form.price) || 0,
         delivery_days: Number(form.delivery_days) || 1,
+        images,
       });
       router.push(`/listing/${res.id}`);
     } catch (err) {
@@ -58,7 +61,7 @@ export default function PostGigPage() {
         </p>
 
         {error && (
-          <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+          <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
             {error}
           </div>
         )}
@@ -124,6 +127,8 @@ export default function PostGigPage() {
               />
             </div>
           </div>
+
+          <ImagePicker images={images} onChange={setImages} />
 
           <button
             type="submit"

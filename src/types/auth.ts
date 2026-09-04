@@ -53,6 +53,8 @@ export interface ResetPasswordPayload {
 }
 
 export interface UpdateProfilePayload {
+  full_name?: string;
+  username?: string;
   bio?: string;
   location?: string;
   categories?: string[];

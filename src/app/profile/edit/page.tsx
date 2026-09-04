@@ -14,6 +14,8 @@ export default function EditProfilePage() {
   const { refreshUser } = useAuth();
   const router = useRouter();
 
+  const [fullName, setFullName] = useState(user?.full_name || '');
+  const [username, setUsername] = useState(user?.username || '');
   const [bio, setBio] = useState(user?.bio || '');
   const [location, setLocation] = useState(user?.location || '');
   const [categories, setCategories] = useState<string[]>(user?.categories || []);
@@ -34,7 +36,7 @@ export default function EditProfilePage() {
     setError('');
     setSaving(true);
     try {
-      await updateProfile({ bio, location, categories });
+      await updateProfile({ full_name: fullName, username, bio, location, categories });
       await refreshUser();
       router.push('/profile');
     } catch (err) {
@@ -60,6 +62,28 @@ export default function EditProfilePage() {
             {error}
           </div>
         )}
+
+        <div>
+          <label className="block text-sm font-medium text-fg/70 mb-1.5">Full name</label>
+          <input
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-fg/70 mb-1.5">Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value.toLowerCase())}
+            minLength={3}
+            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
+          />
+          <p className="text-xs text-muted mt-1">This is used in your profile link: creet.name.ng/u/{username || 'username'}</p>
+        </div>
 
         <div>
           <label className="block text-sm font-medium text-fg/70 mb-1.5">Bio</label>

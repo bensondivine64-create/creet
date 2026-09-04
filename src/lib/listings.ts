@@ -54,3 +54,23 @@ export function createProduct(payload: CreateProductPayload) {
 export function getMyListings() {
   return apiCall<ListingsResponse>('/listings/mine');
 }
+
+export async function uploadListingImages(files: File[]): Promise<string[]> {
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+  const token = typeof window !== 'undefined' ? localStorage.getItem('creet_token') : null;
+
+  const formData = new FormData();
+  files.forEach((f) => formData.append('images', f));
+
+  const res = await fetch(`${API_BASE}/listings/upload-images`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    body: formData,
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.detail || 'Could not upload images');
+  }
+  return data.urls as string[];
+}
