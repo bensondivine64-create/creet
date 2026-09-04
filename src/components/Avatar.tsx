@@ -1,29 +1,30 @@
-const API_ORIGIN = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api').replace(/\/api$/, '');
-
 interface AvatarProps {
   avatar?: string | null;
   name: string;
   size?: number;
 }
 
-export default function Avatar({ avatar, name, size = 64 }: AvatarProps) {
-  const px = `${size}px`;
+export default function Avatar({ avatar, name, size = 32 }: AvatarProps) {
+  const style = { width: size, height: size };
+
   if (avatar) {
     return (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={avatar.startsWith('http') ? avatar : `${API_ORIGIN}${avatar}`}
+        src={avatar}
         alt={name}
-        style={{ width: px, height: px }}
-        className="rounded-full object-cover shrink-0 border border-line"
+        style={style}
+        className="rounded-full object-cover shrink-0"
       />
     );
   }
+
   return (
     <span
-      style={{ width: px, height: px, fontSize: size * 0.35 }}
+      style={style}
       className="rounded-full bg-blue text-white font-bold flex items-center justify-center shrink-0"
     >
-      {name.charAt(0).toUpperCase()}
+      <span style={{ fontSize: size * 0.4 }}>{name.charAt(0).toUpperCase()}</span>
     </span>
   );
 }

@@ -10,6 +10,7 @@ import { Listing } from '@/types/listing';
 import { Comment } from '@/types/comment';
 import { useAuth } from '@/contexts/AuthContext';
 import VerifiedBadge from '@/components/VerifiedBadge';
+import Avatar from '@/components/Avatar';
 
 export default function ListingDetailPage() {
   const params = useParams();
@@ -84,28 +85,28 @@ export default function ListingDetailPage() {
   return (
     <main className="min-h-screen bg-paper flex flex-col">
       <div className="flex items-center justify-between px-5 py-4 border-b border-line">
-        <Link href="/browse" className="text-sm text-ink/50 hover:text-ink transition-colors">
+        <Link href="/browse" className="text-sm text-muted hover:text-fg transition-colors">
           ← Back
         </Link>
-        <Link href="/" className="font-display text-lg font-bold tracking-tight text-ink">
+        <Link href="/" className="font-display text-lg font-bold tracking-tight text-fg">
           CREET
         </Link>
         <span className="w-10" />
       </div>
 
-      {loading && <p className="text-sm text-ink/40 text-center py-24">Loading...</p>}
+      {loading && <p className="text-sm text-muted text-center py-24">Loading...</p>}
 
       {!loading && error && (
-        <p className="text-sm text-ink/40 text-center py-24">
+        <p className="text-sm text-muted text-center py-24">
           This listing couldn&apos;t be found.
         </p>
       )}
 
       {!loading && !error && listing && (
         <div className="max-w-2xl mx-auto w-full px-5 py-6 flex-1">
-          <div className="aspect-[4/3] rounded-2xl bg-mist flex items-center justify-center mb-5">
+          <div className="aspect-[4/3] rounded-2xl bg-mist border border-line flex items-center justify-center mb-5">
             <svg
-              className="h-10 w-10 text-ink/15"
+              className="h-10 w-10 text-fg/15"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -120,22 +121,20 @@ export default function ListingDetailPage() {
           </div>
 
           <span className="text-xs font-medium text-blue">{listing.category}</span>
-          <h1 className="font-display text-2xl font-bold text-ink mt-1">{listing.title}</h1>
+          <h1 className="font-display text-2xl font-bold text-fg mt-1">{listing.title}</h1>
 
-          <div className="flex items-center gap-2 mt-3">
-            <span className="h-8 w-8 rounded-full bg-blue text-white text-xs font-bold flex items-center justify-center shrink-0">
-              {listing.seller.full_name.charAt(0).toUpperCase()}
-            </span>
+          <Link href={`/u/${listing.seller.username}`} className="flex items-center gap-2 mt-3 active:opacity-70">
+            <Avatar avatar={listing.seller.avatar} name={listing.seller.full_name} size={32} />
             <div>
-              <div className="text-sm font-medium text-ink flex items-center gap-1">
+              <div className="text-sm font-medium text-fg flex items-center gap-1">
                 {listing.seller.full_name}
                 {listing.seller.verified && <VerifiedBadge size={13} />}
               </div>
-              <div className="text-xs text-ink/40">@{listing.seller.username}</div>
+              <div className="text-xs text-muted">@{listing.seller.username}</div>
             </div>
-          </div>
+          </Link>
 
-          <div className="flex items-center gap-4 mt-4 text-sm text-ink/50">
+          <div className="flex items-center gap-4 mt-4 text-sm text-muted">
             <span>★ {listing.rating_avg.toFixed(1)} ({listing.rating_count} reviews)</span>
             {listing.kind === 'gig' && <span>{listing.delivery_days}-day delivery</span>}
             {listing.kind === 'product' && (
@@ -143,10 +142,10 @@ export default function ListingDetailPage() {
             )}
           </div>
 
-          <p className="text-sm text-ink/70 leading-relaxed mt-5">{listing.description}</p>
+          <p className="text-sm text-fg/70 leading-relaxed mt-5">{listing.description}</p>
 
           <div className="mt-8 pt-6 border-t border-line">
-            <h2 className="font-display font-semibold text-ink mb-4">
+            <h2 className="font-display font-semibold text-fg mb-4">
               Comments {comments.length > 0 && `(${comments.length})`}
             </h2>
 
@@ -160,7 +159,7 @@ export default function ListingDetailPage() {
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Ask a question or leave a comment..."
                   rows={2}
-                  className="w-full rounded-lg border border-line bg-mist px-3 py-2.5 text-sm text-ink placeholder:text-ink/30 resize-none focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+                  className="w-full rounded-lg border border-line bg-mist px-3 py-2.5 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
                 />
                 <button
                   type="submit"
@@ -171,7 +170,7 @@ export default function ListingDetailPage() {
                 </button>
               </form>
             ) : (
-              <p className="text-sm text-ink/50 mb-6">
+              <p className="text-sm text-muted mb-6">
                 <Link href="/login" className="text-blue font-medium hover:underline">
                   Log in
                 </Link>{' '}
@@ -179,25 +178,23 @@ export default function ListingDetailPage() {
               </p>
             )}
 
-            {commentsLoading && <p className="text-sm text-ink/40">Loading comments...</p>}
+            {commentsLoading && <p className="text-sm text-muted">Loading comments...</p>}
 
             {!commentsLoading && comments.length === 0 && (
-              <p className="text-sm text-ink/40">No comments yet.</p>
+              <p className="text-sm text-muted">No comments yet.</p>
             )}
 
             {!commentsLoading && comments.length > 0 && (
               <div className="space-y-4">
                 {comments.map((c) => (
                   <div key={c.id} className="flex items-start gap-2.5">
-                    <span className="h-7 w-7 rounded-full bg-mist text-ink text-[11px] font-bold flex items-center justify-center shrink-0">
-                      {c.author.full_name.charAt(0).toUpperCase()}
-                    </span>
+                    <Avatar avatar={c.author.avatar} name={c.author.full_name} size={28} />
                     <div className="min-w-0">
-                      <div className="text-xs font-medium text-ink flex items-center gap-1">
+                      <div className="text-xs font-medium text-fg flex items-center gap-1">
                         {c.author.full_name}
                         {c.author.verified && <VerifiedBadge size={11} />}
                       </div>
-                      <div className="text-sm text-ink/70 mt-0.5">{c.content}</div>
+                      <div className="text-sm text-fg/70 mt-0.5">{c.content}</div>
                     </div>
                   </div>
                 ))}
@@ -206,7 +203,7 @@ export default function ListingDetailPage() {
           </div>
 
           <div className="sticky bottom-0 mt-8 -mx-5 px-5 py-4 bg-paper border-t border-line flex items-center justify-between">
-            <span className="font-display text-xl font-bold text-ink">
+            <span className="font-display text-xl font-bold text-fg">
               {listing.currency} {listing.price.toLocaleString()}
             </span>
             <button
