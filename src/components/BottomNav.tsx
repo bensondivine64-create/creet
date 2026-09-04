@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
 function Icon({ name, active }: { name: string; active: boolean }) {
-  const stroke = active ? '#1546F5' : '#8B98A5';
+  const stroke = active ? '#FFFFFF' : '#8B98A5';
   const common = { fill: 'none', stroke, strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
 
   if (name === 'home') {
@@ -47,8 +47,14 @@ export default function BottomNav() {
   const pathname = usePathname();
   const { user } = useAuth();
 
+  function homeHrefForRole(role?: string) {
+    if (role === 'freelancer') return '/home/freelancer';
+    if (role === 'vendor') return '/home/vendor';
+    return '/browse';
+  }
+
   const tabs = [
-    { href: '/browse', label: 'Home', icon: 'home' },
+    { href: homeHrefForRole(user?.role), label: 'Home', icon: 'home' },
     { href: '/inbox', label: 'Inbox', icon: 'inbox' },
     { href: '/browse', label: 'Search', icon: 'search' },
     { href: user ? '/profile' : '/login', label: 'Profile', icon: 'profile' },
@@ -62,7 +68,7 @@ export default function BottomNav() {
         <Link
           href={postHref}
           aria-label="Post"
-          className="fixed bottom-20 right-5 z-30 h-14 w-14 rounded-full bg-blue shadow-lg shadow-blue/40 flex items-center justify-center active:scale-95 transition-transform"
+          className="fixed bottom-20 right-5 z-30 h-14 w-14 rounded-full bg-blue shadow-lg shadow-black/40 flex items-center justify-center active:scale-95 transition-transform"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.2} strokeLinecap="round">
             <path d="M12 5v14M5 12h14" />

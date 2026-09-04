@@ -57,10 +57,10 @@ export default function FreelancerDashboard() {
         <div className="grid grid-cols-2 gap-3 mb-8 opacity-0 animate-fade-in-up" style={{ animationDelay: "80ms" }}>
           <Link
             href="/post-gig"
-            className="bg-blue shadow-lg shadow-blue/30 active:scale-[0.98] transition-transform text-white rounded-2xl px-4 py-4"
+            className="bg-blue shadow-lg shadow-black/30 active:scale-[0.98] transition-transform text-black rounded-2xl px-4 py-4"
           >
             <div className="font-semibold text-sm">Post a gig</div>
-            <div className="text-xs text-white/70 mt-0.5">Offer a service</div>
+            <div className="text-xs text-black/60 mt-0.5">Offer a service</div>
           </Link>
           <Link
             href="/requests"

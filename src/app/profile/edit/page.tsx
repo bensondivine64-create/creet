@@ -112,7 +112,7 @@ export default function EditProfilePage() {
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
+            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
           />
         </div>
 
@@ -123,7 +123,7 @@ export default function EditProfilePage() {
             value={username}
             onChange={(e) => setUsername(e.target.value.toLowerCase())}
             minLength={3}
-            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
+            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
           />
           <p className="text-xs text-muted mt-1">This is used in your profile link: creet.name.ng/u/{username || 'username'}</p>
         </div>
@@ -136,7 +136,7 @@ export default function EditProfilePage() {
             rows={4}
             maxLength={280}
             placeholder="A short intro sellers and buyers will see on your profile."
-            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
+            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
           />
           <div className="text-right text-xs text-muted mt-1">{bio.length}/280</div>
         </div>
@@ -148,7 +148,7 @@ export default function EditProfilePage() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="e.g. Lagos, Nigeria"
-            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
+            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
           />
         </div>
 
@@ -163,7 +163,7 @@ export default function EditProfilePage() {
                   type="button"
                   onClick={() => toggleCategory(cat)}
                   className={`px-3.5 py-2 rounded-full text-sm font-medium active:scale-[0.96] transition-transform ${
-                    active ? 'bg-blue text-white' : 'bg-mist border border-line text-muted'
+                    active ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
                   }`}
                 >
                   {cat}
@@ -176,7 +176,7 @@ export default function EditProfilePage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-70 text-white text-sm font-semibold rounded-xl py-3.5 transition-colors flex items-center justify-center gap-2"
+          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-70 text-black text-sm font-semibold rounded-xl py-3.5 transition-colors flex items-center justify-center gap-2"
         >
           {saving && (
             <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin-fast" />

@@ -159,7 +159,7 @@ export default function ListingDetailPage() {
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Ask a question or leave a comment..."
                   rows={2}
-                  className="w-full rounded-lg border border-line bg-mist px-3 py-2.5 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+                  className="w-full rounded-lg border border-line bg-mist px-3 py-2.5 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
                 />
                 <button
                   type="submit"
@@ -171,7 +171,7 @@ export default function ListingDetailPage() {
               </form>
             ) : (
               <p className="text-sm text-muted mb-6">
-                <Link href="/login" className="text-blue font-medium hover:underline">
+                <Link href="/login" className="text-fg font-medium underline underline-offset-2 hover:text-white">
                   Log in
                 </Link>{' '}
                 to leave a comment.

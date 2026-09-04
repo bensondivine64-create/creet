@@ -80,14 +80,14 @@ function VerifyForm() {
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
             required
             placeholder="123456"
-            className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-center text-lg tracking-[0.4em] text-fg placeholder:text-fg/20 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+            className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-center text-lg tracking-[0.4em] text-fg placeholder:text-fg/20 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading || code.length < 6}
-          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-white text-sm font-semibold rounded-lg py-2.5 transition-colors"
+          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5 transition-colors"
         >
           {loading ? 'Verifying...' : 'Verify'}
         </button>
@@ -98,7 +98,7 @@ function VerifyForm() {
         <button
           onClick={handleResend}
           disabled={resending}
-          className="text-blue font-medium hover:underline disabled:opacity-50"
+          className="text-fg font-medium underline underline-offset-2 hover:text-white disabled:opacity-50"
         >
           {resending ? 'Sending...' : 'Resend'}
         </button>

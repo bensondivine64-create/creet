@@ -68,7 +68,7 @@ function ResetPasswordForm() {
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
             required
             placeholder="123456"
-            className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-center text-lg tracking-[0.4em] text-fg placeholder:text-fg/20 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+            className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-center text-lg tracking-[0.4em] text-fg placeholder:text-fg/20 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
           />
         </div>
         <div>
@@ -79,21 +79,21 @@ function ResetPasswordForm() {
             onChange={(e) => setNewPassword(e.target.value)}
             required
             minLength={8}
-            className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+            className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading || code.length < 6}
-          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-white text-sm font-semibold rounded-lg py-2.5 transition-colors"
+          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5 transition-colors"
         >
           {loading ? 'Updating...' : 'Update password'}
         </button>
       </form>
 
       <p className="text-sm text-fg/50 text-center mt-6">
-        <Link href="/login" className="text-blue font-medium hover:underline">
+        <Link href="/login" className="text-fg font-medium underline underline-offset-2 hover:text-white">
           Back to login
         </Link>
       </p>

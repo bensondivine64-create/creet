@@ -45,3 +45,16 @@ export async function uploadAvatar(file: File): Promise<User> {
   }
   return data as User;
 }
+
+export interface DirectoryProfile {
+  username: string;
+  full_name: string;
+  avatar?: string | null;
+  bio?: string | null;
+  location?: string | null;
+  is_verified: boolean;
+}
+
+export function getProfileDirectory(role: 'freelancer' | 'vendor' | 'buyer', limit = 10) {
+  return apiCall<{ profiles: DirectoryProfile[] }>(`/profile/directory/${role}?limit=${limit}`, { auth: false });
+}

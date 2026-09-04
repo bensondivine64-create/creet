@@ -73,7 +73,7 @@ export default function ConversationPage() {
               <div key={m.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
                 <div
                   className={`max-w-[75%] rounded-2xl px-3.5 py-2 text-sm ${
-                    mine ? 'bg-blue text-white' : 'bg-mist text-fg'
+                    mine ? 'bg-blue text-black' : 'bg-mist text-fg'
                   }`}
                 >
                   {m.content}
@@ -90,7 +90,7 @@ export default function ConversationPage() {
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder="Message..."
-          className="flex-1 rounded-full border border-line bg-mist px-4 py-2.5 text-sm text-fg placeholder:text-fg/40 focus:outline-none focus:ring-2 focus:ring-blue transition-colors"
+          className="flex-1 rounded-full border border-line bg-mist px-4 py-2.5 text-sm text-fg placeholder:text-fg/40 focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
         />
         <button
           type="submit"

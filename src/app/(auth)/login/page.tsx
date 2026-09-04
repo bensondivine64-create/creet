@@ -88,13 +88,13 @@ export default function LoginPage() {
             value={form.email}
             onChange={handleChange}
             required
-            className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+            className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
           />
         </div>
         <div>
           <div className="flex items-center justify-between mb-1">
             <label className="block text-sm font-medium text-fg/70">Password</label>
-            <Link href="/forgot-password" className="text-xs text-blue hover:underline">
+            <Link href="/forgot-password" className="text-xs text-fg underline underline-offset-2 hover:text-white">
               Forgot password?
             </Link>
           </div>
@@ -104,7 +104,7 @@ export default function LoginPage() {
             value={form.password}
             onChange={handleChange}
             required
-            className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+            className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
           />
         </div>
 
@@ -121,7 +121,7 @@ export default function LoginPage() {
 
       <p className="text-sm text-muted text-center mt-6">
         New here?{' '}
-        <Link href="/" className="text-blue font-medium hover:underline">
+        <Link href="/" className="text-fg font-medium underline underline-offset-2 hover:text-white">
           Choose an account type
         </Link>
       </p>

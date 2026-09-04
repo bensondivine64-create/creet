@@ -75,7 +75,7 @@ export default function PostRequestPage() {
               onChange={handleChange}
               required
               placeholder="I need a website developer"
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
           </div>
           <div>
@@ -87,7 +87,7 @@ export default function PostRequestPage() {
               required
               rows={4}
               placeholder="Describe what you need, timeline, and any requirements..."
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 resize-none focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 resize-none focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
           </div>
           <div>
@@ -98,7 +98,7 @@ export default function PostRequestPage() {
               onChange={handleChange}
               required
               placeholder="Web Development"
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -111,7 +111,7 @@ export default function PostRequestPage() {
                 onChange={handleChange}
                 required
                 min={0}
-                className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+                className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
               />
             </div>
             <div>
@@ -121,7 +121,7 @@ export default function PostRequestPage() {
                 type="date"
                 value={form.deadline}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+                className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
               />
             </div>
           </div>
@@ -131,7 +131,7 @@ export default function PostRequestPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-white text-sm font-semibold rounded-lg py-2.5 transition-colors"
+            className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5 transition-colors"
           >
             {loading ? 'Posting...' : 'Post request'}
           </button>

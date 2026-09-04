@@ -91,7 +91,7 @@ export default function CreateProfilePage() {
                 onChange={(e) => setBio(e.target.value)}
                 placeholder={bioPlaceholder}
                 rows={3}
-                className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+                className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
               />
             </div>
 
@@ -102,7 +102,7 @@ export default function CreateProfilePage() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. Lagos, Nigeria"
-                className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue focus:border-blue transition-colors"
+                className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
               />
             </div>
 

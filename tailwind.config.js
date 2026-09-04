@@ -15,8 +15,8 @@ module.exports = {
         fg: '#F4F5F7',
         muted: '#8B98A5',
         blue: {
-          DEFAULT: '#1546F5',
-          deep: '#0A1F73',
+          DEFAULT: '#FFFFFF',
+          deep: '#D6D6D6',
         },
       },
       fontFamily: {

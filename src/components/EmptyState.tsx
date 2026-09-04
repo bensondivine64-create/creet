@@ -59,7 +59,7 @@ export default function EmptyState({ icon, title, subtitle, ctaLabel, ctaHref }:
       {ctaLabel && ctaHref && (
         <Link
           href={ctaHref}
-          className="mt-4 text-sm font-semibold text-blue hover:underline"
+          className="mt-4 text-sm font-semibold text-fg underline underline-offset-2 hover:text-white"
         >
           {ctaLabel}
         </Link>
