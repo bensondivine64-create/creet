@@ -99,20 +99,11 @@ export default function VendorDashboard() {
                 style={{ animationDelay: `${i * 60}ms` }}
                 className="flex items-center gap-3 bg-mist rounded-2xl p-3 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform opacity-0 animate-fade-in-up"
               >
-                <div className="h-14 w-14 rounded-xl bg-line/40 flex items-center justify-center shrink-0">
-                  <svg
-                    className="h-6 w-6 text-fg/20"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z"
-                    />
-                  </svg>
+                <div className="h-14 w-14 rounded-xl bg-line/40 shrink-0 overflow-hidden">
+                  {item.images && item.images.length > 0 && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
+                  )}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-semibold text-fg truncate">{item.title}</div>

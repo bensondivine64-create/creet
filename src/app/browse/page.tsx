@@ -10,6 +10,7 @@ import NotificationBell from '@/components/NotificationBell';
 import EmptyState from '@/components/EmptyState';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import Avatar from '@/components/Avatar';
+import { getProfileDirectory, DirectoryProfile } from '@/lib/profile';
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
   'Web Development': 'linear-gradient(135deg,#2b5876,#4e4376)',
@@ -31,6 +32,7 @@ export default function BrowsePage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [directory, setDirectory] = useState<DirectoryProfile[]>([]);
 
   useEffect(() => {
     setLoading(true);
@@ -40,6 +42,12 @@ export default function BrowsePage() {
       .catch((err) => setError(err instanceof Error ? err.message : 'Could not load listings'))
       .finally(() => setLoading(false));
   }, [tab, search, category]);
+
+  useEffect(() => {
+    getProfileDirectory(tab === 'gig' ? 'freelancer' : 'vendor', 6)
+      .then((res) => setDirectory(res.profiles))
+      .catch(() => setDirectory([]));
+  }, [tab]);
 
   const featured = useMemo(
     () => [...listings].sort((a, b) => b.rating_avg - a.rating_avg).slice(0, 4),
@@ -126,6 +134,37 @@ export default function BrowsePage() {
         </div>
       </section>
 
+      {directory.length > 0 && (
+        <section className="pt-7">
+          <div className="flex items-center justify-between px-5 mb-3">
+            <h2 className="font-display font-bold text-fg text-lg">
+              {tab === 'gig' ? 'Popular freelancers' : 'Popular vendors'}
+            </h2>
+          </div>
+          <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+            {directory.map((p) => (
+              <Link
+                key={p.username}
+                href={`/u/${p.username}`}
+                className="shrink-0 snap-start w-52 bg-mist border border-line rounded-2xl p-3 active:scale-[0.97] transition-transform"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Avatar avatar={p.avatar} name={p.full_name} size={36} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm font-semibold text-fg truncate">{p.full_name}</span>
+                      {p.is_verified && <VerifiedBadge size={11} />}
+                    </div>
+                    {p.location && <span className="text-xs text-muted truncate block">{p.location}</span>}
+                  </div>
+                </div>
+                {p.bio && <p className="text-xs text-muted line-clamp-2">{p.bio}</p>}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {!loading && !error && featured.length > 0 && (
         <section className="pt-7">
           <div className="flex items-center justify-between px-5 mb-3">
@@ -139,10 +178,11 @@ export default function BrowsePage() {
                 href={`/listing/${item.id}`}
                 className="shrink-0 snap-start w-48 bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.97] transition-transform"
               >
-                <div className="relative aspect-video bg-line/20 flex items-center justify-center">
-                  <svg className="h-6 w-6 text-fg/15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z" />
-                  </svg>
+                <div className="relative aspect-video bg-line/20 overflow-hidden">
+                  {item.images && item.images.length > 0 && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
+                  )}
                 </div>
                 <div className="p-3">
                   <div className="flex items-center gap-1.5 mb-1">
@@ -161,7 +201,7 @@ export default function BrowsePage() {
       <section className="px-5 pt-7">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display font-bold text-fg text-lg">
-            {tab === 'gig' ? 'Popular freelancers' : 'Popular products'}
+            {tab === 'gig' ? 'All gigs' : 'All products'}
           </h2>
           {category && (
             <button onClick={() => setCategory('')} className="text-xs text-muted underline">
@@ -199,20 +239,11 @@ export default function BrowsePage() {
                   className="bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30"
                 >
                   <Link href={`/listing/${item.id}`} className="block active:scale-[0.98] transition-transform">
-                    <div className="relative aspect-video bg-line/20 flex items-center justify-center">
-                      <svg
-                        className="h-7 w-7 text-fg/15"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1.5}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z"
-                        />
-                      </svg>
+                    <div className="relative aspect-video bg-line/20 overflow-hidden">
+                      {item.images && item.images.length > 0 && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
+                      )}
                     </div>
                   </Link>
                   <div className="p-3">

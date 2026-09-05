@@ -104,20 +104,11 @@ export default function ListingDetailPage() {
 
       {!loading && !error && listing && (
         <div className="max-w-2xl mx-auto w-full px-5 py-6 flex-1">
-          <div className="aspect-[4/3] rounded-2xl bg-mist border border-line flex items-center justify-center mb-5">
-            <svg
-              className="h-10 w-10 text-fg/15"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z"
-              />
-            </svg>
+          <div className="aspect-[4/3] rounded-2xl bg-mist border border-line overflow-hidden mb-5">
+            {listing.images && listing.images.length > 0 ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={listing.images[0]} alt={listing.title} className="h-full w-full object-cover" />
+            ) : null}
           </div>
 
           <span className="text-xs font-medium text-blue">{listing.category}</span>
@@ -164,7 +155,7 @@ export default function ListingDetailPage() {
                 <button
                   type="submit"
                   disabled={posting || !newComment.trim()}
-                  className="mt-2 bg-blue disabled:opacity-40 active:scale-[0.98] transition-transform text-white text-xs font-semibold rounded-lg px-4 py-2"
+                  className="mt-2 bg-blue disabled:opacity-40 active:scale-[0.98] transition-transform text-black text-xs font-semibold rounded-lg px-4 py-2"
                 >
                   {posting ? 'Posting...' : 'Post comment'}
                 </button>
@@ -209,7 +200,7 @@ export default function ListingDetailPage() {
             <button
               onClick={handleMessageSeller}
               disabled={messaging}
-              className="bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-white text-sm font-semibold rounded-lg px-5 py-2.5"
+              className="bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg px-5 py-2.5"
             >
               {messaging ? 'Opening...' : ctaLabel}
             </button>
