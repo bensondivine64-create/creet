@@ -75,7 +75,7 @@ export async function uploadListingImages(files: File[]): Promise<string[]> {
   return data.urls as string[];
 }
 
-export function updateListing(id: number, payload: Partial<CreateProductPayload & CreateRequestPayload>) {
+export function updateListing(id: number, payload: Partial<CreateProductPayload & CreateRequestPayload & CreateGigPayload>) {
   return apiCall<Listing>(`/listings/${id}`, {
     method: 'PUT',
     body: payload,

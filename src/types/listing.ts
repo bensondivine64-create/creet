@@ -30,6 +30,7 @@ export interface Product extends ListingBase {
   kind: 'product';
   condition: 'new' | 'used';
   stock: number;
+  sold_at?: string | null;
 }
 
 export interface BuyerRequest extends ListingBase {

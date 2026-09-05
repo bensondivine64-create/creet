@@ -1,23 +1,22 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import BottomNav from '@/components/BottomNav';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import Avatar from '@/components/Avatar';
 
-function Chevron() {
+function GearIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 6l6 6-6 6" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+      <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }
 
 export default function ProfilePage() {
   const { user, loading } = useRequireAnyAuth();
-  const { logout } = useAuth();
 
   if (loading || !user) {
     return <div className="min-h-screen bg-paper flex items-center justify-center text-muted text-sm">Loading...</div>;
@@ -30,15 +29,15 @@ export default function ProfilePage() {
           ← Back
         </Link>
         <span className="font-display text-lg font-bold text-fg">Profile</span>
-        <button onClick={logout} className="text-xs text-muted hover:text-blue transition-colors">
-          Log out
-        </button>
+        <Link href="/settings" className="text-muted hover:text-fg transition-colors">
+          <GearIcon />
+        </Link>
       </div>
 
       <div className="max-w-2xl mx-auto px-5 py-6">
         <Link
           href={`/u/${user.username}`}
-          className="flex items-center gap-4 bg-mist border border-line rounded-2xl p-4 shadow-lg shadow-black/20 opacity-0 animate-fade-in-up active:scale-[0.98] transition-transform"
+          className="flex items-center gap-4 bg-mist border border-line rounded-2xl p-4 shadow-lg shadow-black/20 active:scale-[0.98] transition-transform"
         >
           <Avatar avatar={user.avatar} name={user.full_name} size={64} />
           <div className="min-w-0 flex-1">
@@ -49,71 +48,19 @@ export default function ProfilePage() {
             <div className="text-sm text-muted truncate">@{user.username}</div>
             <div className="text-xs text-muted capitalize mt-0.5">{user.role}</div>
           </div>
-          <span className="text-muted shrink-0"><Chevron /></span>
         </Link>
         <p className="text-xs text-muted text-center mt-2">Tap to view how others see your profile</p>
 
-        <div className="mt-4 space-y-3">
-          {/* rows below stagger in via inline delay */}
-          <Link
-            href="/profile/edit"
-            style={{ animationDelay: "70ms" }} className="opacity-0 animate-fade-in-up flex items-center justify-between bg-mist border border-line rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform"
-          >
-            <span className="font-semibold text-fg text-sm">Edit profile</span>
-            <span className="text-muted"><Chevron /></span>
-          </Link>
+        {user.bio && (
+          <div className="mt-4 bg-mist border border-line rounded-2xl p-4">
+            <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">About</h2>
+            <p className="text-sm text-fg leading-relaxed whitespace-pre-wrap">{user.bio}</p>
+          </div>
+        )}
 
-          {user.is_admin && (
-            <Link
-              href="/admin"
-              style={{ animationDelay: "140ms" }} className="opacity-0 animate-fade-in-up flex items-center justify-between bg-mist border border-line rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform"
-            >
-              <span className="font-semibold text-fg text-sm">Admin System</span>
-              <span className="text-muted"><Chevron /></span>
-            </Link>
-          )}
-
-          {!user.is_verified && (
-            <Link
-              href="/verify-identity"
-              style={{ animationDelay: "210ms" }} className="opacity-0 animate-fade-in-up flex items-center justify-between bg-mist border border-line rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform"
-            >
-              <div>
-                <div className="font-semibold text-fg text-sm">Get Verified</div>
-                <div className="text-xs text-muted mt-0.5">
-                  Show buyers and sellers you&apos;re trustworthy.
-                </div>
-              </div>
-              <span className="text-blue shrink-0 ml-2"><Chevron /></span>
-            </Link>
-          )}
-
-          {!user.is_premium && (
-            <Link
-              href="/premium"
-              style={{ animationDelay: "280ms" }} className="opacity-0 animate-fade-in-up flex items-center justify-between rounded-xl px-4 py-3.5 bg-blue shadow-lg shadow-black/40 active:scale-[0.98] transition-transform"
-            >
-              <div>
-                <div className="font-semibold text-white text-sm flex items-center gap-1.5">
-                  Get Premium
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#FFFFFF">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                  </svg>
-                </div>
-                <div className="text-xs text-white/70 mt-0.5">
-                  Stand out with priority placement and a premium badge.
-                </div>
-              </div>
-              <span className="text-white shrink-0 ml-2"><Chevron /></span>
-            </Link>
-          )}
-
-          {user.is_verified && user.is_premium && (
-            <p className="text-sm text-muted text-center py-4">
-              You&apos;re verified and on Premium. 🎉
-            </p>
-          )}
-        </div>
+        {user.location && (
+          <p className="text-sm text-muted text-center mt-4">📍 {user.location}</p>
+        )}
       </div>
 
       <BottomNav />

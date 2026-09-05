@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
-import { getMyListings } from '@/lib/listings';
+import { getMyListings, deleteListing, markSold } from '@/lib/listings';
 import { Listing } from '@/types/listing';
 import BottomNav from '@/components/BottomNav';
 import EmptyState from '@/components/EmptyState';
@@ -112,6 +112,43 @@ export default function VendorDashboard() {
                   </div>
                 </div>
               </Link>
+
+              <div className="flex items-center gap-2 mt-2 px-1">
+                <Link
+                  href={`/listing/${item.id}/edit-product`}
+                  className="text-xs text-fg/60 underline underline-offset-2"
+                >
+                  Edit
+                </Link>
+                <span className="text-fg/20 text-xs">·</span>
+                <button
+                  onClick={async () => {
+                    if (!confirm('Delete this listing?')) return;
+                    await deleteListing(item.id);
+                    setListings((prev) => prev.filter((l) => l.id !== item.id));
+                  }}
+                  className="text-xs text-red-400 underline underline-offset-2"
+                >
+                  Delete
+                </button>
+                {item.kind === 'product' && !item.sold_at && (
+                  <>
+                    <span className="text-fg/20 text-xs">·</span>
+                    <button
+                      onClick={async () => {
+                        const updated = await markSold(item.id);
+                        setListings((prev) => prev.map((l) => (l.id === item.id ? { ...l, ...updated } : l)));
+                      }}
+                      className="text-xs text-fg/60 underline underline-offset-2"
+                    >
+                      Mark as sold
+                    </button>
+                  </>
+                )}
+                {item.kind === 'product' && item.sold_at && (
+                  <span className="text-xs text-fg/40 ml-1">Sold</span>
+                )}
+              </div>
             ))}
           </div>
         )}
