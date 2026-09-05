@@ -10,6 +10,7 @@ import NotificationBell from '@/components/NotificationBell';
 import EmptyState from '@/components/EmptyState';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import Avatar from '@/components/Avatar';
+import AdCarousel from '@/components/AdCarousel';
 import { getProfileDirectory, DirectoryProfile } from '@/lib/profile';
 
 const CATEGORY_GRADIENTS: Record<string, string> = {

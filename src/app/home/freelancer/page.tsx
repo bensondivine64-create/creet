@@ -12,6 +12,7 @@ import NotificationBell from '@/components/NotificationBell';
 import Avatar from '@/components/Avatar';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import EmptyState from '@/components/EmptyState';
+import AdCarousel from '@/components/AdCarousel';
 
 export default function FreelancerHomePage() {
   const { user, loading } = useRequireAuth('freelancer');
@@ -52,7 +53,9 @@ export default function FreelancerHomePage() {
         </div>
       </div>
 
-      <section className="px-5">
+      <AdCarousel />
+
+      <section className="px-5 pt-2">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display font-bold text-fg text-lg">Open requests</h2>
           <Link href="/requests" className="text-xs text-muted underline">See all</Link>
