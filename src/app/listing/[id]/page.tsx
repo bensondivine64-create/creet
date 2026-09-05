@@ -104,12 +104,12 @@ export default function ListingDetailPage() {
 
       {!loading && !error && listing && (
         <div className="max-w-2xl mx-auto w-full px-5 py-6 flex-1">
-          <div className="aspect-[4/3] rounded-2xl bg-mist border border-line overflow-hidden mb-5">
-            {listing.images && listing.images.length > 0 ? (
-              // eslint-disable-next-line @next/next/no-img-element
+          {listing.images && listing.images.length > 0 && (
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={listing.images[0]} alt={listing.title} className="h-full w-full object-cover" />
-            ) : null}
-          </div>
+            </div>
+          )}
 
           <span className="text-xs font-medium text-blue">{listing.category}</span>
           <h1 className="font-display text-2xl font-bold text-fg mt-1">{listing.title}</h1>

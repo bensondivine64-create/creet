@@ -178,12 +178,12 @@ export default function BrowsePage() {
                 href={`/listing/${item.id}`}
                 className="shrink-0 snap-start w-48 bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.97] transition-transform"
               >
-                <div className="relative aspect-video bg-line/20 overflow-hidden">
-                  {item.images && item.images.length > 0 && (
-                    // eslint-disable-next-line @next/next/no-img-element
+                {item.images && item.images.length > 0 && (
+                  <div className="relative aspect-video overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
-                  )}
-                </div>
+                  </div>
+                )}
                 <div className="p-3">
                   <div className="flex items-center gap-1.5 mb-1">
                     <Avatar avatar={item.seller.avatar} name={item.seller.full_name} size={16} />
@@ -239,12 +239,12 @@ export default function BrowsePage() {
                   className="bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30"
                 >
                   <Link href={`/listing/${item.id}`} className="block active:scale-[0.98] transition-transform">
-                    <div className="relative aspect-video bg-line/20 overflow-hidden">
-                      {item.images && item.images.length > 0 && (
-                        // eslint-disable-next-line @next/next/no-img-element
+                    {item.images && item.images.length > 0 && (
+                      <div className="relative aspect-video overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </Link>
                   <div className="p-3">
                     <Link

@@ -99,12 +99,12 @@ export default function FreelancerDashboard() {
                 style={{ animationDelay: `${i * 60}ms` }}
                 className="flex items-center gap-3 bg-mist rounded-2xl p-3 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform opacity-0 animate-fade-in-up"
               >
-                <div className="h-14 w-14 rounded-xl bg-line/40 shrink-0 overflow-hidden">
-                  {item.images && item.images.length > 0 && (
-                    // eslint-disable-next-line @next/next/no-img-element
+                {item.images && item.images.length > 0 && (
+                  <div className="h-14 w-14 rounded-xl shrink-0 overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
-                  )}
-                </div>
+                  </div>
+                )}
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-semibold text-fg truncate">{item.title}</div>
                   <div className="text-sm font-bold text-blue mt-0.5">
