@@ -26,6 +26,14 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
   'Other': 'linear-gradient(135deg,#3e3e3e,#1a1a1a)',
 };
 
+function Chevron() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 6l6 6-6 6" />
+    </svg>
+  );
+}
+
 export default function BrowsePage() {
   const [tab, setTab] = useState<ListingKind>('gig');
   const [search, setSearch] = useState('');
@@ -168,6 +176,9 @@ export default function BrowsePage() {
                   </div>
                 </div>
                 {p.bio && <p className="text-xs text-muted line-clamp-2">{p.bio}</p>}
+                <div className="flex justify-end mt-1">
+                  <Chevron />
+                </div>
               </Link>
             ))}
           </div>
