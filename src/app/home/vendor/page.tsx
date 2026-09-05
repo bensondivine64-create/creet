@@ -89,7 +89,7 @@ export default function VendorHomePage() {
         )}
       </section>
 
-      <section className="px-5 pt-8">
+      <section className="px-5 pt-7">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display font-bold text-fg text-lg">Your products</h2>
           <Link href="/post-product" className="text-xs text-muted underline">Post new</Link>
@@ -115,7 +115,7 @@ export default function VendorHomePage() {
         )}
       </section>
 
-      <section className="px-5 pt-8">
+      <section className="px-5 pt-7">
         <h2 className="font-display font-bold text-fg text-lg mb-3">Popular vendors</h2>
 
         {!sectionsLoading && directory.length === 0 && (

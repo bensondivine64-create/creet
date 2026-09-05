@@ -42,9 +42,11 @@ export default function BrowsePage() {
   }, [tab, search, category]);
 
   const featured = useMemo(
-    () => [...listings].sort((a, b) => b.rating_avg - a.rating_avg).slice(0, 6),
+    () => [...listings].sort((a, b) => b.rating_avg - a.rating_avg).slice(0, 4),
     [listings]
   );
+  const featuredIds = useMemo(() => new Set(featured.map((f) => f.id)), [featured]);
+  const rest = useMemo(() => listings.filter((l) => !featuredIds.has(l.id)), [listings, featuredIds]);
 
   return (
     <main className="min-h-screen bg-paper pb-20">
@@ -125,7 +127,7 @@ export default function BrowsePage() {
       </section>
 
       {!loading && !error && featured.length > 0 && (
-        <section className="pt-6">
+        <section className="pt-7">
           <div className="flex items-center justify-between px-5 mb-3">
             <h2 className="font-display font-bold text-fg text-lg">Featured</h2>
             <span className="text-xs text-muted">Top rated</span>
@@ -156,7 +158,7 @@ export default function BrowsePage() {
         </section>
       )}
 
-      <section className="px-5 pt-6">
+      <section className="px-5 pt-7">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display font-bold text-fg text-lg">
             {tab === 'gig' ? 'Popular freelancers' : 'Popular products'}
@@ -182,10 +184,16 @@ export default function BrowsePage() {
           />
         )}
 
-        {!loading && !error && listings.length > 0 && (
+        {!loading && !error && listings.length > 0 && rest.length === 0 && (
+          <p className="text-center text-xs text-muted py-6">
+            That&apos;s everything for now — check the Featured row above.
+          </p>
+        )}
+
+        {!loading && !error && rest.length > 0 && (
           <>
             <div className="grid grid-cols-2 gap-3">
-              {listings.map((item) => (
+              {rest.map((item) => (
                 <div
                   key={item.id}
                   className="bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30"
@@ -239,7 +247,7 @@ export default function BrowsePage() {
               ))}
             </div>
 
-            {listings.length < 4 && (
+            {rest.length < 4 && (
               <p className="text-center text-xs text-muted mt-6">
                 More {tab === 'gig' ? 'freelancers' : 'products'} joining soon.
               </p>

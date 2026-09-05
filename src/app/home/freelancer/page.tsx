@@ -89,7 +89,7 @@ export default function FreelancerHomePage() {
         )}
       </section>
 
-      <section className="px-5 pt-8">
+      <section className="px-5 pt-7">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display font-bold text-fg text-lg">Your gigs</h2>
           <Link href="/post-gig" className="text-xs text-muted underline">Post new</Link>
@@ -115,7 +115,7 @@ export default function FreelancerHomePage() {
         )}
       </section>
 
-      <section className="px-5 pt-8">
+      <section className="px-5 pt-7">
         <h2 className="font-display font-bold text-fg text-lg mb-3">Popular freelancers</h2>
 
         {!sectionsLoading && directory.length === 0 && (

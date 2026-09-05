@@ -68,7 +68,7 @@ export default function BottomNav() {
         <Link
           href={postHref}
           aria-label="Post"
-          className="fixed bottom-20 right-5 z-30 h-14 w-14 rounded-full bg-blue shadow-lg shadow-black/40 flex items-center justify-center active:scale-95 transition-transform"
+          className="fixed bottom-24 right-5 z-30 h-14 w-14 rounded-full bg-blue shadow-lg shadow-black/40 flex items-center justify-center active:scale-95 transition-transform"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.2} strokeLinecap="round">
             <path d="M12 5v14M5 12h14" />

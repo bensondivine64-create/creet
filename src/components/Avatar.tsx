@@ -14,7 +14,7 @@ export default function Avatar({ avatar, name, size = 32 }: AvatarProps) {
         src={avatar}
         alt={name}
         style={style}
-        className="rounded-full object-cover shrink-0"
+        className="rounded-full object-cover shrink-0 border border-line"
       />
     );
   }
@@ -22,7 +22,7 @@ export default function Avatar({ avatar, name, size = 32 }: AvatarProps) {
   return (
     <span
       style={style}
-      className="rounded-full bg-blue text-white font-bold flex items-center justify-center shrink-0"
+      className="rounded-full bg-blue text-black font-bold flex items-center justify-center shrink-0 border border-line"
     >
       <span style={{ fontSize: size * 0.4 }}>{name.charAt(0).toUpperCase()}</span>
     </span>
