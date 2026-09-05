@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
-import { getListings, getMyListings } from '@/lib/listings';
+import { getListings, getMyListings, deleteListing, markSold } from '@/lib/listings';
 import { getProfileDirectory, DirectoryProfile } from '@/lib/profile';
 import { Listing } from '@/types/listing';
 import BottomNav from '@/components/BottomNav';
@@ -102,14 +102,51 @@ export default function VendorHomePage() {
         {!sectionsLoading && myProducts.length > 0 && (
           <div className="flex gap-3 overflow-x-auto snap-x scrollbar-hide pb-1">
             {myProducts.map((item) => (
-              <Link
-                key={item.id}
-                href={`/listing/${item.id}`}
-                className="shrink-0 snap-start w-40 bg-mist border border-line rounded-2xl p-3 active:scale-[0.97] transition-transform"
-              >
-                <div className="text-sm font-semibold text-fg line-clamp-2 mb-1">{item.title}</div>
-                <div className="text-xs text-muted">{item.currency} {item.price.toLocaleString()}</div>
-              </Link>
+              <div key={item.id} className="shrink-0 snap-start w-40">
+                <Link
+                  href={`/listing/${item.id}`}
+                  className="block bg-mist border border-line rounded-2xl p-3 active:scale-[0.97] transition-transform"
+                >
+                  <div className="text-sm font-semibold text-fg line-clamp-2 mb-1">{item.title}</div>
+                  <div className="text-xs text-muted">{item.currency} {item.price.toLocaleString()}</div>
+                </Link>
+                <div className="flex items-center gap-1.5 mt-1.5 px-0.5 flex-wrap">
+                  <Link
+                    href={`/listing/${item.id}/edit-product`}
+                    className="text-[11px] text-fg/60 underline underline-offset-2"
+                  >
+                    Edit
+                  </Link>
+                  <span className="text-fg/20 text-[11px]">·</span>
+                  <button
+                    onClick={async () => {
+                      if (!confirm('Delete this listing?')) return;
+                      await deleteListing(item.id);
+                      setMyProducts((prev) => prev.filter((l) => l.id !== item.id));
+                    }}
+                    className="text-[11px] text-red-400 underline underline-offset-2"
+                  >
+                    Delete
+                  </button>
+                  {item.kind === 'product' && !item.sold_at && (
+                    <>
+                      <span className="text-fg/20 text-[11px]">·</span>
+                      <button
+                        onClick={async () => {
+                          const updated = await markSold(item.id);
+                          setMyProducts((prev) => prev.map((l) => (l.id === item.id ? { ...l, ...updated } : l)));
+                        }}
+                        className="text-[11px] text-fg/60 underline underline-offset-2"
+                      >
+                        Mark sold
+                      </button>
+                    </>
+                  )}
+                  {item.kind === 'product' && item.sold_at && (
+                    <span className="text-[11px] text-fg/40">Sold</span>
+                  )}
+                </div>
+              </div>
             ))}
           </div>
         )}
