@@ -116,6 +116,9 @@ export default function BrowsePage() {
       <section className="pt-5">
         <div className="flex items-center justify-between px-5 mb-3">
           <h2 className="font-display font-bold text-fg text-lg">Explore categories</h2>
+          <Link href="/search" className="text-xs text-fg underline underline-offset-2">
+            See All
+          </Link>
         </div>
         <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
           {CATEGORIES.map((cat) => (
@@ -140,6 +143,9 @@ export default function BrowsePage() {
             <h2 className="font-display font-bold text-fg text-lg">
               {tab === 'gig' ? 'Popular freelancers' : 'Popular vendors'}
             </h2>
+            <Link href="/search" className="text-xs text-fg underline underline-offset-2">
+              See All
+            </Link>
           </div>
           <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
             {directory.map((p) => (
@@ -169,7 +175,9 @@ export default function BrowsePage() {
         <section className="pt-7">
           <div className="flex items-center justify-between px-5 mb-3">
             <h2 className="font-display font-bold text-fg text-lg">Featured</h2>
-            <span className="text-xs text-muted">Top rated</span>
+            <Link href="/search" className="text-xs text-fg underline underline-offset-2">
+              See All
+            </Link>
           </div>
           <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
             {featured.map((item) => (
