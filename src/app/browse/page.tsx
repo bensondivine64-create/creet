@@ -114,6 +114,8 @@ export default function BrowsePage() {
         </button>
       </div>
 
+      <AdCarousel />
+
       <section className="pt-5">
         <div className="flex items-center justify-between px-5 mb-3">
           <h2 className="font-display font-bold text-fg text-lg">Explore categories</h2>
