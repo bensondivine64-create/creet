@@ -93,44 +93,44 @@ export default function FreelancerDashboard() {
         {!listingsLoading && listings.length > 0 && (
           <div className="space-y-3">
             {listings.map((item, i) => (
-              <Link
-                key={item.id}
-                href={`/listing/${item.id}`}
-                style={{ animationDelay: `${i * 60}ms` }}
-                className="flex items-center gap-3 bg-mist rounded-2xl p-3 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform opacity-0 animate-fade-in-up"
-              >
-                {item.images && item.images.length > 0 && (
-                  <div className="h-14 w-14 rounded-xl shrink-0 overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
-                  </div>
-                )}
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm font-semibold text-fg truncate">{item.title}</div>
-                  <div className="text-sm font-bold text-blue mt-0.5">
-                    {item.currency} {item.price.toLocaleString()}
-                  </div>
-                </div>
-              </Link>
-
-              <div className="flex items-center gap-2 mt-2 px-1">
+              <div key={item.id} style={{ animationDelay: `${i * 60}ms` }} className="opacity-0 animate-fade-in-up">
                 <Link
-                  href={`/listing/${item.id}/edit-gig`}
-                  className="text-xs text-fg/60 underline underline-offset-2"
+                  href={`/listing/${item.id}`}
+                  className="flex items-center gap-3 bg-mist rounded-2xl p-3 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform"
                 >
-                  Edit
+                  {item.images && item.images.length > 0 && (
+                    <div className="h-14 w-14 rounded-xl shrink-0 overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-semibold text-fg truncate">{item.title}</div>
+                    <div className="text-sm font-bold text-blue mt-0.5">
+                      {item.currency} {item.price.toLocaleString()}
+                    </div>
+                  </div>
                 </Link>
-                <span className="text-fg/20 text-xs">·</span>
-                <button
-                  onClick={async () => {
-                    if (!confirm('Delete this listing?')) return;
-                    await deleteListing(item.id);
-                    setListings((prev) => prev.filter((l) => l.id !== item.id));
-                  }}
-                  className="text-xs text-red-400 underline underline-offset-2"
-                >
-                  Delete
-                </button>
+
+                <div className="flex items-center gap-2 mt-2 px-1">
+                  <Link
+                    href={`/listing/${item.id}/edit-gig`}
+                    className="text-xs text-fg/60 underline underline-offset-2"
+                  >
+                    Edit
+                  </Link>
+                  <span className="text-fg/20 text-xs">·</span>
+                  <button
+                    onClick={async () => {
+                      if (!confirm('Delete this listing?')) return;
+                      await deleteListing(item.id);
+                      setListings((prev) => prev.filter((l) => l.id !== item.id));
+                    }}
+                    className="text-xs text-red-400 underline underline-offset-2"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
