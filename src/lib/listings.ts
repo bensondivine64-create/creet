@@ -74,3 +74,22 @@ export async function uploadListingImages(files: File[]): Promise<string[]> {
   }
   return data.urls as string[];
 }
+
+export function updateListing(id: number, payload: Partial<CreateProductPayload & CreateRequestPayload>) {
+  return apiCall<Listing>(`/listings/${id}`, {
+    method: 'PUT',
+    body: payload,
+  });
+}
+
+export function deleteListing(id: number) {
+  return apiCall<{ success: boolean }>(`/listings/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+export function markSold(id: number) {
+  return apiCall<Listing>(`/listings/${id}/mark-sold`, {
+    method: 'POST',
+  });
+}
