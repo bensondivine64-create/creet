@@ -58,7 +58,7 @@ export default function BrowsePage() {
   const rest = useMemo(() => listings.filter((l) => !featuredIds.has(l.id)), [listings, featuredIds]);
 
   return (
-    <main className="min-h-screen bg-paper pb-20">
+    <main className="min-h-screen bg-paper pb-40">
       <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <span className="font-display text-xl font-bold tracking-tight text-fg">CREET</span>
         <div className="flex items-center gap-2">
