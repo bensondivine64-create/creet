@@ -11,6 +11,7 @@ import { Comment } from '@/types/comment';
 import { useAuth } from '@/contexts/AuthContext';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import Avatar from '@/components/Avatar';
+import ReportModal from '@/components/ReportModal';
 
 export default function ListingDetailPage() {
   const params = useParams();
@@ -21,6 +22,7 @@ export default function ListingDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [messaging, setMessaging] = useState(false);
+  const [showReport, setShowReport] = useState(false);
 
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentsLoading, setCommentsLoading] = useState(true);
@@ -111,8 +113,18 @@ export default function ListingDetailPage() {
             </div>
           )}
 
-          <span className="text-xs font-medium text-blue">{listing.category}</span>
-          <h1 className="font-display text-2xl font-bold text-fg mt-1">{listing.title}</h1>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <span className="text-xs font-medium text-blue">{listing.category}</span>
+              <h1 className="font-display text-2xl font-bold text-fg mt-1">{listing.title}</h1>
+            </div>
+            <button
+              onClick={() => setShowReport(true)}
+              className="text-xs text-muted underline underline-offset-2 shrink-0 mt-1"
+            >
+              Report
+            </button>
+          </div>
 
           <Link href={`/u/${listing.seller.username}`} className="flex items-center gap-2 mt-3 active:opacity-70">
             <Avatar avatar={listing.seller.avatar} name={listing.seller.full_name} size={32} />
@@ -206,6 +218,10 @@ export default function ListingDetailPage() {
             </button>
           </div>
         </div>
+      )}
+
+      {showReport && listing && (
+        <ReportModal targetType="listing" targetId={listing.id} onClose={() => setShowReport(false)} />
       )}
     </main>
   );

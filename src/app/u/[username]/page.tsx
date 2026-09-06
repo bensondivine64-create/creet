@@ -7,6 +7,7 @@ import { getPublicProfile, PublicProfile } from '@/lib/profile';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import EmptyState from '@/components/EmptyState';
 import Avatar from '@/components/Avatar';
+import ReportModal from '@/components/ReportModal';
 
 export default function PublicProfilePage() {
   const params = useParams();
@@ -15,6 +16,7 @@ export default function PublicProfilePage() {
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showReport, setShowReport] = useState(false);
 
   useEffect(() => {
     getPublicProfile(username)
@@ -109,6 +111,10 @@ export default function PublicProfilePage() {
           )}
         </div>
       </div>
+
+      {showReport && (
+        <ReportModal targetType="user" targetId={profile.id ?? 0} onClose={() => setShowReport(false)} />
+      )}
     </main>
   );
 }
