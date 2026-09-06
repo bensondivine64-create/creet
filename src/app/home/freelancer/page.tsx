@@ -66,7 +66,7 @@ export default function FreelancerHomePage() {
       <section className="px-5 pt-2">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display font-bold text-fg text-lg">Open requests</h2>
-          <Link href="/requests" className="text-xs text-muted underline">See all</Link>
+          <Link href="/requests" className="text-xs text-fg underline underline-offset-2">See All</Link>
         </div>
 
         {sectionsLoading && <p className="text-sm text-muted py-6 text-center">Loading...</p>}
@@ -100,10 +100,10 @@ export default function FreelancerHomePage() {
         )}
       </section>
 
-      <section className="px-5 pt-7">
+      <section className="px-5 pt-8">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display font-bold text-fg text-lg">Your gigs</h2>
-          <Link href="/post-gig" className="text-xs text-muted underline">Post new</Link>
+          <Link href="/post-gig" className="text-xs text-fg underline underline-offset-2">Post new</Link>
         </div>
 
         {!sectionsLoading && myGigs.length === 0 && (
@@ -111,12 +111,12 @@ export default function FreelancerHomePage() {
         )}
 
         {!sectionsLoading && myGigs.length > 0 && (
-          <div className="flex gap-3 overflow-x-auto snap-x scrollbar-hide pb-1">
+          <div className="flex gap-3 overflow-x-auto snap-x scrollbar-hide pb-1 pr-5">
             {myGigs.map((item) => (
               <div key={item.id} className="shrink-0 snap-start w-40">
                 <Link
                   href={`/listing/${item.id}`}
-                  className="block bg-mist border border-line rounded-2xl p-3 active:scale-[0.97] transition-transform"
+                  className="block bg-mist border border-line rounded-2xl p-3.5 active:scale-[0.97] transition-transform"
                 >
                   <div className="text-sm font-semibold text-fg line-clamp-2 mb-1">{item.title}</div>
                   <div className="text-xs text-muted">{item.currency} {item.price.toLocaleString()}</div>
@@ -146,7 +146,7 @@ export default function FreelancerHomePage() {
         )}
       </section>
 
-      <section className="px-5 pt-7">
+      <section className="px-5 pt-8">
         <h2 className="font-display font-bold text-fg text-lg mb-3">Popular freelancers</h2>
 
         {!sectionsLoading && directory.length === 0 && (

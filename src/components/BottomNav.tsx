@@ -68,9 +68,9 @@ export default function BottomNav() {
         <Link
           href={postHref}
           aria-label="Post"
-          className="fixed bottom-24 right-5 z-30 h-14 w-14 rounded-full bg-blue shadow-lg shadow-black/40 flex items-center justify-center active:scale-95 transition-transform"
+          className="fixed bottom-24 right-5 z-30 h-14 w-14 rounded-full bg-fg shadow-lg shadow-black/50 flex items-center justify-center active:scale-95 transition-transform"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.2} strokeLinecap="round">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth={2.2} strokeLinecap="round">
             <path d="M12 5v14M5 12h14" />
           </svg>
         </Link>
@@ -86,7 +86,7 @@ export default function BottomNav() {
               className="flex flex-col items-center justify-center gap-1 py-2.5"
             >
               <Icon name={tab.icon} active={active} />
-              <span className={`text-[10px] ${active ? 'text-blue font-medium' : 'text-muted'}`}>
+              <span className={`text-[10px] ${active ? 'text-fg font-medium' : 'text-muted'}`}>
                 {tab.label}
               </span>
             </Link>

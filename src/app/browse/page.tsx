@@ -103,7 +103,7 @@ export default function BrowsePage() {
         </div>
       </div>
 
-      <div className="flex gap-2 px-5 pt-4 pb-2 overflow-x-auto">
+      <div className="flex gap-2 px-5 pt-4 pb-2 overflow-x-auto pr-5">
         <button
           onClick={() => setTab('gig')}
           className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
@@ -131,7 +131,7 @@ export default function BrowsePage() {
             See All
           </Link>
         </div>
-        <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+        <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide pr-5">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -149,7 +149,7 @@ export default function BrowsePage() {
       </section>
 
       {directory.length > 0 && (
-        <section className="pt-7">
+        <section className="pt-8">
           <div className="flex items-center justify-between px-5 mb-3">
             <h2 className="font-display font-bold text-fg text-lg">
               {tab === 'gig' ? 'Popular freelancers' : 'Popular vendors'}
@@ -158,7 +158,7 @@ export default function BrowsePage() {
               See All
             </Link>
           </div>
-          <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+          <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide pr-5">
             {directory.map((p) => (
               <Link
                 key={p.username}
@@ -175,7 +175,7 @@ export default function BrowsePage() {
                     {p.location && <span className="text-xs text-muted truncate block">{p.location}</span>}
                   </div>
                 </div>
-                {p.bio && <p className="text-xs text-muted line-clamp-2">{p.bio}</p>}
+                <p className="text-xs text-muted line-clamp-2">{p.bio || (tab === 'gig' ? 'Freelancer' : 'Vendor')}</p>
                 <div className="flex justify-end mt-1">
                   <Chevron />
                 </div>
@@ -186,14 +186,14 @@ export default function BrowsePage() {
       )}
 
       {!loading && !error && featured.length > 0 && (
-        <section className="pt-7">
+        <section className="pt-8">
           <div className="flex items-center justify-between px-5 mb-3">
             <h2 className="font-display font-bold text-fg text-lg">Featured</h2>
             <Link href="/search" className="text-xs text-fg underline underline-offset-2">
               See All
             </Link>
           </div>
-          <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+          <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide pr-5">
             {featured.map((item) => (
               <Link
                 key={item.id}
@@ -220,7 +220,7 @@ export default function BrowsePage() {
         </section>
       )}
 
-      <section className="px-5 pt-7">
+      <section className="px-5 pt-8">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display font-bold text-fg text-lg">
             {tab === 'gig' ? 'All gigs' : 'All products'}
