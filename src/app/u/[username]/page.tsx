@@ -37,10 +37,12 @@ export default function PublicProfilePage() {
 
   return (
     <main className="min-h-screen bg-paper pb-16 animate-fade-in-up">
-      <div className="px-5 py-4 border-b border-line">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line">
         <Link href="/browse" className="text-sm text-muted hover:text-fg transition-colors">
           ← Back
         </Link>
+        <span className="font-display text-lg font-bold tracking-tight text-fg">CREET</span>
+        <span className="w-10" />
       </div>
 
       <div className="max-w-2xl mx-auto px-5 py-6">
