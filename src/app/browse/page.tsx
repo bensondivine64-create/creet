@@ -26,6 +26,30 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
   'Other': 'linear-gradient(135deg,#3e3e3e,#1a1a1a)',
 };
 
+const CATEGORY_ICON_PATHS: Record<string, string[]> = {
+  'Web Development': ['M8 9l-4 3 4 3', 'M16 9l4 3-4 3', 'M13 6l-2 12'],
+  'Design & Creative': ['M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5L12 2z'],
+  'Writing & Translation': ['M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7', 'M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z'],
+  'Marketing': ['M3 11l18-5v12L3 13v-2z', 'M11.6 16.8a3 3 0 11-5.8-1.6'],
+  'Video & Audio': ['M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14', 'M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
+  'Electronics': ['M9 3v2', 'M15 3v2', 'M9 19v2', 'M15 19v2', 'M3 9h2', 'M19 9h2', 'M3 15h2', 'M19 15h2', 'M7 7h10v10H7V7z'],
+  'Fashion': ['M8 4L4 8l3 3-2 8h14l-2-8 3-3-4-4-3 2h-2L8 4z'],
+  'Home & Living': ['M4 11l8-7 8 7', 'M6 9.5V20h12V9.5'],
+  'Business Services': ['M3 7h18v11a2 2 0 01-2 2H5a2 2 0 01-2-2V7z', 'M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2'],
+  'Other': ['M4 4h6v6H4V4z', 'M14 4h6v6h-6V4z', 'M4 14h6v6H4v-6z', 'M14 14h6v6h-6v-6z'],
+};
+
+function CategoryIcon({ cat }: { cat: string }) {
+  const paths = CATEGORY_ICON_PATHS[cat] || [];
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={1.6} className="mb-2 opacity-90">
+      {paths.map((d, i) => (
+        <path key={i} d={d} strokeLinecap="round" strokeLinejoin="round" />
+      ))}
+    </svg>
+  );
+}
+
 function Chevron() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -137,11 +161,14 @@ export default function BrowsePage() {
               key={cat}
               onClick={() => setCategory(category === cat ? '' : cat)}
               style={{ backgroundImage: CATEGORY_GRADIENTS[cat] }}
-              className={`relative shrink-0 snap-start w-36 h-24 rounded-2xl overflow-hidden text-left p-3 flex items-end active:scale-[0.96] transition-transform ${
+              className={`relative shrink-0 snap-start w-36 h-28 rounded-2xl overflow-hidden text-left p-3.5 flex flex-col justify-between active:scale-[0.96] transition-transform ${
                 category === cat ? 'ring-2 ring-white' : ''
               }`}
             >
-              <span className="absolute inset-0 bg-black/20" />
+              <span className="absolute inset-0 bg-black/15" />
+              <span className="relative">
+                <CategoryIcon cat={cat} />
+              </span>
               <span className="relative text-sm font-semibold text-white leading-tight">{cat}</span>
             </button>
           ))}
