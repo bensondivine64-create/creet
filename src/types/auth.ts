@@ -14,6 +14,7 @@ export interface User {
   location?: string | null;
   categories: string[];
   profile_completed: boolean;
+  account_status: 'active' | 'suspended';
   created_at: string;
 }
 

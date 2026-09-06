@@ -8,9 +8,11 @@ interface ApiOptions {
 
 export class ApiError extends Error {
   status: number;
-  constructor(message: string, status: number) {
+  errorCode?: string;
+  constructor(message: string, status: number, errorCode?: string) {
     super(message);
     this.status = status;
+    this.errorCode = errorCode;
   }
 }
 
@@ -37,7 +39,7 @@ export async function apiCall<T = unknown>(path: string, options: ApiOptions = {
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    throw new ApiError(data.detail || `Request failed with status ${res.status}`, res.status);
+    throw new ApiError(data.detail || `Request failed with status ${res.status}`, res.status, data.error_code);
   }
 
   return data as T;
