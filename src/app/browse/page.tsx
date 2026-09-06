@@ -14,14 +14,14 @@ import AdCarousel from '@/components/AdCarousel';
 import { getProfileDirectory, DirectoryProfile } from '@/lib/profile';
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
-  'Web Development': 'linear-gradient(135deg,#2b5876,#4e4376)',
-  'Design & Creative': 'linear-gradient(135deg,#7b2ff7,#f107a3)',
-  'Writing & Translation': 'linear-gradient(135deg,#3a7bd5,#3a6073)',
-  'Marketing': 'linear-gradient(135deg,#ee0979,#ff6a00)',
+  'Web Development': 'linear-gradient(135deg,#1e2a3a,#2c3e50)',
+  'Design & Creative': 'linear-gradient(135deg,#3d1e57,#5c2a5c)',
+  'Writing & Translation': 'linear-gradient(135deg,#1f3a4d,#2c4a4a)',
+  'Marketing': 'linear-gradient(135deg,#5c1a2e,#7a3a1a)',
   'Video & Audio': 'linear-gradient(135deg,#0f2027,#203a43,#2c5364)',
-  'Electronics': 'linear-gradient(135deg,#134e5e,#71b280)',
-  'Fashion': 'linear-gradient(135deg,#c94b4b,#4b134f)',
-  'Home & Living': 'linear-gradient(135deg,#5f2c82,#49a09d)',
+  'Electronics': 'linear-gradient(135deg,#0f3d3d,#2d5c4a)',
+  'Fashion': 'linear-gradient(135deg,#5c2020,#3a1030)',
+  'Home & Living': 'linear-gradient(135deg,#3a2050,#1f4a48)',
   'Business Services': 'linear-gradient(135deg,#232526,#414345)',
   'Other': 'linear-gradient(135deg,#3e3e3e,#1a1a1a)',
 };
@@ -42,7 +42,10 @@ const CATEGORY_ICON_PATHS: Record<string, string[]> = {
 function CategoryIcon({ cat }: { cat: string }) {
   const paths = CATEGORY_ICON_PATHS[cat] || [];
   return (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={1.6} className="mb-2 opacity-90">
+    <svg
+      width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={1.2}
+      className="absolute -right-4 -bottom-4 opacity-[0.14] pointer-events-none"
+    >
       {paths.map((d, i) => (
         <path key={i} d={d} strokeLinecap="round" strokeLinejoin="round" />
       ))}
@@ -161,14 +164,12 @@ export default function BrowsePage() {
               key={cat}
               onClick={() => setCategory(category === cat ? '' : cat)}
               style={{ backgroundImage: CATEGORY_GRADIENTS[cat] }}
-              className={`relative shrink-0 snap-start w-36 h-28 rounded-2xl overflow-hidden text-left p-3.5 flex flex-col justify-between active:scale-[0.96] transition-transform ${
+              className={`relative shrink-0 snap-start w-36 h-28 rounded-2xl overflow-hidden text-left p-3.5 flex items-end active:scale-[0.96] transition-transform ${
                 category === cat ? 'ring-2 ring-white' : ''
               }`}
             >
-              <span className="absolute inset-0 bg-black/15" />
-              <span className="relative">
-                <CategoryIcon cat={cat} />
-              </span>
+              <span className="absolute inset-0 bg-black/20" />
+              <CategoryIcon cat={cat} />
               <span className="relative text-sm font-semibold text-white leading-tight">{cat}</span>
             </button>
           ))}
