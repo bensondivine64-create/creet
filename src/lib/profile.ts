@@ -9,6 +9,7 @@ export function updateProfile(payload: UpdateProfilePayload) {
 }
 
 export interface PublicProfile {
+  id: number;
   username: string;
   full_name: string;
   role: string;
@@ -47,6 +48,7 @@ export async function uploadAvatar(file: File): Promise<User> {
 }
 
 export interface DirectoryProfile {
+  id: number;
   username: string;
   full_name: string;
   avatar?: string | null;
