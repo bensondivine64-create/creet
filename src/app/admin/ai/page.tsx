@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRequireAdmin } from '@/contexts/useRequireAdmin';
-import { sendAiCommand, confirmAiAction, PendingAction } from '@/lib/adminAi';
+import { sendAiCommand, confirmAiAction, PendingAction, HistoryItem } from '@/lib/adminAi';
 
 interface ChatMsg {
   role: 'admin' | 'ai';
@@ -32,10 +32,11 @@ export default function AdminAiPage() {
     if (!text || sending) return;
     setInput('');
     setError('');
+    const historyToSend: HistoryItem[] = messages.map((m) => ({ role: m.role, text: m.text }));
     setMessages((prev) => [...prev, { role: 'admin', text }]);
     setSending(true);
     try {
-      const res = await sendAiCommand(text);
+      const res = await sendAiCommand(text, historyToSend);
       setMessages((prev) => [...prev, { role: 'ai', text: res.reply, pending: res.pending_action }]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not reach the assistant');
@@ -47,7 +48,7 @@ export default function AdminAiPage() {
   async function handleConfirm(index: number, pending: PendingAction) {
     setSending(true);
     try {
-      const res = await confirmAiAction(pending.action, pending.target_id);
+      const res = await confirmAiAction(pending.action, pending.target_id, pending.message);
       setMessages((prev) => {
         const copy = [...prev];
         copy[index] = { ...copy[index], resolved: true };
