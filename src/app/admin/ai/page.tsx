@@ -32,7 +32,9 @@ export default function AdminAiPage() {
     if (!text || sending) return;
     setInput('');
     setError('');
-    const historyToSend: HistoryItem[] = messages.map((m) => ({ role: m.role, text: m.text }));
+    const historyToSend: HistoryItem[] = messages
+      .filter((m) => !(m.role === 'ai' && m === messages[0]))
+      .map((m) => ({ role: m.role, text: m.text }));
     setMessages((prev) => [...prev, { role: 'admin', text }]);
     setSending(true);
     try {
