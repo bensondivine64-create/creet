@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
 import { getListings } from '@/lib/listings';
 import { Listing, ListingKind } from '@/types/listing';
 import { CATEGORIES } from '@/lib/categories';
@@ -61,14 +62,70 @@ function Chevron() {
   );
 }
 
+interface TabOption {
+  kind: ListingKind;
+  label: string;
+}
+
+function tabsForRole(role: string | undefined): TabOption[] {
+  if (role === 'freelancer') {
+    return [
+      { kind: 'request', label: 'Requests' },
+      { kind: 'product', label: 'Products' },
+    ];
+  }
+  if (role === 'vendor') {
+    return [
+      { kind: 'request', label: 'Requests' },
+      { kind: 'gig', label: 'Freelancers' },
+    ];
+  }
+  return [
+    { kind: 'gig', label: 'Freelancers' },
+    { kind: 'product', label: 'Products' },
+  ];
+}
+
+// The directory ("Popular X") always shows the seller type this viewer would hire/browse,
+// never their own competitor type.
+function directoryRoleForTab(viewerRole: string | undefined, tab: ListingKind): 'freelancer' | 'vendor' {
+  if (viewerRole === 'freelancer') return 'vendor';
+  if (viewerRole === 'vendor') return 'freelancer';
+  return tab === 'gig' ? 'freelancer' : 'vendor';
+}
+
+function kindLabel(kind: ListingKind, plural = true) {
+  if (kind === 'gig') return plural ? 'freelancers' : 'freelancer';
+  if (kind === 'product') return plural ? 'products' : 'product';
+  return plural ? 'requests' : 'request';
+}
+
 export default function BrowsePage() {
+  const { user } = useAuth();
+  const tabs = useMemo(() => tabsForRole(user?.role), [user?.role]);
+
   const [tab, setTab] = useState<ListingKind>('gig');
+  const [hasSetDefault, setHasSetDefault] = useState(false);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [directory, setDirectory] = useState<DirectoryProfile[]>([]);
+
+  // Set the default tab once we know the viewer's role (only on first resolution,
+  // so we don't yank the tab out from under someone who already picked one).
+  useEffect(() => {
+    if (hasSetDefault) return;
+    if (user === null) {
+      setHasSetDefault(true);
+      return;
+    }
+    if (user) {
+      setTab(tabsForRole(user.role)[0].kind);
+      setHasSetDefault(true);
+    }
+  }, [user, hasSetDefault]);
 
   useEffect(() => {
     setLoading(true);
@@ -80,10 +137,11 @@ export default function BrowsePage() {
   }, [tab, search, category]);
 
   useEffect(() => {
-    getProfileDirectory(tab === 'gig' ? 'freelancer' : 'vendor', 6)
+    const directoryRole = directoryRoleForTab(user?.role, tab);
+    getProfileDirectory(directoryRole, 6)
       .then((res) => setDirectory(res.profiles))
       .catch(() => setDirectory([]));
-  }, [tab]);
+  }, [tab, user?.role]);
 
   const featured = useMemo(
     () => [...listings].sort((a, b) => b.rating_avg - a.rating_avg).slice(0, 4),
@@ -91,6 +149,9 @@ export default function BrowsePage() {
   );
   const featuredIds = useMemo(() => new Set(featured.map((f) => f.id)), [featured]);
   const rest = useMemo(() => listings.filter((l) => !featuredIds.has(l.id)), [listings, featuredIds]);
+
+  const directoryRole = directoryRoleForTab(user?.role, tab);
+  const directoryLabel = directoryRole === 'freelancer' ? 'Popular freelancers' : 'Popular vendors';
 
   return (
     <main className="min-h-screen bg-paper pb-40">
@@ -124,29 +185,24 @@ export default function BrowsePage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={tab === 'gig' ? 'Search services' : 'Search products'}
+            placeholder={`Search ${kindLabel(tab)}`}
             className="w-full rounded-2xl border border-line bg-mist pl-10 pr-4 py-3.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
           />
         </div>
       </div>
 
       <div className="flex gap-2 px-5 pt-4 pb-2 overflow-x-auto pr-5">
-        <button
-          onClick={() => setTab('gig')}
-          className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
-            tab === 'gig' ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
-          }`}
-        >
-          Freelancers
-        </button>
-        <button
-          onClick={() => setTab('product')}
-          className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
-            tab === 'product' ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
-          }`}
-        >
-          Products
-        </button>
+        {tabs.map((t) => (
+          <button
+            key={t.kind}
+            onClick={() => setTab(t.kind)}
+            className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
+              tab === t.kind ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
 
       <AdCarousel />
@@ -179,9 +235,7 @@ export default function BrowsePage() {
       {directory.length > 0 && (
         <section className="pt-8">
           <div className="flex items-center justify-between px-5 mb-3">
-            <h2 className="font-display font-bold text-fg text-lg">
-              {tab === 'gig' ? 'Popular freelancers' : 'Popular vendors'}
-            </h2>
+            <h2 className="font-display font-bold text-fg text-lg">{directoryLabel}</h2>
             <Link href="/search" className="text-xs text-fg underline underline-offset-2">
               See All
             </Link>
@@ -203,7 +257,7 @@ export default function BrowsePage() {
                     {p.location && <span className="text-xs text-muted truncate block">{p.location}</span>}
                   </div>
                 </div>
-                <p className="text-xs text-muted line-clamp-2">{p.bio || (tab === 'gig' ? 'Freelancer' : 'Vendor')}</p>
+                <p className="text-xs text-muted line-clamp-2">{p.bio || (directoryRole === 'freelancer' ? 'Freelancer' : 'Vendor')}</p>
                 <div className="flex justify-end mt-1">
                   <Chevron />
                 </div>
@@ -251,7 +305,7 @@ export default function BrowsePage() {
       <section className="px-5 pt-8">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display font-bold text-fg text-lg">
-            {tab === 'gig' ? 'All gigs' : 'All products'}
+            All {kindLabel(tab)}
           </h2>
           {category && (
             <button onClick={() => setCategory('')} className="text-xs text-muted underline">
@@ -269,7 +323,7 @@ export default function BrowsePage() {
         {!loading && !error && listings.length === 0 && (
           <EmptyState
             icon="search"
-            title={`No ${tab === 'gig' ? 'freelancers' : 'products'} found`}
+            title={`No ${kindLabel(tab)} found`}
             subtitle="Try a different search, or check back soon as more people join."
           />
         )}
@@ -317,7 +371,7 @@ export default function BrowsePage() {
                         </span>
                       </div>
                       <div className="text-xs text-muted mt-1.5 pt-1.5 border-t border-line">
-                        From{' '}
+                        {item.kind === 'request' ? 'Budget' : 'From'}{' '}
                         <span className="text-sm font-bold text-fg">
                           {item.currency} {item.price.toLocaleString()}
                         </span>
@@ -330,7 +384,7 @@ export default function BrowsePage() {
 
             {rest.length < 4 && (
               <p className="text-center text-xs text-muted mt-6">
-                More {tab === 'gig' ? 'freelancers' : 'products'} joining soon.
+                More {kindLabel(tab)} joining soon.
               </p>
             )}
           </>

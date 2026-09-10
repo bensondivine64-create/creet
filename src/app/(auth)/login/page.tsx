@@ -26,7 +26,7 @@ export default function LoginPage() {
     if (!user.profile_completed) {
       router.push('/create-profile');
     } else {
-      router.push(`/dashboard/${user.role}`);
+      router.push("/browse");
     }
   }
 

@@ -54,6 +54,7 @@ export default function AdminSystemPage() {
         <Link href="/admin/users" className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-mist border border-line text-muted">Users</Link>
         <Link href="/admin/listings" className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-mist border border-line text-muted">Listings</Link>
         <Link href="/admin/reports" className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-mist border border-line text-muted">Reports</Link>
+        <Link href="/admin/ai" className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-mist border border-line text-muted">AI Assistant</Link>
         <Link href="/browse" className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-mist border border-line text-muted">← Back to CREET</Link>
       </nav>
 
@@ -81,7 +82,10 @@ export default function AdminSystemPage() {
             </div>
 
             <h2 className="font-display font-semibold text-fg mb-3">Quick actions</h2>
-            <div className="grid grid-cols-3 gap-3 mb-8">
+            <div className="grid grid-cols-2 gap-3 mb-8">
+              <Link href="/admin/ai" className="bg-blue text-black rounded-xl px-3 py-4 text-center active:scale-[0.97] transition-transform">
+                <div className="text-sm font-semibold">AI Assistant</div>
+              </Link>
               <Link href="/admin/users" className="bg-mist border border-line rounded-xl px-3 py-4 text-center active:scale-[0.97] transition-transform">
                 <div className="text-sm font-semibold text-fg">Users</div>
               </Link>

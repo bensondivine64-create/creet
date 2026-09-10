@@ -22,10 +22,10 @@ function Icon({ name, active }: { name: string; active: boolean }) {
       </svg>
     );
   }
-  if (name === 'search') {
+  if (name === 'feed') {
     return (
       <svg width="22" height="22" viewBox="0 0 24 24" {...common}>
-        <path d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+        <path d="M4 6h16M4 12h16M4 18h10" />
       </svg>
     );
   }
@@ -43,20 +43,22 @@ function postHrefForRole(role?: string) {
   return null;
 }
 
+function feedHrefForRole(role?: string) {
+  if (role === 'freelancer') return '/home/freelancer';
+  if (role === 'vendor') return '/home/vendor';
+  return null;
+}
+
 export default function BottomNav() {
   const pathname = usePathname();
   const { user } = useAuth();
 
-  function homeHrefForRole(role?: string) {
-    if (role === 'freelancer') return '/home/freelancer';
-    if (role === 'vendor') return '/home/vendor';
-    return '/browse';
-  }
+  const feedHref = feedHrefForRole(user?.role);
 
   const tabs = [
-    { href: homeHrefForRole(user?.role), label: 'Home', icon: 'home' },
+    { href: '/browse', label: 'Home', icon: 'home' },
     { href: '/inbox', label: 'Inbox', icon: 'inbox' },
-    { href: '/browse', label: 'Search', icon: 'search' },
+    ...(feedHref ? [{ href: feedHref, label: 'My Feed', icon: 'feed' }] : []),
     { href: user ? '/profile' : '/login', label: 'Profile', icon: 'profile' },
   ];
 
@@ -76,7 +78,7 @@ export default function BottomNav() {
         </Link>
       )}
     <nav className="fixed bottom-0 left-0 right-0 z-20 bg-mist border-t border-line">
-      <div className="max-w-2xl mx-auto grid grid-cols-4">
+      <div className={`max-w-2xl mx-auto grid ${tabs.length === 4 ? 'grid-cols-4' : 'grid-cols-3'}`}>
         {tabs.map((tab, i) => {
           const active = pathname === tab.href;
           return (
