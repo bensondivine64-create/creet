@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { postRequest } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
+import { CATEGORIES } from '@/lib/categories';
 import ImagePicker from '@/components/ImagePicker';
 
 export default function PostRequestPage() {
@@ -28,7 +29,7 @@ export default function PostRequestPage() {
       const res = await postRequest({
         title: form.title,
         description: form.description,
-        category: form.category,
+        category: form.category || 'General',
         price: Number(form.price) || 0,
         deadline: form.deadline || undefined,
         images,
@@ -57,7 +58,7 @@ export default function PostRequestPage() {
 
       <div className="max-w-2xl mx-auto px-5 py-6">
         <p className="text-sm text-fg/50 mb-6">
-          Tell freelancers and vendors what you need — e.g. &quot;I need a website developer.&quot;
+          Post literally anything you&apos;re looking to hire for or buy — big or small.
         </p>
 
         {error && (
@@ -68,7 +69,7 @@ export default function PostRequestPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">Title</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1">What do you need?</label>
             <input
               name="title"
               value={form.title}
@@ -91,15 +92,30 @@ export default function PostRequestPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">Category</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1">
+              Category <span className="text-muted font-normal">(optional)</span>
+            </label>
             <input
               name="category"
               value={form.category}
               onChange={handleChange}
-              required
-              placeholder="Web Development"
+              placeholder="e.g. Web Development, or leave blank"
               className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, category: prev.category === cat ? '' : cat }))}
+                  className={`px-2.5 py-1 rounded-full text-xs font-medium active:scale-[0.96] transition-transform ${
+                    form.category === cat ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
