@@ -30,6 +30,10 @@ export default function PostProductPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+    if (images.length === 0) {
+      setError('Please add at least one photo of your product.');
+      return;
+    }
     setLoading(true);
     try {
       const res = await createProduct({
@@ -146,14 +150,14 @@ export default function PostProductPage() {
             </select>
           </div>
 
-          <ImagePicker images={images} onChange={setImages} />
+          <ImagePicker images={images} onChange={setImages} required />
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || images.length === 0}
             className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5 transition-colors"
           >
-            {loading ? 'Posting...' : 'Post product'}
+            {loading ? 'Posting...' : images.length === 0 ? 'Add a photo to continue' : 'Post product'}
           </button>
         </form>
       </div>

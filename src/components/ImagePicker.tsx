@@ -8,9 +8,10 @@ const API_ORIGIN = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:80
 interface ImagePickerProps {
   images: string[];
   onChange: (images: string[]) => void;
+  required?: boolean;
 }
 
-export default function ImagePicker({ images, onChange }: ImagePickerProps) {
+export default function ImagePicker({ images, onChange, required = false }: ImagePickerProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
 
@@ -37,7 +38,10 @@ export default function ImagePicker({ images, onChange }: ImagePickerProps) {
   return (
     <div>
       <label className="block text-sm font-medium text-fg/70 mb-1">
-        Photos <span className="text-muted font-normal">(optional)</span>
+        Photos{' '}
+        <span className={required ? 'text-red-400 font-normal' : 'text-muted font-normal'}>
+          {required ? '(required)' : '(optional)'}
+        </span>
       </label>
 
       {error && <p className="text-xs text-red-400 mb-2">{error}</p>}
@@ -78,7 +82,11 @@ export default function ImagePicker({ images, onChange }: ImagePickerProps) {
         )}
       </div>
 
-      <p className="text-xs text-muted mt-2">You can post without photos.</p>
+      {required ? (
+        <p className="text-xs text-muted mt-2">At least one photo is required for product listings.</p>
+      ) : (
+        <p className="text-xs text-muted mt-2">You can post without photos.</p>
+      )}
     </div>
   );
 }
