@@ -40,6 +40,22 @@ export default function SettingsPage() {
           <span className="text-muted"><Chevron /></span>
         </Link>
 
+        <Link
+          href="/settings/notifications"
+          style={{ animationDelay: "15ms" }} className="opacity-0 animate-fade-in-up flex items-center justify-between bg-mist border border-line rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform"
+        >
+          <span className="font-semibold text-fg text-sm">Notifications</span>
+          <span className="text-muted"><Chevron /></span>
+        </Link>
+
+        <Link
+          href="/settings/account"
+          style={{ animationDelay: "20ms" }} className="opacity-0 animate-fade-in-up flex items-center justify-between bg-mist border border-line rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform"
+        >
+          <span className="font-semibold text-fg text-sm">Account &amp; password</span>
+          <span className="text-muted"><Chevron /></span>
+        </Link>
+
         {user.role === 'buyer' && (
           <Link
             href="/dashboard/buyer"

@@ -15,6 +15,9 @@ export interface User {
   categories: string[];
   profile_completed: boolean;
   account_status: 'active' | 'suspended';
+  notify_messages: boolean;
+  notify_announcements: boolean;
+  notify_listing_activity: boolean;
   created_at: string;
 }
 
