@@ -18,6 +18,7 @@ export interface User {
   notify_messages: boolean;
   notify_announcements: boolean;
   notify_listing_activity: boolean;
+  onboarding_extra: Record<string, string>;
   created_at: string;
 }
 
@@ -62,4 +63,5 @@ export interface UpdateProfilePayload {
   bio?: string;
   location?: string;
   categories?: string[];
+  onboarding_extra?: Record<string, string>;
 }
