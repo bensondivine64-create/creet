@@ -8,6 +8,8 @@ import VerifiedBadge from '@/components/VerifiedBadge';
 import EmptyState from '@/components/EmptyState';
 import Avatar from '@/components/Avatar';
 import ReportModal from '@/components/ReportModal';
+import { useAuth } from '@/contexts/AuthContext';
+import { getConnectionStatus, sendConnectionRequest, acceptConnection, declineConnection, ConnectionStatus } from '@/lib/connections';
 
 export default function PublicProfilePage() {
   const params = useParams();
@@ -17,6 +19,10 @@ export default function PublicProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showReport, setShowReport] = useState(false);
+  const { user: viewer } = useAuth();
+  const [connStatus, setConnStatus] = useState<ConnectionStatus>('none');
+  const [connId, setConnId] = useState<number | undefined>(undefined);
+  const [connLoading, setConnLoading] = useState(false);
 
   useEffect(() => {
     getPublicProfile(username)
@@ -24,6 +30,47 @@ export default function PublicProfilePage() {
       .catch((err) => setError(err instanceof Error ? err.message : 'Could not load profile'))
       .finally(() => setLoading(false));
   }, [username]);
+
+  useEffect(() => {
+    if (!profile || !viewer || viewer.username === profile.username) return;
+    getConnectionStatus(profile.id).then((res) => {
+      setConnStatus(res.status);
+      setConnId(res.connection_id);
+    }).catch(() => {});
+  }, [profile, viewer]);
+
+  async function handleConnect() {
+    if (!profile) return;
+    setConnLoading(true);
+    try {
+      await sendConnectionRequest(profile.id);
+      setConnStatus('pending_sent');
+    } finally {
+      setConnLoading(false);
+    }
+  }
+
+  async function handleAccept() {
+    if (!connId) return;
+    setConnLoading(true);
+    try {
+      await acceptConnection(connId);
+      setConnStatus('connected');
+    } finally {
+      setConnLoading(false);
+    }
+  }
+
+  async function handleDecline() {
+    if (!connId) return;
+    setConnLoading(true);
+    try {
+      await declineConnection(connId);
+      setConnStatus('none');
+    } finally {
+      setConnLoading(false);
+    }
+  }
 
   if (loading) {
     return <div className="min-h-screen bg-paper flex items-center justify-center text-muted text-sm">Loading...</div>;
@@ -61,6 +108,48 @@ export default function PublicProfilePage() {
             </div>
           </div>
         </div>
+
+        {viewer && viewer.username !== profile.username && (
+          <div className="mt-3">
+            {connStatus === 'none' && (
+              <button
+                onClick={handleConnect}
+                disabled={connLoading}
+                className="w-full bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5"
+              >
+                {connLoading ? 'Sending...' : 'Connect'}
+              </button>
+            )}
+            {connStatus === 'pending_sent' && (
+              <div className="w-full bg-mist border border-line text-muted text-sm font-semibold rounded-lg py-2.5 text-center">
+                Request sent
+              </div>
+            )}
+            {connStatus === 'pending_received' && (
+              <div className="flex gap-2">
+                <button
+                  onClick={handleAccept}
+                  disabled={connLoading}
+                  className="flex-1 bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={handleDecline}
+                  disabled={connLoading}
+                  className="flex-1 bg-mist border border-line text-fg text-sm font-semibold rounded-lg py-2.5"
+                >
+                  Decline
+                </button>
+              </div>
+            )}
+            {connStatus === 'connected' && (
+              <div className="w-full bg-mist border border-line text-fg text-sm font-semibold rounded-lg py-2.5 text-center">
+                ✓ Connected
+              </div>
+            )}
+          </div>
+        )}
 
         {profile.bio && (
           <div className="mt-4 bg-mist border border-line rounded-2xl p-4">
