@@ -14,12 +14,14 @@ export interface PublicProfile {
   full_name: string;
   role: string;
   avatar?: string | null;
+  cover_photo?: string | null;
   bio?: string | null;
   location?: string | null;
   categories: string[];
   is_verified: boolean;
   is_premium: boolean;
   verified_badge: boolean;
+  connection_count: number;
   created_at: string;
   listings: import('@/types/listing').Listing[];
 }
@@ -28,14 +30,14 @@ export function getPublicProfile(username: string) {
   return apiCall<PublicProfile>(`/profile/${username}`, { auth: false });
 }
 
-export async function uploadAvatar(file: File): Promise<User> {
+async function uploadImageField(url: string, fieldName: string, file: File): Promise<User> {
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
   const token = typeof window !== 'undefined' ? localStorage.getItem('creet_token') : null;
 
   const formData = new FormData();
-  formData.append('avatar', file);
+  formData.append(fieldName, file);
 
-  const res = await fetch(`${API_BASE}/profile/avatar`, {
+  const res = await fetch(`${API_BASE}${url}`, {
     method: 'POST',
     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     body: formData,
@@ -46,6 +48,14 @@ export async function uploadAvatar(file: File): Promise<User> {
     throw new Error(data.detail || 'Could not upload photo');
   }
   return data as User;
+}
+
+export function uploadAvatar(file: File): Promise<User> {
+  return uploadImageField('/profile/avatar', 'avatar', file);
+}
+
+export function uploadCoverPhoto(file: File): Promise<User> {
+  return uploadImageField('/profile/cover', 'cover', file);
 }
 
 export interface DirectoryProfile {

@@ -11,6 +11,13 @@ import ReportModal from '@/components/ReportModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { getConnectionStatus, sendConnectionRequest, acceptConnection, declineConnection, ConnectionStatus } from '@/lib/connections';
 
+function buildHeadline(role: string, categories: string[], location?: string | null) {
+  const parts = [role.charAt(0).toUpperCase() + role.slice(1)];
+  if (categories.length > 0) parts.push(categories[0]);
+  if (location) parts.push(location);
+  return parts.join(' · ');
+}
+
 export default function PublicProfilePage() {
   const params = useParams();
   const username = params.username as string;
@@ -84,9 +91,11 @@ export default function PublicProfilePage() {
     );
   }
 
+  const headline = buildHeadline(profile.role, profile.categories, profile.location);
+
   return (
     <main className="min-h-screen bg-paper pb-16 animate-fade-in-up">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line relative z-10 bg-paper">
         <Link href="/browse" className="text-sm text-muted hover:text-fg transition-colors">
           ← Back
         </Link>
@@ -106,110 +115,122 @@ export default function PublicProfilePage() {
         )}
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-8">
-        <div className="flex items-center gap-4 bg-mist border border-line rounded-2xl p-5 shadow-lg shadow-black/20">
-          <Avatar avatar={profile.avatar} name={profile.full_name} size={64} />
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
-              <h1 className="font-display text-lg font-bold text-fg truncate">{profile.full_name}</h1>
-              {profile.verified_badge && <VerifiedBadge size={16} />}
-            </div>
-            <div className="text-sm text-muted truncate">@{profile.username}</div>
-            <div className="text-xs text-muted capitalize mt-0.5">
-              {profile.role}{profile.location ? ` · ${profile.location}` : ''}
-            </div>
-          </div>
+      <div className="relative">
+        <div className="h-36 bg-mist relative overflow-hidden">
+          {profile.cover_photo && (
+            <img src={profile.cover_photo} alt="" className="w-full h-full object-cover" />
+          )}
         </div>
 
-        {viewer && viewer.username !== profile.username && (
+        <div className="max-w-2xl mx-auto px-5">
+          <div className="relative -mt-10">
+            <div className="rounded-full ring-4 ring-paper inline-block">
+              <Avatar avatar={profile.avatar} name={profile.full_name} size={80} />
+            </div>
+          </div>
+
           <div className="mt-3">
-            {connStatus === 'none' && (
-              <button
-                onClick={handleConnect}
-                disabled={connLoading}
-                className="w-full bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3"
-              >
-                {connLoading ? 'Sending...' : 'Connect'}
-              </button>
-            )}
-            {connStatus === 'pending_sent' && (
-              <div className="w-full bg-mist border border-line text-muted text-sm font-semibold rounded-lg py-2.5 text-center">
-                Request sent
-              </div>
-            )}
-            {connStatus === 'pending_received' && (
-              <div className="flex gap-2">
+            <div className="flex items-center gap-1.5">
+              <h1 className="font-display text-xl font-bold text-fg truncate">{profile.full_name}</h1>
+              {profile.verified_badge && <VerifiedBadge size={16} />}
+            </div>
+            <div className="text-sm text-muted">@{profile.username}</div>
+            <div className="text-sm text-fg/70 mt-1">{headline}</div>
+            <div className="text-sm text-blue font-medium mt-1.5">
+              {profile.connection_count} connection{profile.connection_count === 1 ? '' : 's'}
+            </div>
+          </div>
+
+          {viewer && viewer.username !== profile.username && (
+            <div className="mt-4">
+              {connStatus === 'none' && (
                 <button
-                  onClick={handleAccept}
+                  onClick={handleConnect}
                   disabled={connLoading}
-                  className="flex-1 bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3"
+                  className="w-full bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3"
                 >
-                  Accept
+                  {connLoading ? 'Sending...' : 'Connect'}
                 </button>
-                <button
-                  onClick={handleDecline}
-                  disabled={connLoading}
-                  className="flex-1 bg-mist border border-line text-fg text-sm font-semibold rounded-lg py-3"
-                >
-                  Decline
-                </button>
-              </div>
-            )}
-            {connStatus === 'connected' && (
-              <div className="w-full bg-mist border border-line text-fg text-sm font-semibold rounded-lg py-2.5 text-center">
-                ✓ Connected
-              </div>
-            )}
-          </div>
-        )}
-
-        {profile.bio && (
-          <div className="mt-6 bg-mist border border-line rounded-2xl p-5">
-            <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">About</h2>
-            <p className="text-sm text-fg leading-relaxed whitespace-pre-wrap">{profile.bio}</p>
-          </div>
-        )}
-
-        {profile.categories.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {profile.categories.map((cat) => (
-              <span key={cat} className="px-3 py-1.5 rounded-full text-xs font-medium bg-mist border border-line text-muted">
-                {cat}
-              </span>
-            ))}
-          </div>
-        )}
-
-        <div className="mt-8">
-          <h2 className="font-display font-bold text-fg text-lg mb-4">
-            {profile.role === 'vendor' ? 'Products' : 'Gigs'}
-          </h2>
-
-          {profile.listings.length === 0 && (
-            <EmptyState icon="listing" title="Nothing posted yet" />
+              )}
+              {connStatus === 'pending_sent' && (
+                <div className="w-full bg-mist border border-line text-muted text-sm font-semibold rounded-lg py-2.5 text-center">
+                  Request sent
+                </div>
+              )}
+              {connStatus === 'pending_received' && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleAccept}
+                    disabled={connLoading}
+                    className="flex-1 bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={handleDecline}
+                    disabled={connLoading}
+                    className="flex-1 bg-mist border border-line text-fg text-sm font-semibold rounded-lg py-3"
+                  >
+                    Decline
+                  </button>
+                </div>
+              )}
+              {connStatus === 'connected' && (
+                <div className="w-full bg-mist border border-line text-fg text-sm font-semibold rounded-lg py-2.5 text-center">
+                  ✓ Connected
+                </div>
+              )}
+            </div>
           )}
 
-          {profile.listings.length > 0 && (
-            <div className="grid grid-cols-2 gap-4">
-              {profile.listings.map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/listing/${item.id}`}
-                  className="block bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.98] transition-transform"
-                >
-                  <div className="aspect-video bg-line/20" />
-                  <div className="p-3">
-                    <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1.5">
-                      {item.title}
-                    </div>
-                    <div className="text-xs text-muted">
-                      From <span className="text-sm font-bold text-fg">{item.currency} {item.price.toLocaleString()}</span>
-                    </div>
-                  </div>
-                </Link>
+          {profile.bio && (
+            <div className="mt-6 bg-mist border border-line rounded-2xl p-5">
+              <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">About</h2>
+              <p className="text-sm text-fg leading-relaxed whitespace-pre-wrap">{profile.bio}</p>
+            </div>
+          )}
+
+          {profile.categories.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {profile.categories.map((cat) => (
+                <span key={cat} className="px-3 py-1.5 rounded-full text-xs font-medium bg-mist border border-line text-muted">
+                  {cat}
+                </span>
               ))}
             </div>
           )}
+
+          <div className="mt-8">
+            <h2 className="font-display font-bold text-fg text-lg mb-4">
+              {profile.role === 'vendor' ? 'Products' : 'Gigs'}
+            </h2>
+
+            {profile.listings.length === 0 && (
+              <EmptyState icon="listing" title="Nothing posted yet" />
+            )}
+
+            {profile.listings.length > 0 && (
+              <div className="grid grid-cols-2 gap-4">
+                {profile.listings.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={`/listing/${item.id}`}
+                    className="block bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.98] transition-transform"
+                  >
+                    <div className="aspect-video bg-line/20" />
+                    <div className="p-3">
+                      <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1.5">
+                        {item.title}
+                      </div>
+                      <div className="text-xs text-muted">
+                        From <span className="text-sm font-bold text-fg">{item.currency} {item.price.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

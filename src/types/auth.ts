@@ -11,6 +11,7 @@ export interface User {
   is_premium: boolean;
   verified_badge: boolean;
   avatar?: string | null;
+  cover_photo?: string | null;
   bio?: string | null;
   location?: string | null;
   categories: string[];
