@@ -77,11 +77,8 @@ export default function ListingDetailPage() {
   const [commentError, setCommentError] = useState('');
 
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [reviewsLoading, setReviewsLoading] = useState(true);
-  const [showRateForm, setShowRateForm] = useState(false);
-  const [rateValue, setRateValue] = useState(0);
-  const [rateComment, setRateComment] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [myRating, setMyRating] = useState(0);
 
   useEffect(() => {
     if (!params.id) return;
@@ -97,11 +94,9 @@ export default function ListingDetailPage() {
       .catch(() => setComments([]))
       .finally(() => setCommentsLoading(false));
 
-    setReviewsLoading(true);
     getReviews(params.id as string)
       .then((res) => setReviews(res.reviews))
-      .catch(() => setReviews([]))
-      .finally(() => setReviewsLoading(false));
+      .catch(() => setReviews([]));
   }, [params.id]);
 
   async function handleMessageSeller() {
@@ -141,21 +136,18 @@ export default function ListingDetailPage() {
     }
   }
 
-  async function handleSubmitReview() {
-    if (!listing || rateValue === 0) return;
+  async function handleRate(stars: number) {
+    if (!listing || submittingReview) return;
     setSubmittingReview(true);
     try {
-      const res = await createReview(listing.id, rateValue, rateComment.trim() || undefined);
-      setReviews((prev) => [res.review, ...prev]);
+      await createReview(listing.id, stars);
       const newCount = listing.rating_count + 1;
-      const newAvg = (listing.rating_avg * listing.rating_count + rateValue) / newCount;
+      const newAvg = (listing.rating_avg * listing.rating_count + stars) / newCount;
       setListing({ ...listing, rating_avg: newAvg, rating_count: newCount });
-      setShowRateForm(false);
-      setRateValue(0);
-      setRateComment('');
-      showToast('Thanks for your review!', 'success');
+      setMyRating(stars);
+      showToast('Thanks for rating!', 'success');
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Could not submit review', 'error');
+      showToast(err instanceof Error ? err.message : 'Could not submit rating', 'error');
     } finally {
       setSubmittingReview(false);
     }
@@ -163,8 +155,8 @@ export default function ListingDetailPage() {
 
   const ctaLabel = listing?.kind === 'request' ? 'Send proposal' : 'Message seller';
   const isOwnListing = user && listing && user.username === listing.seller.username;
-  const alreadyReviewed = user && reviews.some((r) => r.reviewer.username === user.username);
-  const canReview = user && listing && !isOwnListing && !alreadyReviewed;
+  const alreadyRated = user && (myRating > 0 || reviews.some((r) => r.reviewer.username === user.username));
+  const canRate = user && listing && !isOwnListing && !alreadyRated;
 
   return (
     <main className="min-h-screen bg-paper flex flex-col">
@@ -236,71 +228,12 @@ export default function ListingDetailPage() {
 
           <p className="text-sm text-fg/70 leading-relaxed mt-5">{listing.description}</p>
 
-          <div className="mt-10 pt-8 border-t border-line">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="font-display font-semibold text-fg">
-                Reviews {reviews.length > 0 && `(${reviews.length})`}
-              </h2>
-              {canReview && !showRateForm && (
-                <button
-                  onClick={() => setShowRateForm(true)}
-                  className="text-xs text-fg underline underline-offset-2"
-                >
-                  Rate this {listing.kind === 'product' ? 'product' : listing.kind === 'request' ? 'request' : 'gig'}
-                </button>
-              )}
+          {canRate && (
+            <div className="mt-8 bg-mist border border-line rounded-2xl p-4 flex items-center justify-between">
+              <span className="text-sm text-fg font-medium">Rate this {listing.kind === 'product' ? 'product' : listing.kind === 'request' ? 'request' : 'gig'}</span>
+              <StarPicker value={myRating} onChange={handleRate} />
             </div>
-
-            {showRateForm && (
-              <div className="bg-mist border border-line rounded-2xl p-4 mb-5">
-                <p className="text-xs text-muted mb-2">Your rating</p>
-                <StarPicker value={rateValue} onChange={setRateValue} />
-                <textarea
-                  value={rateComment}
-                  onChange={(e) => setRateComment(e.target.value)}
-                  placeholder="Share your experience (optional)"
-                  rows={2}
-                  className="w-full mt-3 rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
-                />
-                <div className="flex gap-2 mt-3">
-                  <button
-                    onClick={() => { setShowRateForm(false); setRateValue(0); setRateComment(''); }}
-                    className="flex-1 bg-paper border border-line text-fg text-xs font-semibold rounded-lg py-2.5"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSubmitReview}
-                    disabled={rateValue === 0 || submittingReview}
-                    className="flex-1 bg-blue disabled:opacity-40 text-black text-xs font-semibold rounded-lg py-2.5"
-                  >
-                    {submittingReview ? 'Submitting...' : 'Submit review'}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {reviewsLoading && <p className="text-sm text-muted">Loading reviews...</p>}
-
-            {!reviewsLoading && reviews.length === 0 && (
-              <p className="text-sm text-muted mb-2">No reviews yet.</p>
-            )}
-
-            {!reviewsLoading && reviews.length > 0 && (
-              <div className="space-y-4">
-                {reviews.map((r) => (
-                  <div key={r.id} className="flex items-start gap-2.5">
-                    <Avatar avatar={r.reviewer.avatar} name={r.reviewer.full_name} size={28} />
-                    <div className="min-w-0">
-                      <div className="text-xs font-medium text-fg">{r.reviewer.full_name}</div>
-                      <StarRow rating={r.rating} size={12} />
-                      {r.comment && <div className="text-sm text-fg/70 mt-1">{r.comment}</div>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          )}
 
           <div className="mt-10 pt-8 border-t border-line">
             <h2 className="font-display font-semibold text-fg mb-5">
