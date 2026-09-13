@@ -6,9 +6,11 @@ import Link from 'next/link';
 import { getMessages, sendMessage } from '@/lib/messages';
 import { Message } from '@/types/message';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function ConversationPage() {
   const { user, loading: authLoading } = useRequireAnyAuth();
+  const { showToast } = useToast();
   const params = useParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +40,9 @@ export default function ConversationPage() {
       setMessages((prev) => [...prev, res.message]);
       setDraft('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not send message');
+      const message = err instanceof Error ? err.message : 'Could not send message';
+      setError(message);
+      showToast(message, 'error');
     } finally {
       setSending(false);
     }

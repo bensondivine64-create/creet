@@ -8,10 +8,14 @@ import { getMyListings, deleteListing, markSold } from '@/lib/listings';
 import { Listing } from '@/types/listing';
 import BottomNav from '@/components/BottomNav';
 import EmptyState from '@/components/EmptyState';
+import { useConfirm } from '@/contexts/ConfirmContext';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function FreelancerDashboard() {
   const { user, loading } = useRequireAuth('freelancer');
   const { logout } = useAuth();
+  const confirmDialog = useConfirm();
+  const { showToast } = useToast();
   const [listings, setListings] = useState<Listing[]>([]);
   const [listingsLoading, setListingsLoading] = useState(true);
 
@@ -78,7 +82,19 @@ export default function FreelancerDashboard() {
           </Link>
         </div>
 
-        {listingsLoading && <p className="text-sm text-fg/40 py-8 text-center">Loading...</p>}
+        {listingsLoading && (
+          <div className="space-y-3">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="flex items-center gap-3 bg-mist rounded-2xl p-4 animate-pulse">
+                <div className="h-14 w-14 rounded-xl bg-line/20 shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-2/3 bg-line/20 rounded" />
+                  <div className="h-3 w-1/3 bg-line/20 rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {!listingsLoading && listings.length === 0 && (
           <EmptyState
@@ -122,9 +138,16 @@ export default function FreelancerDashboard() {
                   <span className="text-fg/20 text-xs">·</span>
                   <button
                     onClick={async () => {
-                      if (!confirm('Delete this listing?')) return;
+                      const ok = await confirmDialog({
+                        title: 'Delete this listing?',
+                        description: 'This cannot be undone.',
+                        confirmLabel: 'Delete',
+                        danger: true,
+                      });
+                      if (!ok) return;
                       await deleteListing(item.id);
                       setListings((prev) => prev.filter((l) => l.id !== item.id));
+                      showToast('Listing deleted', 'success');
                     }}
                     className="text-xs text-red-400 underline underline-offset-2"
                   >

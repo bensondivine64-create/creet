@@ -4,10 +4,14 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRequireAdmin } from '@/contexts/useRequireAdmin';
 import { getAdminListings, deleteListingAdmin } from '@/lib/admin';
+import { useConfirm } from '@/contexts/ConfirmContext';
+import { useToast } from '@/contexts/ToastContext';
 import { Listing } from '@/types/listing';
 
 export default function AdminListingsPage() {
   const { user, loading } = useRequireAdmin();
+  const confirmDialog = useConfirm();
+  const { showToast } = useToast();
   const [listings, setListings] = useState<Listing[]>([]);
   const [search, setSearch] = useState('');
   const [kind, setKind] = useState('');
@@ -23,9 +27,16 @@ export default function AdminListingsPage() {
   }, [user, search, kind]);
 
   async function handleDelete(id: number) {
-    if (!confirm('Remove this listing? This cannot be undone.')) return;
+    const ok = await confirmDialog({
+      title: 'Remove this listing?',
+      description: 'This cannot be undone.',
+      confirmLabel: 'Remove',
+      danger: true,
+    });
+    if (!ok) return;
     await deleteListingAdmin(id);
     setListings((prev) => prev.filter((l) => l.id !== id));
+    showToast('Listing removed', 'success');
   }
 
   if (loading || !user) {

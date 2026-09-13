@@ -4,9 +4,11 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRequireAdmin } from '@/contexts/useRequireAdmin';
 import { getAdminReports, resolveReport, AdminReport } from '@/lib/reports';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function AdminReportsPage() {
   const { user, loading } = useRequireAdmin();
+  const { showToast } = useToast();
   const [reports, setReports] = useState<AdminReport[]>([]);
   const [status, setStatus] = useState('pending');
   const [listLoading, setListLoading] = useState(true);
@@ -23,6 +25,7 @@ export default function AdminReportsPage() {
   async function handleResolve(id: number) {
     await resolveReport(id);
     setReports((prev) => prev.map((r) => (r.id === id ? { ...r, status: 'resolved' } : r)));
+    showToast('Report resolved', 'success');
   }
 
   if (loading || !user) {

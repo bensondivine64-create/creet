@@ -12,6 +12,8 @@ import NotificationBell from '@/components/NotificationBell';
 import Avatar from '@/components/Avatar';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import EmptyState from '@/components/EmptyState';
+import { useConfirm } from '@/contexts/ConfirmContext';
+import { useToast } from '@/contexts/ToastContext';
 import AdCarousel from '@/components/AdCarousel';
 
 function Chevron() {
@@ -25,6 +27,8 @@ function Chevron() {
 export default function FreelancerHomePage() {
   const { user, loading } = useRequireAuth('freelancer');
   const { logout } = useAuth();
+  const confirmDialog = useConfirm();
+  const { showToast } = useToast();
 
   const [requests, setRequests] = useState<Listing[]>([]);
   const [myGigs, setMyGigs] = useState<Listing[]>([]);
@@ -69,7 +73,20 @@ export default function FreelancerHomePage() {
           <Link href="/requests" className="text-xs text-fg underline underline-offset-2">See All</Link>
         </div>
 
-        {sectionsLoading && <p className="text-sm text-muted py-6 text-center">Loading...</p>}
+        {sectionsLoading && (
+          <div className="space-y-4">
+            {[0, 1].map((i) => (
+              <div key={i} className="bg-mist border border-line rounded-2xl p-5 animate-pulse">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="h-5 w-5 rounded-full bg-line/20" />
+                  <div className="h-3 w-24 bg-line/20 rounded" />
+                </div>
+                <div className="h-4 w-3/4 bg-line/20 rounded mb-2" />
+                <div className="h-3 w-full bg-line/20 rounded" />
+              </div>
+            ))}
+          </div>
+        )}
 
         {!sectionsLoading && requests.length === 0 && (
           <EmptyState icon="listing" title="No open requests right now" subtitle="Check back soon." />
@@ -131,8 +148,15 @@ export default function FreelancerHomePage() {
                   <span className="text-fg/20 text-[11px]">·</span>
                   <button
                     onClick={async () => {
-                      if (!confirm('Delete this listing?')) return;
+                      const ok = await confirmDialog({
+                        title: 'Delete this listing?',
+                        description: 'This cannot be undone.',
+                        confirmLabel: 'Delete',
+                        danger: true,
+                      });
+                      if (!ok) return;
                       await deleteListing(item.id);
+                      showToast('Listing deleted', 'success');
                       setMyGigs((prev) => prev.filter((l) => l.id !== item.id));
                     }}
                     className="text-[11px] text-red-400 underline underline-offset-2"

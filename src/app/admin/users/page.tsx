@@ -4,9 +4,13 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRequireAdmin } from '@/contexts/useRequireAdmin';
 import { getAdminUsers, verifyUser, unverifyUser, suspendUser, activateUser, makeAdmin, removeAdmin, AdminUser } from '@/lib/admin';
+import { useConfirm } from '@/contexts/ConfirmContext';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function AdminUsersPage() {
   const { user, loading } = useRequireAdmin();
+  const confirmDialog = useConfirm();
+  const { showToast } = useToast();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
@@ -28,9 +32,13 @@ export default function AdminUsersPage() {
   }, [user, search, status, role]);
 
   async function act(fn: (id: number) => Promise<unknown>, u: AdminUser, confirmMsg?: string) {
-    if (confirmMsg && !confirm(confirmMsg)) return;
+    if (confirmMsg) {
+      const ok = await confirmDialog({ title: confirmMsg, confirmLabel: 'Confirm', danger: true });
+      if (!ok) return;
+    }
     const updated = (await fn(u.id)) as AdminUser;
     setUsers((prev) => prev.map((x) => (x.id === u.id ? { ...x, ...updated } : x)));
+    showToast('Updated', 'success');
   }
 
   if (loading || !user) {

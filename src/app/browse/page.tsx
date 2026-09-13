@@ -314,7 +314,20 @@ export default function BrowsePage() {
           )}
         </div>
 
-        {loading && <p className="text-sm text-muted text-center py-16">Loading...</p>}
+        {loading && (
+          <div className="grid grid-cols-2 gap-4">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="bg-mist border border-line rounded-2xl overflow-hidden animate-pulse">
+                <div className="aspect-video bg-line/20" />
+                <div className="p-3 space-y-2">
+                  <div className="h-3 w-2/3 bg-line/20 rounded" />
+                  <div className="h-3 w-1/2 bg-line/20 rounded" />
+                  <div className="h-3 w-1/3 bg-line/20 rounded mt-3" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {!loading && error && (
           <EmptyState icon="search" title="Couldn't load listings" subtitle="Check your connection and try again." />

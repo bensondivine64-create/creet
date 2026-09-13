@@ -12,11 +12,13 @@ import { useAuth } from '@/contexts/AuthContext';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import Avatar from '@/components/Avatar';
 import ReportModal from '@/components/ReportModal';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function ListingDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
+  const { showToast } = useToast();
 
   const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
@@ -56,7 +58,7 @@ export default function ListingDetailPage() {
       const res = await startConversation(listing.id);
       router.push(`/inbox/${res.conversation_id}`);
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Could not start conversation');
+      showToast(err instanceof Error ? err.message : 'Could not start conversation', 'error');
     } finally {
       setMessaging(false);
     }
