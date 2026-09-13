@@ -14,6 +14,7 @@ export interface User {
   cover_photo?: string | null;
   bio?: string | null;
   location?: string | null;
+  country?: string | null;
   categories: string[];
   profile_completed: boolean;
   account_status: 'active' | 'suspended';
@@ -65,5 +66,6 @@ export interface UpdateProfilePayload {
   bio?: string;
   location?: string;
   categories?: string[];
+  country?: string;
   onboarding_extra?: Record<string, string>;
 }

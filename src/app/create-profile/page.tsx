@@ -20,6 +20,7 @@ export default function CreateProfilePage() {
 
   const [bio, setBio] = useState('');
   const [location, setLocation] = useState('');
+  const [country, setCountry] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
   const [experience, setExperience] = useState('');
   const [storeType, setStoreType] = useState('');
@@ -50,6 +51,7 @@ export default function CreateProfilePage() {
   }
 
   function validate(): string {
+    if (!country) return 'Please select your country';
     if (categories.length === 0) return 'Please select at least one category';
 
     if (user?.role === 'freelancer') {
@@ -101,7 +103,7 @@ export default function CreateProfilePage() {
         onboarding_extra.budget_range = budgetRange;
       }
 
-      await updateProfile({ bio, location, categories, onboarding_extra });
+      await updateProfile({ bio, location, country, categories, onboarding_extra });
       await refreshUser();
       router.push('/browse');
     } catch (err) {
@@ -182,6 +184,21 @@ export default function CreateProfilePage() {
                 placeholder="e.g. Lagos, Nigeria"
                 className={inputClass}
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Country *</label>
+              <select
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                className={inputClass}
+              >
+                <option value="">Select your country</option>
+                {COUNTRIES.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              <p className="text-xs text-muted mt-1.5">This sets your currency and what shows in your feed.</p>
             </div>
 
             <div>
