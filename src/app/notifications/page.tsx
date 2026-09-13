@@ -39,7 +39,7 @@ export default function NotificationsPage() {
 
   return (
     <main className="min-h-screen bg-paper pb-10">
-      <div className="flex items-center justify-between px-5 py-4">
+      <div className="flex items-center justify-between px-5 py-6">
         <Link href="/browse" className="text-sm text-fg/50 hover:text-fg transition-colors">
           ← Back
         </Link>
@@ -58,13 +58,13 @@ export default function NotificationsPage() {
       )}
 
       {!loading && !error && items.length > 0 && (
-        <div className="px-5 space-y-3">
+        <div className="px-5 space-y-3.5">
           {items.map((n) => (
             <Link
               key={n.id}
               href={n.link || '#'}
               onClick={() => handleOpen(n)}
-              className={`flex items-start gap-3 rounded-2xl px-4 py-3.5 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform ${
+              className={`flex items-start gap-3 rounded-2xl px-5 py-4 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform ${
                 n.read ? 'bg-mist' : 'bg-blue/15'
               }`}
             >

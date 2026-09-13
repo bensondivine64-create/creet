@@ -42,36 +42,36 @@ export default function VendorDashboard() {
 
       <main className="max-w-2xl mx-auto px-5 py-8">
         <h1 className="font-display text-2xl font-bold text-fg">Welcome, {user.full_name}</h1>
-        <p className="text-fg/50 mt-1 mb-6">Here&apos;s what&apos;s happening on your account.</p>
+        <p className="text-fg/50 mt-1 mb-8">Here&apos;s what&apos;s happening on your account.</p>
 
         {user.is_admin && (
           <Link
             href="/admin"
-            className="flex items-center justify-between bg-mist rounded-2xl px-4 py-3.5 mb-3 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform"
+            className="flex items-center justify-between bg-mist rounded-2xl px-5 py-4 mb-4 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform"
           >
             <span className="font-semibold text-fg text-sm">Admin System</span>
             <span className="text-fg/40 text-sm">→</span>
           </Link>
         )}
 
-        <div className="grid grid-cols-2 gap-3 mb-8 opacity-0 animate-fade-in-up" style={{ animationDelay: "80ms" }}>
+        <div className="grid grid-cols-2 gap-4 mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "80ms" }}>
           <Link
             href="/post-product"
-            className="bg-blue shadow-lg shadow-black/30 active:scale-[0.98] transition-transform text-black rounded-2xl px-4 py-4"
+            className="bg-blue shadow-lg shadow-black/30 active:scale-[0.98] transition-transform text-black rounded-2xl px-5 py-5"
           >
             <div className="font-semibold text-sm">Post a product</div>
             <div className="text-xs text-black/60 mt-0.5">List for sale</div>
           </Link>
           <Link
             href="/requests"
-            className="bg-mist shadow-lg shadow-black/40 active:scale-[0.98] transition-transform rounded-2xl px-4 py-4"
+            className="bg-mist shadow-lg shadow-black/40 active:scale-[0.98] transition-transform rounded-2xl px-5 py-5"
           >
             <div className="font-semibold text-fg text-sm">Open requests</div>
             <div className="text-xs text-fg/50 mt-0.5">See what buyers need</div>
           </Link>
         </div>
 
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="font-display font-semibold text-fg">Your products</h2>
           <Link href="/browse" className="text-xs text-blue font-medium">
             Browse marketplace →
@@ -91,12 +91,12 @@ export default function VendorDashboard() {
         )}
 
         {!listingsLoading && listings.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {listings.map((item, i) => (
               <div key={item.id} style={{ animationDelay: `${i * 60}ms` }} className="opacity-0 animate-fade-in-up">
                 <Link
                   href={`/listing/${item.id}`}
-                  className="flex items-center gap-3 bg-mist rounded-2xl p-3 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform"
+                  className="flex items-center gap-3 bg-mist rounded-2xl p-4 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform"
                 >
                   {item.images && item.images.length > 0 && (
                     <div className="h-14 w-14 rounded-xl shrink-0 overflow-hidden">

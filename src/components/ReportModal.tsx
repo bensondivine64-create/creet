@@ -35,7 +35,7 @@ export default function ReportModal({ targetType, targetId, onClose }: ReportMod
   return (
     <div className="fixed inset-0 z-50 bg-black/70 flex items-end sm:items-center justify-center" onClick={onClose}>
       <div
-        className="bg-paper border border-line rounded-t-2xl sm:rounded-2xl w-full sm:max-w-sm p-5"
+        className="bg-paper border border-line rounded-t-2xl sm:rounded-2xl w-full sm:max-w-sm p-6"
         onClick={(e) => e.stopPropagation()}
       >
         {done ? (
@@ -46,11 +46,11 @@ export default function ReportModal({ targetType, targetId, onClose }: ReportMod
           </div>
         ) : (
           <>
-            <h2 className="font-display text-lg font-bold text-fg mb-3">Report this {targetType}</h2>
+            <h2 className="font-display text-lg font-bold text-fg mb-4">Report this {targetType}</h2>
 
             {error && <p className="text-xs text-red-400 mb-2">{error}</p>}
 
-            <div className="flex flex-wrap gap-2 mb-3">
+            <div className="flex flex-wrap gap-2 mb-4">
               {REASONS.map((r) => (
                 <button
                   key={r}
@@ -69,15 +69,15 @@ export default function ReportModal({ targetType, targetId, onClose }: ReportMod
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Additional details (optional)"
               rows={3}
-              className="w-full rounded-lg border border-line bg-mist px-3 py-2 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-white/30 mb-3"
+              className="w-full rounded-lg border border-line bg-mist px-3.5 py-2.5 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-white/30 mb-4"
             />
 
             <div className="flex gap-2">
-              <button onClick={onClose} className="flex-1 bg-mist border border-line rounded-lg py-2.5 text-sm text-fg">Cancel</button>
+              <button onClick={onClose} className="flex-1 bg-mist border border-line rounded-lg py-3 text-sm text-fg">Cancel</button>
               <button
                 onClick={handleSubmit}
                 disabled={!reason || submitting}
-                className="flex-1 bg-blue disabled:opacity-50 rounded-lg py-2.5 text-sm font-semibold text-black"
+                className="flex-1 bg-blue disabled:opacity-50 rounded-lg py-3 text-sm font-semibold text-black"
               >
                 {submitting ? 'Submitting...' : 'Submit'}
               </button>

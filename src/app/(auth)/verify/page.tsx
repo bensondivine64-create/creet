@@ -64,14 +64,14 @@ function VerifyForm() {
         </div>
       )}
       {resent && (
-        <div className="mb-4 text-sm text-blue bg-blue/5 border border-blue/20 rounded-lg px-3 py-2">
+        <div className="mb-4 text-sm text-green-400 bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2">
           Code resent.
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-fg/70 mb-1">Verification code</label>
+          <label className="block text-sm font-medium text-fg/70 mb-1.5">Verification code</label>
           <input
             type="text"
             inputMode="numeric"
@@ -80,14 +80,14 @@ function VerifyForm() {
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
             required
             placeholder="123456"
-            className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-center text-lg tracking-[0.4em] text-fg placeholder:text-fg/20 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+            className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-3 text-center text-lg tracking-[0.4em] text-fg placeholder:text-fg/20 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading || code.length < 6}
-          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5 transition-colors"
+          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3.5 transition-colors"
         >
           {loading ? 'Verifying...' : 'Verify'}
         </button>

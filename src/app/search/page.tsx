@@ -72,7 +72,7 @@ export default function SearchPage() {
         <button
           onClick={() => setTab('gig')}
           className={`px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
-            tab === 'gig' ? 'bg-blue text-white' : 'bg-mist border border-line text-muted'
+            tab === 'gig' ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
           }`}
         >
           Freelancers
@@ -80,14 +80,14 @@ export default function SearchPage() {
         <button
           onClick={() => setTab('product')}
           className={`px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
-            tab === 'product' ? 'bg-blue text-white' : 'bg-mist border border-line text-muted'
+            tab === 'product' ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
           }`}
         >
           Products
         </button>
       </div>
 
-      <section className="px-5 pt-2">
+      <section className="px-5 pt-4">
         {!searched && (
           <EmptyState
             icon="search"
@@ -113,7 +113,7 @@ export default function SearchPage() {
         )}
 
         {searched && !loading && !error && results.length > 0 && (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             {results.map((item) => (
               <div
                 key={item.id}

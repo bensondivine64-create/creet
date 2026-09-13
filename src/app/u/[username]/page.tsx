@@ -91,11 +91,23 @@ export default function PublicProfilePage() {
           ← Back
         </Link>
         <span className="font-display text-lg font-bold tracking-tight text-fg">CREET</span>
-        <span className="w-10" />
+        {viewer && viewer.username !== profile.username ? (
+          <button
+            onClick={() => setShowReport(true)}
+            aria-label="Report user"
+            className="h-8 w-8 rounded-full bg-mist border border-line flex items-center justify-center text-muted hover:text-fg active:scale-95 transition-transform"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v16M4 4h11l-1.5 3L15 10H4" />
+            </svg>
+          </button>
+        ) : (
+          <span className="w-10" />
+        )}
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-6">
-        <div className="flex items-center gap-4 bg-mist border border-line rounded-2xl p-4 shadow-lg shadow-black/20">
+      <div className="max-w-2xl mx-auto px-5 py-8">
+        <div className="flex items-center gap-4 bg-mist border border-line rounded-2xl p-5 shadow-lg shadow-black/20">
           <Avatar avatar={profile.avatar} name={profile.full_name} size={64} />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
@@ -115,7 +127,7 @@ export default function PublicProfilePage() {
               <button
                 onClick={handleConnect}
                 disabled={connLoading}
-                className="w-full bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5"
+                className="w-full bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3"
               >
                 {connLoading ? 'Sending...' : 'Connect'}
               </button>
@@ -130,14 +142,14 @@ export default function PublicProfilePage() {
                 <button
                   onClick={handleAccept}
                   disabled={connLoading}
-                  className="flex-1 bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5"
+                  className="flex-1 bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3"
                 >
                   Accept
                 </button>
                 <button
                   onClick={handleDecline}
                   disabled={connLoading}
-                  className="flex-1 bg-mist border border-line text-fg text-sm font-semibold rounded-lg py-2.5"
+                  className="flex-1 bg-mist border border-line text-fg text-sm font-semibold rounded-lg py-3"
                 >
                   Decline
                 </button>
@@ -152,7 +164,7 @@ export default function PublicProfilePage() {
         )}
 
         {profile.bio && (
-          <div className="mt-4 bg-mist border border-line rounded-2xl p-4">
+          <div className="mt-6 bg-mist border border-line rounded-2xl p-5">
             <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">About</h2>
             <p className="text-sm text-fg leading-relaxed whitespace-pre-wrap">{profile.bio}</p>
           </div>
@@ -168,8 +180,8 @@ export default function PublicProfilePage() {
           </div>
         )}
 
-        <div className="mt-6">
-          <h2 className="font-display font-bold text-fg text-lg mb-3">
+        <div className="mt-8">
+          <h2 className="font-display font-bold text-fg text-lg mb-4">
             {profile.role === 'vendor' ? 'Products' : 'Gigs'}
           </h2>
 
@@ -178,7 +190,7 @@ export default function PublicProfilePage() {
           )}
 
           {profile.listings.length > 0 && (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               {profile.listings.map((item) => (
                 <Link
                   key={item.id}

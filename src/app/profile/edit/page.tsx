@@ -76,7 +76,7 @@ export default function EditProfilePage() {
         <span className="w-10" />
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-6 space-y-6">
+      <div className="max-w-2xl mx-auto px-5 py-8 space-y-7">
         {error && (
           <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
             {error}
@@ -88,9 +88,9 @@ export default function EditProfilePage() {
             <Avatar avatar={avatarUrl} name={fullName || user.full_name} size={88} />
             <label className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-blue border-2 border-paper flex items-center justify-center cursor-pointer active:scale-90 transition-transform">
               {avatarUploading ? (
-                <span className="h-3 w-3 rounded-full border-2 border-white/40 border-t-white animate-spin-fast" />
+                <span className="h-3 w-3 rounded-full border-2 border-black/30 border-t-black animate-spin-fast" />
               ) : (
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.2}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth={2.2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" />
                 </svg>
               )}
@@ -176,10 +176,10 @@ export default function EditProfilePage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-70 text-black text-sm font-semibold rounded-xl py-3.5 transition-colors flex items-center justify-center gap-2"
+          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-70 text-black text-sm font-semibold rounded-xl py-4 transition-colors flex items-center justify-center gap-2"
         >
           {saving && (
-            <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin-fast" />
+            <span className="h-4 w-4 rounded-full border-2 border-black/30 border-t-black animate-spin-fast" />
           )}
           {saving ? 'Saving changes...' : 'Save changes'}
         </button>

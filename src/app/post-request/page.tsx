@@ -56,7 +56,7 @@ export default function PostRequestPage() {
         <span className="w-10" />
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-6">
+      <div className="max-w-2xl mx-auto px-5 py-8">
         <p className="text-sm text-fg/50 mb-6">
           Post literally anything you&apos;re looking to hire for or buy — big or small.
         </p>
@@ -67,20 +67,20 @@ export default function PostRequestPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">What do you need?</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1.5">What do you need?</label>
             <input
               name="title"
               value={form.title}
               onChange={handleChange}
               required
               placeholder="I need a website developer"
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">Details</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1.5">Details</label>
             <textarea
               name="description"
               value={form.description}
@@ -88,11 +88,11 @@ export default function PostRequestPage() {
               required
               rows={4}
               placeholder="Describe what you need, timeline, and any requirements..."
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 resize-none focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg placeholder:text-fg/30 resize-none focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">
+            <label className="block text-sm font-medium text-fg/70 mb-1.5">
               Category <span className="text-muted font-normal">(optional)</span>
             </label>
             <input
@@ -100,7 +100,7 @@ export default function PostRequestPage() {
               value={form.category}
               onChange={handleChange}
               placeholder="e.g. Web Development, or leave blank"
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
             <div className="flex flex-wrap gap-1.5 mt-2">
               {CATEGORIES.map((cat) => (
@@ -117,9 +117,9 @@ export default function PostRequestPage() {
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1">Budget (₦)</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Budget (₦)</label>
               <input
                 name="price"
                 type="number"
@@ -127,17 +127,17 @@ export default function PostRequestPage() {
                 onChange={handleChange}
                 required
                 min={0}
-                className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+                className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1">Deadline</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Deadline</label>
               <input
                 name="deadline"
                 type="date"
                 value={form.deadline}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+                className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
               />
             </div>
           </div>
@@ -147,7 +147,7 @@ export default function PostRequestPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5 transition-colors"
+            className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3.5 transition-colors"
           >
             {loading ? 'Posting...' : 'Post request'}
           </button>

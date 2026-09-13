@@ -64,7 +64,7 @@ export default function InboxPage() {
 
   return (
     <main className="min-h-screen bg-paper pb-20 animate-fade-in-up">
-      <div className="px-5 pt-4 pb-3">
+      <div className="px-5 pt-6 pb-4">
         <div className="flex items-center gap-2">
           <span className="font-display text-xl font-bold text-fg">Inbox</span>
           {totalUnread > 0 && (
@@ -76,7 +76,7 @@ export default function InboxPage() {
       </div>
 
       {!loading && !error && conversations.length > 0 && (
-        <div className="px-5 pb-3">
+        <div className="px-5 pb-4">
           <div className="relative">
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2"
@@ -95,7 +95,7 @@ export default function InboxPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search messages"
-              className="w-full bg-mist rounded-xl pl-9 pr-3 py-2.5 text-sm text-fg placeholder:text-fg/30 outline-none focus:ring-1 focus:ring-blue/50"
+              className="w-full bg-mist rounded-xl pl-9 pr-3 py-3 text-sm text-fg placeholder:text-fg/30 outline-none focus:ring-1 focus:ring-blue/50"
             />
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function InboxPage() {
       )}
 
       {!loading && !error && filtered.length > 0 && (
-        <div className="px-5 space-y-2.5">
+        <div className="px-5 space-y-3">
           {filtered.map((c, i) => {
             const unread = c.unread_count > 0;
             return (
@@ -146,7 +146,7 @@ export default function InboxPage() {
                 key={c.id}
                 href={`/inbox/${c.id}`}
                 style={{ animationDelay: `${i * 50}ms` }}
-                className={`relative flex items-center gap-3 rounded-2xl pl-4 pr-4 py-3.5 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform opacity-0 animate-fade-in-up ${
+                className={`relative flex items-center gap-3 rounded-2xl pl-5 pr-5 py-4 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform opacity-0 animate-fade-in-up ${
                   unread ? 'bg-mist' : 'bg-mist/60'
                 }`}
               >

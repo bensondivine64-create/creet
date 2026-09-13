@@ -65,9 +65,9 @@ export default function AccountSettingsPage() {
         <span className="w-10" />
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-6 space-y-8">
+      <div className="max-w-2xl mx-auto px-5 py-8 space-y-10">
         <div>
-          <h2 className="font-semibold text-fg text-sm mb-3">Change password</h2>
+          <h2 className="font-semibold text-fg text-sm mb-4">Change password</h2>
 
           {pwError && (
             <div className="mb-3 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{pwError}</div>
@@ -76,14 +76,14 @@ export default function AccountSettingsPage() {
             <div className="mb-3 text-sm text-green-400 bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2">Password updated.</div>
           )}
 
-          <form onSubmit={handleChangePassword} className="space-y-3">
+          <form onSubmit={handleChangePassword} className="space-y-4">
             <input
               type="password"
               value={currentPw}
               onChange={(e) => setCurrentPw(e.target.value)}
               placeholder="Current password"
               required
-              className="w-full rounded-lg border border-line bg-mist px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30"
+              className="w-full rounded-lg border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30"
             />
             <input
               type="password"
@@ -92,31 +92,31 @@ export default function AccountSettingsPage() {
               placeholder="New password (min 8 characters)"
               required
               minLength={8}
-              className="w-full rounded-lg border border-line bg-mist px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30"
+              className="w-full rounded-lg border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30"
             />
             <button
               type="submit"
               disabled={pwSaving}
-              className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5 transition-colors"
+              className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3.5 transition-colors"
             >
               {pwSaving ? 'Saving...' : 'Update password'}
             </button>
           </form>
         </div>
 
-        <div className="pt-6 border-t border-line">
+        <div className="pt-8 border-t border-line">
           <h2 className="font-semibold text-red-400 text-sm mb-1">Delete account</h2>
           <p className="text-xs text-muted mb-3">This permanently deletes your account and cannot be undone.</p>
 
           {!showDeleteConfirm ? (
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="w-full bg-mist border border-red-500/30 text-red-400 text-sm font-semibold rounded-lg py-2.5"
+              className="w-full bg-mist border border-red-500/30 text-red-400 text-sm font-semibold rounded-lg py-3"
             >
               Delete my account
             </button>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {deleteError && (
                 <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{deleteError}</div>
               )}
@@ -125,19 +125,19 @@ export default function AccountSettingsPage() {
                 value={deletePw}
                 onChange={(e) => setDeletePw(e.target.value)}
                 placeholder="Enter your password to confirm"
-                className="w-full rounded-lg border border-red-500/30 bg-mist px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-red-500/30"
+                className="w-full rounded-lg border border-red-500/30 bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-red-500/30"
               />
               <div className="flex gap-2">
                 <button
                   onClick={() => { setShowDeleteConfirm(false); setDeletePw(''); setDeleteError(''); }}
-                  className="flex-1 bg-mist border border-line text-fg text-sm font-semibold rounded-lg py-2.5"
+                  className="flex-1 bg-mist border border-line text-fg text-sm font-semibold rounded-lg py-3"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDeleteAccount}
                   disabled={deleting || !deletePw}
-                  className="flex-1 bg-red-500 disabled:opacity-50 text-white text-sm font-semibold rounded-lg py-2.5"
+                  className="flex-1 bg-red-500 disabled:opacity-50 text-white text-sm font-semibold rounded-lg py-3"
                 >
                   {deleting ? 'Deleting...' : 'Confirm delete'}
                 </button>

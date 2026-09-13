@@ -13,7 +13,7 @@ function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
       className={`relative h-6 w-11 rounded-full transition-colors shrink-0 ${on ? 'bg-blue' : 'bg-mist border border-line'}`}
     >
       <span
-        className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${on ? 'translate-x-5' : 'translate-x-0.5'}`}
+        className={`absolute top-0.5 h-5 w-5 rounded-full transition-transform ${on ? 'bg-black translate-x-5' : 'bg-white translate-x-0.5'}`}
       />
     </button>
   );
@@ -53,9 +53,9 @@ export default function NotificationSettingsPage() {
         <span className="w-10" />
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-6 space-y-3">
+      <div className="max-w-2xl mx-auto px-5 py-8 space-y-4">
         {rows.map((r) => (
-          <div key={r.key} className="flex items-center justify-between bg-mist border border-line rounded-xl px-4 py-3.5">
+          <div key={r.key} className="flex items-center justify-between bg-mist border border-line rounded-xl px-5 py-4">
             <div className="min-w-0 pr-3">
               <div className="font-semibold text-fg text-sm">{r.label}</div>
               <div className="text-xs text-muted mt-0.5">{r.sub}</div>

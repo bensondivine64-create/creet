@@ -105,9 +105,9 @@ export default function ListingDetailPage() {
       )}
 
       {!loading && !error && listing && (
-        <div className="max-w-2xl mx-auto w-full px-5 py-6 flex-1">
+        <div className="max-w-2xl mx-auto w-full px-5 py-8 flex-1">
           {listing.images && listing.images.length > 0 && (
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-5">
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-6">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={listing.images[0]} alt={listing.title} className="h-full w-full object-cover" />
             </div>
@@ -147,8 +147,8 @@ export default function ListingDetailPage() {
 
           <p className="text-sm text-fg/70 leading-relaxed mt-5">{listing.description}</p>
 
-          <div className="mt-8 pt-6 border-t border-line">
-            <h2 className="font-display font-semibold text-fg mb-4">
+          <div className="mt-10 pt-8 border-t border-line">
+            <h2 className="font-display font-semibold text-fg mb-5">
               Comments {comments.length > 0 && `(${comments.length})`}
             </h2>
 
@@ -167,7 +167,7 @@ export default function ListingDetailPage() {
                 <button
                   type="submit"
                   disabled={posting || !newComment.trim()}
-                  className="mt-2 bg-blue disabled:opacity-40 active:scale-[0.98] transition-transform text-black text-xs font-semibold rounded-lg px-4 py-2"
+                  className="mt-3 bg-blue disabled:opacity-40 active:scale-[0.98] transition-transform text-black text-xs font-semibold rounded-lg px-5 py-2.5"
                 >
                   {posting ? 'Posting...' : 'Post comment'}
                 </button>
@@ -205,14 +205,14 @@ export default function ListingDetailPage() {
             )}
           </div>
 
-          <div className="sticky bottom-0 mt-8 -mx-5 px-5 py-4 bg-paper border-t border-line flex items-center justify-between">
+          <div className="sticky bottom-0 mt-10 -mx-5 px-5 py-5 bg-paper border-t border-line flex items-center justify-between">
             <span className="font-display text-xl font-bold text-fg">
               {listing.currency} {listing.price.toLocaleString()}
             </span>
             <button
               onClick={handleMessageSeller}
               disabled={messaging}
-              className="bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg px-5 py-2.5"
+              className="bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg px-6 py-3"
             >
               {messaging ? 'Opening...' : ctaLabel}
             </button>

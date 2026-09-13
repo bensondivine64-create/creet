@@ -57,12 +57,12 @@ export default function ConnectionsPage() {
         <span className="w-10" />
       </div>
 
-      <div className="px-5 py-5">
+      <div className="px-5 py-6">
         {dataLoading && <p className="text-sm text-muted text-center py-10">Loading...</p>}
 
         {!dataLoading && pending.length > 0 && (
           <section className="mb-8">
-            <h2 className="font-display font-bold text-fg text-lg mb-3">Pending requests</h2>
+            <h2 className="font-display font-bold text-fg text-lg mb-4">Pending requests</h2>
             <div className="space-y-3">
               {pending.map((p) => (
                 <div key={p.connection_id} className="flex items-center gap-3 bg-mist border border-line rounded-2xl p-3">
@@ -97,7 +97,7 @@ export default function ConnectionsPage() {
             {connections.length > 0 && (
               <div className="space-y-3">
                 {connections.map((c) => (
-                  <Link key={c.connection_id} href={`/u/${c.username}`} className="flex items-center gap-3 bg-mist border border-line rounded-2xl p-3 active:scale-[0.98] transition-transform">
+                  <Link key={c.connection_id} href={`/u/${c.username}`} className="flex items-center gap-3 bg-mist border border-line rounded-2xl p-4 active:scale-[0.98] transition-transform">
                     <Avatar avatar={c.avatar} name={c.full_name} size={40} />
                     <div className="min-w-0">
                       <div className="flex items-center gap-1">
@@ -115,7 +115,7 @@ export default function ConnectionsPage() {
 
         {!dataLoading && (
           <section>
-            <h2 className="font-display font-bold text-fg text-lg mb-3">From your connections</h2>
+            <h2 className="font-display font-bold text-fg text-lg mb-4">From your connections</h2>
             {feed.length === 0 && (
               <p className="text-sm text-muted text-center py-6">
                 Nothing to show yet — connect with people to see their listings here.

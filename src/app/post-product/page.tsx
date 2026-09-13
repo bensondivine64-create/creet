@@ -67,7 +67,7 @@ export default function PostProductPage() {
         <span className="w-10" />
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-6">
+      <div className="max-w-2xl mx-auto px-5 py-8">
         <p className="text-sm text-fg/50 mb-6">List a physical product for sale.</p>
 
         {error && (
@@ -76,20 +76,20 @@ export default function PostProductPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">Title</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1.5">Title</label>
             <input
               name="title"
               value={form.title}
               onChange={handleChange}
               required
               placeholder="iPhone 13 Pro, 128GB"
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">Description</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1.5">Description</label>
             <textarea
               name="description"
               value={form.description}
@@ -97,23 +97,23 @@ export default function PostProductPage() {
               required
               rows={4}
               placeholder="Describe the product's condition, specs, and details..."
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 resize-none focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg placeholder:text-fg/30 resize-none focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">Category</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1.5">Category</label>
             <input
               name="category"
               value={form.category}
               onChange={handleChange}
               required
               placeholder="Electronics"
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1">Price (₦)</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Price (₦)</label>
               <input
                 name="price"
                 type="number"
@@ -121,11 +121,11 @@ export default function PostProductPage() {
                 onChange={handleChange}
                 required
                 min={0}
-                className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+                className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1">Stock</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Stock</label>
               <input
                 name="stock"
                 type="number"
@@ -133,17 +133,17 @@ export default function PostProductPage() {
                 onChange={handleChange}
                 required
                 min={0}
-                className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+                className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">Condition</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1.5">Condition</label>
             <select
               name="condition"
               value={form.condition}
               onChange={handleChange}
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             >
               <option value="new">New</option>
               <option value="used">Used</option>
@@ -155,7 +155,7 @@ export default function PostProductPage() {
           <button
             type="submit"
             disabled={loading || images.length === 0}
-            className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5 transition-colors"
+            className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3.5 transition-colors"
           >
             {loading ? 'Posting...' : images.length === 0 ? 'Add a photo to continue' : 'Post product'}
           </button>

@@ -90,7 +90,7 @@ export default function AdminAiPage() {
         <span className="w-10" />
       </div>
 
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+      <div className="flex-1 overflow-y-auto px-5 py-5 space-y-3.5">
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === 'admin' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm ${
@@ -122,13 +122,13 @@ export default function AdminAiPage() {
         <div ref={endRef} />
       </div>
 
-      <form onSubmit={handleSend} className="border-t border-line px-4 py-3 flex items-center gap-2">
+      <form onSubmit={handleSend} className="border-t border-line px-5 py-4 flex items-center gap-2.5">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a command..."
-          className="flex-1 rounded-full border border-line bg-mist px-4 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-fg/30 transition-colors"
+          className="flex-1 rounded-full border border-line bg-mist px-4 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-fg/30 transition-colors"
         />
         <button
           type="submit"

@@ -36,8 +36,8 @@ export default function AdminReportsPage() {
         <Link href="/admin" className="text-sm text-muted">← Dashboard</Link>
       </header>
 
-      <div className="max-w-2xl mx-auto px-5 py-5">
-        <div className="flex gap-2 mb-4">
+      <div className="max-w-2xl mx-auto px-5 py-6">
+        <div className="flex gap-2 mb-5">
           {['pending', 'resolved', ''].map((s) => (
             <button key={s} onClick={() => setStatus(s)} className={`px-3 py-1.5 rounded-full text-xs font-medium ${status === s ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'}`}>
               {s || 'All'}
@@ -50,7 +50,7 @@ export default function AdminReportsPage() {
 
         <div className="space-y-3">
           {reports.map((r) => (
-            <div key={r.id} className="bg-mist border border-line rounded-2xl p-4">
+            <div key={r.id} className="bg-mist border border-line rounded-2xl p-5">
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-xs font-semibold text-fg">{r.reason}</span>
                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${r.status === 'pending' ? 'bg-yellow-500/15 text-yellow-400' : 'bg-green-500/15 text-green-400'}`}>

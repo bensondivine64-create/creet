@@ -34,10 +34,10 @@ export default function ProfilePage() {
         </Link>
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-6">
+      <div className="max-w-2xl mx-auto px-5 py-8">
         <Link
           href={`/u/${user.username}`}
-          className="flex items-center gap-4 bg-mist border border-line rounded-2xl p-4 shadow-lg shadow-black/20 active:scale-[0.98] transition-transform"
+          className="flex items-center gap-4 bg-mist border border-line rounded-2xl p-5 shadow-lg shadow-black/20 active:scale-[0.98] transition-transform"
         >
           <Avatar avatar={user.avatar} name={user.full_name} size={64} />
           <div className="min-w-0 flex-1">
@@ -49,17 +49,17 @@ export default function ProfilePage() {
             <div className="text-xs text-muted capitalize mt-0.5">{user.role}</div>
           </div>
         </Link>
-        <p className="text-xs text-muted text-center mt-2">Tap to view how others see your profile</p>
+        <p className="text-xs text-muted text-center mt-3">Tap to view how others see your profile</p>
 
         {user.bio && (
-          <div className="mt-4 bg-mist border border-line rounded-2xl p-4">
+          <div className="mt-6 bg-mist border border-line rounded-2xl p-5">
             <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">About</h2>
             <p className="text-sm text-fg leading-relaxed whitespace-pre-wrap">{user.bio}</p>
           </div>
         )}
 
         {user.location && (
-          <p className="text-sm text-muted text-center mt-4">📍 {user.location}</p>
+          <p className="text-sm text-muted text-center mt-5">📍 {user.location}</p>
         )}
       </div>
 

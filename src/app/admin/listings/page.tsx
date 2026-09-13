@@ -39,14 +39,14 @@ export default function AdminListingsPage() {
         <Link href="/admin" className="text-sm text-muted">← Dashboard</Link>
       </header>
 
-      <div className="max-w-2xl mx-auto px-5 py-5">
+      <div className="max-w-2xl mx-auto px-5 py-6">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by title..."
-          className="w-full rounded-lg border border-line bg-mist px-3 py-2.5 text-sm text-fg placeholder:text-muted mb-3"
+          className="w-full rounded-lg border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted mb-4"
         />
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-2 mb-5">
           {['', 'gig', 'product', 'request'].map((k) => (
             <button key={k} onClick={() => setKind(k)} className={`px-3 py-1.5 rounded-full text-xs font-medium ${kind === k ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'}`}>
               {k || 'All'}
@@ -59,7 +59,7 @@ export default function AdminListingsPage() {
 
         <div className="space-y-3">
           {listings.map((item) => (
-            <div key={item.id} className="bg-mist border border-line rounded-2xl p-4">
+            <div key={item.id} className="bg-mist border border-line rounded-2xl p-5">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-fg truncate">{item.title}</p>

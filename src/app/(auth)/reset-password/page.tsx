@@ -57,9 +57,9 @@ function ResetPasswordForm() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-fg/70 mb-1">Reset code</label>
+          <label className="block text-sm font-medium text-fg/70 mb-1.5">Reset code</label>
           <input
             type="text"
             inputMode="numeric"
@@ -68,25 +68,25 @@ function ResetPasswordForm() {
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
             required
             placeholder="123456"
-            className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-center text-lg tracking-[0.4em] text-fg placeholder:text-fg/20 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+            className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-3 text-center text-lg tracking-[0.4em] text-fg placeholder:text-fg/20 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-fg/70 mb-1">New password</label>
+          <label className="block text-sm font-medium text-fg/70 mb-1.5">New password</label>
           <input
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             required
             minLength={8}
-            className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+            className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading || code.length < 6}
-          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5 transition-colors"
+          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3.5 transition-colors"
         >
           {loading ? 'Updating...' : 'Update password'}
         </button>

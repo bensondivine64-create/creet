@@ -90,7 +90,7 @@ export default function CreateProfilePage() {
           </p>
         </div>
 
-        <div className="bg-mist border border-line rounded-2xl p-6">
+        <div className="bg-mist border border-line rounded-2xl p-7">
           {error && (
             <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
               {error}
@@ -99,7 +99,7 @@ export default function CreateProfilePage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1">{bioLabel}</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">{bioLabel}</label>
               <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
@@ -110,7 +110,7 @@ export default function CreateProfilePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1">Location</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Location</label>
               <input
                 type="text"
                 value={location}
@@ -222,7 +222,7 @@ export default function CreateProfilePage() {
             <button
               type="submit"
               disabled={saving}
-              className="w-full bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg py-3"
+              className="w-full bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg py-3.5"
             >
               Continue
             </button>

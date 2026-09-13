@@ -58,11 +58,11 @@ export default function AdminSystemPage() {
         <Link href="/browse" className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-mist border border-line text-muted">← Back to CREET</Link>
       </nav>
 
-      <main className="max-w-2xl mx-auto px-5 py-6">
+      <main className="max-w-2xl mx-auto px-5 py-8">
         <h1 className="font-display text-2xl font-bold text-fg mb-1">
           Welcome, {user.full_name}
         </h1>
-        <p className="text-muted mb-6">Platform overview.</p>
+        <p className="text-muted mb-8">Platform overview.</p>
 
         {statsLoading && <p className="text-sm text-muted text-center py-16">Loading stats...</p>}
 
@@ -72,7 +72,7 @@ export default function AdminSystemPage() {
 
         {!statsLoading && stats && (
           <>
-            <div className="grid grid-cols-2 gap-3 mb-8">
+            <div className="grid grid-cols-2 gap-4 mb-10">
               <StatCard label="Total users" value={stats.total_users} />
               <StatCard label="Active users" value={stats.active_users} />
               <StatCard label="Suspended users" value={stats.suspended_users} />
@@ -81,8 +81,8 @@ export default function AdminSystemPage() {
               <StatCard label="Pending reports" value={stats.pending_reports} />
             </div>
 
-            <h2 className="font-display font-semibold text-fg mb-3">Quick actions</h2>
-            <div className="grid grid-cols-2 gap-3 mb-8">
+            <h2 className="font-display font-semibold text-fg mb-4">Quick actions</h2>
+            <div className="grid grid-cols-2 gap-4 mb-10">
               <Link href="/admin/ai" className="bg-blue text-black rounded-xl px-3 py-4 text-center active:scale-[0.97] transition-transform">
                 <div className="text-sm font-semibold">AI Assistant</div>
               </Link>
@@ -97,12 +97,12 @@ export default function AdminSystemPage() {
               </Link>
             </div>
 
-            <h2 className="font-display font-semibold text-fg mb-3">Recent activity</h2>
+            <h2 className="font-display font-semibold text-fg mb-4">Recent activity</h2>
             {stats.recent_activity.length === 0 && (
               <p className="text-sm text-muted text-center py-6">No recent activity.</p>
             )}
             {stats.recent_activity.length > 0 && (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {stats.recent_activity.map((a, i) => (
                   <div key={i} className="bg-mist border border-line rounded-xl px-4 py-3">
                     <p className="text-sm text-fg">{a.text}</p>

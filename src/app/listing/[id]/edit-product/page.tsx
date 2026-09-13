@@ -80,54 +80,54 @@ export default function EditProductPage() {
         <span className="w-10" />
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-6">
+      <div className="max-w-2xl mx-auto px-5 py-8">
         {error && (
           <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{error}</div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">Title</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1.5">Title</label>
             <input
               name="title" value={form.title} onChange={handleChange} required
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">Description</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1.5">Description</label>
             <textarea
               name="description" value={form.description} onChange={handleChange} required rows={4}
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg resize-none focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg resize-none focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">Category</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1.5">Category</label>
             <input
               name="category" value={form.category} onChange={handleChange} required
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1">Price (₦)</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Price (₦)</label>
               <input
                 name="price" type="number" value={form.price} onChange={handleChange} required min={0}
-                className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+                className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1">Stock</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Stock</label>
               <input
                 name="stock" type="number" value={form.stock} onChange={handleChange} required min={0}
-                className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+                className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-fg/70 mb-1">Condition</label>
+            <label className="block text-sm font-medium text-fg/70 mb-1.5">Condition</label>
             <select
               name="condition" value={form.condition} onChange={handleChange}
-              className="w-full rounded-lg border border-line bg-white/5 px-3 py-2 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             >
               <option value="new">New</option>
               <option value="used">Used</option>
@@ -138,7 +138,7 @@ export default function EditProductPage() {
 
           <button
             type="submit" disabled={saving}
-            className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-2.5 transition-colors"
+            className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3.5 transition-colors"
           >
             {saving ? 'Saving...' : 'Save changes'}
           </button>

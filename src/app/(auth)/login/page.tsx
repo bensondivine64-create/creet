@@ -116,16 +116,16 @@ export default function LoginPage() {
         <div className="h-px bg-line flex-1" />
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-fg/70 mb-1">Email</label>
+          <label className="block text-sm font-medium text-fg/70 mb-1.5">Email</label>
           <input
             type="email"
             name="email"
             value={form.email}
             onChange={handleChange}
             required
-            className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
+            className="w-full rounded-lg border border-line bg-paper px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
           />
         </div>
         <div>
@@ -141,7 +141,7 @@ export default function LoginPage() {
             value={form.password}
             onChange={handleChange}
             required
-            className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
+            className="w-full rounded-lg border border-line bg-paper px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
           />
         </div>
 
@@ -150,7 +150,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading || !captchaToken}
-          className="w-full bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg py-3"
+          className="w-full bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg py-3.5"
         >
           Log in
         </button>

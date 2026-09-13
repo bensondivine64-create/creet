@@ -17,13 +17,13 @@ export default function VerifyIdentityPage() {
         <h1 className="font-display text-2xl font-bold text-fg mb-2">
           Build trust on CREET
         </h1>
-        <p className="text-sm text-fg/60 leading-relaxed mb-6">
+        <p className="text-sm text-fg/60 leading-relaxed mb-8">
           Verified accounts get a badge shown next to their name across the
           platform, helping buyers and sellers trust who they&apos;re dealing with.
         </p>
         <button
           onClick={() => alert('Identity verification is coming soon.')}
-          className="w-full bg-blue hover:bg-blue-deep text-white text-sm font-semibold rounded-lg py-3 transition-colors"
+          className="w-full bg-blue hover:bg-blue-deep text-black text-sm font-semibold rounded-lg py-3.5 transition-colors"
         >
           Start verification
         </button>

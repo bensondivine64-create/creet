@@ -63,7 +63,7 @@ export default function FreelancerHomePage() {
 
       <AdCarousel />
 
-      <section className="px-5 pt-2">
+      <section className="px-5 pt-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display font-bold text-fg text-lg">Open requests</h2>
           <Link href="/requests" className="text-xs text-fg underline underline-offset-2">See All</Link>
@@ -76,14 +76,14 @@ export default function FreelancerHomePage() {
         )}
 
         {!sectionsLoading && requests.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {requests.map((item) => (
               <Link
                 key={item.id}
                 href={`/listing/${item.id}`}
-                className="block bg-mist border border-line rounded-2xl p-4 active:scale-[0.98] transition-transform"
+                className="block bg-mist border border-line rounded-2xl p-5 active:scale-[0.98] transition-transform"
               >
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-2.5">
                   <Avatar avatar={item.seller.avatar} name={item.seller.full_name} size={22} />
                   <span className="text-xs text-muted">{item.seller.full_name}</span>
                   <span className="text-xs text-muted/50">·</span>
@@ -100,8 +100,8 @@ export default function FreelancerHomePage() {
         )}
       </section>
 
-      <section className="px-5 pt-8">
-        <div className="flex items-center justify-between mb-3">
+      <section className="px-5 pt-10">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="font-display font-bold text-fg text-lg">Your gigs</h2>
           <Link href="/post-gig" className="text-xs text-fg underline underline-offset-2">Post new</Link>
         </div>
@@ -116,7 +116,7 @@ export default function FreelancerHomePage() {
               <div key={item.id} className="shrink-0 snap-start w-40">
                 <Link
                   href={`/listing/${item.id}`}
-                  className="block bg-mist border border-line rounded-2xl p-3.5 active:scale-[0.97] transition-transform"
+                  className="block bg-mist border border-line rounded-2xl p-4 active:scale-[0.97] transition-transform"
                 >
                   <div className="text-sm font-semibold text-fg line-clamp-2 mb-1">{item.title}</div>
                   <div className="text-xs text-muted">{item.currency} {item.price.toLocaleString()}</div>
@@ -146,20 +146,20 @@ export default function FreelancerHomePage() {
         )}
       </section>
 
-      <section className="px-5 pt-8">
-        <h2 className="font-display font-bold text-fg text-lg mb-3">Popular freelancers</h2>
+      <section className="px-5 pt-10">
+        <h2 className="font-display font-bold text-fg text-lg mb-4">Popular freelancers</h2>
 
         {!sectionsLoading && directory.length === 0 && (
           <p className="text-sm text-muted text-center py-6">No other profiles yet.</p>
         )}
 
         {!sectionsLoading && directory.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {directory.map((p) => (
               <Link
                 key={p.username}
                 href={`/u/${p.username}`}
-                className="flex items-center gap-3 bg-mist border border-line rounded-2xl p-3 active:scale-[0.98] transition-transform"
+                className="flex items-center gap-3 bg-mist border border-line rounded-2xl p-4 active:scale-[0.98] transition-transform"
               >
                 <Avatar avatar={p.avatar} name={p.full_name} size={40} />
                 <div className="min-w-0 flex-1">
