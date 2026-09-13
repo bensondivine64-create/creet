@@ -71,7 +71,7 @@ export default function ConnectionsPage() {
                     <div className="min-w-0">
                       <div className="flex items-center gap-1">
                         <span className="text-sm font-semibold text-fg truncate">{p.full_name}</span>
-                        {p.is_verified && <VerifiedBadge size={11} />}
+                        {p.verified_badge && <VerifiedBadge size={11} />}
                       </div>
                       <span className="text-xs text-muted capitalize">{p.role}</span>
                     </div>
@@ -102,7 +102,7 @@ export default function ConnectionsPage() {
                     <div className="min-w-0">
                       <div className="flex items-center gap-1">
                         <span className="text-sm font-semibold text-fg truncate">{c.full_name}</span>
-                        {c.is_verified && <VerifiedBadge size={11} />}
+                        {c.verified_badge && <VerifiedBadge size={11} />}
                       </div>
                       <span className="text-xs text-muted capitalize">{c.role}</span>
                     </div>

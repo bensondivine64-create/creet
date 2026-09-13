@@ -165,7 +165,7 @@ export default function FreelancerHomePage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1">
                     <span className="text-sm font-semibold text-fg truncate">{p.full_name}</span>
-                    {p.is_verified && <VerifiedBadge size={12} />}
+                    {p.verified_badge && <VerifiedBadge size={12} />}
                   </div>
                   {p.bio && <p className="text-xs text-muted line-clamp-1">{p.bio}</p>}
                 </div>

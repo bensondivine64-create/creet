@@ -9,6 +9,7 @@ export interface User {
   is_admin: boolean;
   is_verified: boolean;
   is_premium: boolean;
+  verified_badge: boolean;
   avatar?: string | null;
   bio?: string | null;
   location?: string | null;

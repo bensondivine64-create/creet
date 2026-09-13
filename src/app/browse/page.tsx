@@ -252,7 +252,7 @@ export default function BrowsePage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1">
                       <span className="text-sm font-semibold text-fg truncate">{p.full_name}</span>
-                      {p.is_verified && <VerifiedBadge size={11} />}
+                      {p.verified_badge && <VerifiedBadge size={11} />}
                     </div>
                     {p.location && <span className="text-xs text-muted truncate block">{p.location}</span>}
                   </div>

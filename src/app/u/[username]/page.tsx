@@ -100,7 +100,7 @@ export default function PublicProfilePage() {
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
               <h1 className="font-display text-lg font-bold text-fg truncate">{profile.full_name}</h1>
-              {profile.is_verified && <VerifiedBadge size={16} />}
+              {profile.verified_badge && <VerifiedBadge size={16} />}
             </div>
             <div className="text-sm text-muted truncate">@{profile.username}</div>
             <div className="text-xs text-muted capitalize mt-0.5">

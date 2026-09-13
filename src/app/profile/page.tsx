@@ -43,7 +43,7 @@ export default function ProfilePage() {
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
               <h1 className="font-display text-lg font-bold text-fg truncate">{user.full_name}</h1>
-              {user.is_verified && <VerifiedBadge size={16} />}
+              {user.verified_badge && <VerifiedBadge size={16} />}
             </div>
             <div className="text-sm text-muted truncate">@{user.username}</div>
             <div className="text-xs text-muted capitalize mt-0.5">{user.role}</div>

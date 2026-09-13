@@ -9,7 +9,7 @@ export interface ConnectionUser {
   full_name: string;
   avatar?: string | null;
   role: string;
-  is_verified: boolean;
+  verified_badge: boolean;
   connection_id: number;
 }
 

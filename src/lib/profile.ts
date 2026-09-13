@@ -19,6 +19,7 @@ export interface PublicProfile {
   categories: string[];
   is_verified: boolean;
   is_premium: boolean;
+  verified_badge: boolean;
   created_at: string;
   listings: import('@/types/listing').Listing[];
 }
@@ -54,7 +55,7 @@ export interface DirectoryProfile {
   avatar?: string | null;
   bio?: string | null;
   location?: string | null;
-  is_verified: boolean;
+  verified_badge: boolean;
 }
 
 export function getProfileDirectory(role: 'freelancer' | 'vendor' | 'buyer', limit = 10) {
