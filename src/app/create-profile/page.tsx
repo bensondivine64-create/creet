@@ -11,6 +11,7 @@ import LoadingOverlay from '@/components/LoadingOverlay';
 const EXPERIENCE_LEVELS = ['New to freelancing', '1-3 years', '3-5 years', '5+ years'];
 const STORE_TYPES = ['Individual seller', 'Small business', 'Registered company'];
 const BUDGET_RANGES = ['Under ₦20,000', '₦20,000 - ₦100,000', '₦100,000 - ₦500,000', '₦500,000+'];
+const PRIOR_WORK_OPTIONS = ['Worked for a company', 'Worked with freelance clients', 'Both', "Neither yet — I'm new"];
 
 export default function CreateProfilePage() {
   const { user, loading: authLoading } = useRequireAnyAuth();
@@ -24,6 +25,17 @@ export default function CreateProfilePage() {
   const [storeType, setStoreType] = useState('');
   const [shipsNationwide, setShipsNationwide] = useState('');
   const [budgetRange, setBudgetRange] = useState('');
+
+  // Freelancer KYC (serious tier)
+  const [legalName, setLegalName] = useState('');
+  const [dob, setDob] = useState('');
+  const [address, setAddress] = useState('');
+  const [priorWorkType, setPriorWorkType] = useState('');
+  const [priorWorkName, setPriorWorkName] = useState('');
+
+  // Vendor KYC (medium tier)
+  const [businessName, setBusinessName] = useState('');
+
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -33,16 +45,61 @@ export default function CreateProfilePage() {
     );
   }
 
+  function needsPriorWorkName() {
+    return priorWorkType && priorWorkType !== "Neither yet — I'm new";
+  }
+
+  function validate(): string {
+    if (categories.length === 0) return 'Please select at least one category';
+
+    if (user?.role === 'freelancer') {
+      if (!experience) return 'Please select your experience level';
+      if (!legalName.trim()) return 'Full legal name is required';
+      if (!dob) return 'Date of birth is required';
+      if (!address.trim()) return 'Address is required';
+      if (!priorWorkType) return 'Please answer whether you have worked before';
+      if (needsPriorWorkName() && !priorWorkName.trim()) return 'Please name the company or client';
+    }
+
+    if (user?.role === 'vendor') {
+      if (!storeType) return 'Please select what kind of seller you are';
+      if (!shipsNationwide) return 'Please answer the shipping question';
+      if (!businessName.trim()) return 'Business name is required';
+    }
+
+    return '';
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     setError('');
     setSaving(true);
     try {
       const onboarding_extra: Record<string, string> = {};
-      if (user?.role === 'freelancer' && experience) onboarding_extra.experience = experience;
-      if (user?.role === 'vendor' && storeType) onboarding_extra.store_type = storeType;
-      if (user?.role === 'vendor' && shipsNationwide) onboarding_extra.ships_nationwide = shipsNationwide;
-      if (user?.role === 'buyer' && budgetRange) onboarding_extra.budget_range = budgetRange;
+
+      if (user?.role === 'freelancer') {
+        onboarding_extra.experience = experience;
+        onboarding_extra.legal_name = legalName.trim();
+        onboarding_extra.date_of_birth = dob;
+        onboarding_extra.address = address.trim();
+        onboarding_extra.prior_work_type = priorWorkType;
+        if (needsPriorWorkName()) onboarding_extra.prior_work_name = priorWorkName.trim();
+      }
+
+      if (user?.role === 'vendor') {
+        onboarding_extra.store_type = storeType;
+        onboarding_extra.ships_nationwide = shipsNationwide;
+        onboarding_extra.business_name = businessName.trim();
+      }
+
+      if (user?.role === 'buyer' && budgetRange) {
+        onboarding_extra.budget_range = budgetRange;
+      }
 
       await updateProfile({ bio, location, categories, onboarding_extra });
       await refreshUser();
@@ -78,6 +135,9 @@ export default function CreateProfilePage() {
       ? 'What do you sell?'
       : "What are you interested in?";
 
+  const inputClass =
+    'w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors';
+
   return (
     <main className="min-h-screen bg-paper flex items-center justify-center px-5 py-10">
       {saving && <LoadingOverlay label="Saving your profile..." />}
@@ -86,7 +146,11 @@ export default function CreateProfilePage() {
         <div className="text-center mb-6">
           <span className="font-display text-xl font-bold text-fg">Set up your profile</span>
           <p className="text-sm text-muted mt-1">
-            Just a couple questions so CREET works better for you.
+            {user.role === 'freelancer'
+              ? "A few required details so clients can trust who they're hiring."
+              : user.role === 'vendor'
+              ? 'A few details to verify your store.'
+              : 'Just a couple questions so CREET works better for you.'}
           </p>
         </div>
 
@@ -105,7 +169,7 @@ export default function CreateProfilePage() {
                 onChange={(e) => setBio(e.target.value)}
                 placeholder={bioPlaceholder}
                 rows={3}
-                className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+                className={`${inputClass} resize-none`}
               />
             </div>
 
@@ -116,7 +180,7 @@ export default function CreateProfilePage() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. Lagos, Nigeria"
-                className="w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+                className={inputClass}
               />
             </div>
 
@@ -141,29 +205,102 @@ export default function CreateProfilePage() {
             </div>
 
             {user.role === 'freelancer' && (
-              <div>
-                <label className="block text-sm font-medium text-fg/70 mb-2">How much experience do you have?</label>
-                <div className="flex flex-wrap gap-2">
-                  {EXPERIENCE_LEVELS.map((lvl) => (
-                    <button
-                      key={lvl}
-                      type="button"
-                      onClick={() => setExperience(experience === lvl ? '' : lvl)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
-                        experience === lvl ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
-                      }`}
-                    >
-                      {lvl}
-                    </button>
-                  ))}
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-fg/70 mb-2">How much experience do you have? *</label>
+                  <div className="flex flex-wrap gap-2">
+                    {EXPERIENCE_LEVELS.map((lvl) => (
+                      <button
+                        key={lvl}
+                        type="button"
+                        onClick={() => setExperience(experience === lvl ? '' : lvl)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
+                          experience === lvl ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
+                        }`}
+                      >
+                        {lvl}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+
+                <div className="pt-2 border-t border-line">
+                  <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">A bit about you</p>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-fg/70 mb-1.5">Full legal name *</label>
+                      <input
+                        type="text"
+                        value={legalName}
+                        onChange={(e) => setLegalName(e.target.value)}
+                        placeholder="Your full name"
+                        className={inputClass}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-fg/70 mb-1.5">Date of birth *</label>
+                      <input
+                        type="date"
+                        value={dob}
+                        onChange={(e) => setDob(e.target.value)}
+                        className={inputClass}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-fg/70 mb-1.5">Address *</label>
+                      <input
+                        type="text"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        placeholder="Street, city, state"
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-fg/70 mb-2">Have you worked before? *</label>
+                  <div className="flex flex-wrap gap-2">
+                    {PRIOR_WORK_OPTIONS.map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => setPriorWorkType(priorWorkType === opt ? '' : opt)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
+                          priorWorkType === opt ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
+                        }`}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {needsPriorWorkName() && (
+                  <div>
+                    <label className="block text-sm font-medium text-fg/70 mb-1.5">
+                      {priorWorkType === 'Worked with freelance clients' ? 'Name a client or two *' : 'Company name *'}
+                    </label>
+                    <input
+                      type="text"
+                      value={priorWorkName}
+                      onChange={(e) => setPriorWorkName(e.target.value)}
+                      placeholder={priorWorkType === 'Worked with freelance clients' ? 'e.g. Acme Ltd, Jane D.' : 'e.g. Acme Ltd'}
+                      className={inputClass}
+                    />
+                  </div>
+                )}
+              </>
             )}
 
             {user.role === 'vendor' && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-fg/70 mb-2">What kind of seller are you?</label>
+                  <label className="block text-sm font-medium text-fg/70 mb-2">What kind of seller are you? *</label>
                   <div className="flex flex-wrap gap-2">
                     {STORE_TYPES.map((t) => (
                       <button
@@ -180,7 +317,7 @@ export default function CreateProfilePage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-fg/70 mb-2">Do you ship nationwide?</label>
+                  <label className="block text-sm font-medium text-fg/70 mb-2">Do you ship nationwide? *</label>
                   <div className="flex flex-wrap gap-2">
                     {['Yes', 'No, local pickup/delivery only'].map((v) => (
                       <button
@@ -194,6 +331,20 @@ export default function CreateProfilePage() {
                         {v}
                       </button>
                     ))}
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-line">
+                  <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Business details</p>
+                  <div>
+                    <label className="block text-sm font-medium text-fg/70 mb-1.5">Business name *</label>
+                    <input
+                      type="text"
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                      placeholder="Your store or business name"
+                      className={inputClass}
+                    />
                   </div>
                 </div>
               </>
