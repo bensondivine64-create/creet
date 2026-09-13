@@ -22,6 +22,15 @@ function Icon({ name, active }: { name: string; active: boolean }) {
       </svg>
     );
   }
+  if (name === 'connections') {
+    return (
+      <svg width="22" height="22" viewBox="0 0 24 24" {...common}>
+        <circle cx="8" cy="8" r="3" />
+        <circle cx="16" cy="16" r="3" />
+        <path d="M10.1 9.9L13.9 14.1" />
+      </svg>
+    );
+  }
   if (name === 'feed') {
     return (
       <svg width="22" height="22" viewBox="0 0 24 24" {...common}>
@@ -58,11 +67,15 @@ export default function BottomNav() {
   const tabs = [
     { href: '/browse', label: 'Home', icon: 'home' },
     { href: '/inbox', label: 'Inbox', icon: 'inbox' },
+    { href: '/connections', label: 'Connect', icon: 'connections' },
     ...(feedHref ? [{ href: feedHref, label: 'My Feed', icon: 'feed' }] : []),
     { href: user ? '/profile' : '/login', label: 'Profile', icon: 'profile' },
   ];
 
   const postHref = postHrefForRole(user?.role);
+
+  const gridColsClass =
+    tabs.length === 5 ? 'grid-cols-5' : tabs.length === 4 ? 'grid-cols-4' : 'grid-cols-3';
 
   return (
     <>
@@ -78,7 +91,7 @@ export default function BottomNav() {
         </Link>
       )}
     <nav className="fixed bottom-0 left-0 right-0 z-20 bg-mist border-t border-line">
-      <div className={`max-w-2xl mx-auto grid ${tabs.length === 4 ? 'grid-cols-4' : 'grid-cols-3'}`}>
+      <div className={`max-w-2xl mx-auto grid ${gridColsClass}`}>
         {tabs.map((tab, i) => {
           const active = pathname === tab.href;
           return (
