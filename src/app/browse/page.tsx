@@ -128,20 +128,26 @@ export default function BrowsePage() {
   }, [user, hasSetDefault]);
 
   useEffect(() => {
+    if (!hasSetDefault) return;
+    let ignore = false;
     setLoading(true);
     setError('');
     getListings({ kind: tab, search: search || undefined, category: category || undefined })
-      .then((res) => setListings(res.listings))
-      .catch((err) => setError(err instanceof Error ? err.message : 'Could not load listings'))
-      .finally(() => setLoading(false));
-  }, [tab, search, category]);
+      .then((res) => { if (!ignore) setListings(res.listings); })
+      .catch((err) => { if (!ignore) setError(err instanceof Error ? err.message : 'Could not load listings'); })
+      .finally(() => { if (!ignore) setLoading(false); });
+    return () => { ignore = true; };
+  }, [hasSetDefault, tab, search, category]);
 
   useEffect(() => {
+    if (!hasSetDefault) return;
+    let ignore = false;
     const directoryRole = directoryRoleForTab(user?.role, tab);
     getProfileDirectory(directoryRole, 6)
-      .then((res) => setDirectory(res.profiles))
-      .catch(() => setDirectory([]));
-  }, [tab, user?.role]);
+      .then((res) => { if (!ignore) setDirectory(res.profiles); })
+      .catch(() => { if (!ignore) setDirectory([]); });
+    return () => { ignore = true; };
+  }, [hasSetDefault, tab, user?.role]);
 
   const featured = useMemo(
     () => [...listings].sort((a, b) => b.rating_avg - a.rating_avg).slice(0, 4),
@@ -214,7 +220,8 @@ export default function BrowsePage() {
             See All
           </Link>
         </div>
-        <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide pr-5">
+        <div className="relative">
+        <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -230,6 +237,8 @@ export default function BrowsePage() {
             </button>
           ))}
         </div>
+        <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-paper to-transparent" />
+        </div>
       </section>
 
       {directory.length > 0 && (
@@ -240,7 +249,8 @@ export default function BrowsePage() {
               See All
             </Link>
           </div>
-          <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide pr-5">
+          <div className="relative">
+          <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
             {directory.map((p) => (
               <Link
                 key={p.username}
@@ -264,6 +274,8 @@ export default function BrowsePage() {
               </Link>
             ))}
           </div>
+          <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-paper to-transparent" />
+          </div>
         </section>
       )}
 
@@ -275,7 +287,8 @@ export default function BrowsePage() {
               See All
             </Link>
           </div>
-          <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide pr-5">
+          <div className="relative">
+          <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
             {featured.map((item) => (
               <Link
                 key={item.id}
@@ -294,10 +307,14 @@ export default function BrowsePage() {
                     <span className="text-xs text-muted truncate">{item.seller.full_name}</span>
                   </div>
                   <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1">{item.title}</div>
-                  <span className="text-xs text-muted">★ {item.rating_avg.toFixed(1)}</span>
+                  {item.rating_count > 0 && (
+                    <span className="text-xs text-muted">★ {item.rating_avg.toFixed(1)}</span>
+                  )}
                 </div>
               </Link>
             ))}
+          </div>
+          <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-paper to-transparent" />
           </div>
         </section>
       )}
@@ -378,11 +395,13 @@ export default function BrowsePage() {
                       <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1.5">
                         {item.title}
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted">
-                          ★ {item.rating_avg.toFixed(1)} ({item.rating_count})
-                        </span>
-                      </div>
+                      {item.rating_count > 0 && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted">
+                            ★ {item.rating_avg.toFixed(1)} ({item.rating_count})
+                          </span>
+                        </div>
+                      )}
                       <div className="text-xs text-muted mt-1.5 pt-1.5 border-t border-line">
                         {item.kind === 'request' ? 'Budget' : 'From'}{' '}
                         <span className="text-sm font-bold text-fg">

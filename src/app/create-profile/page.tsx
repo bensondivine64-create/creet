@@ -12,6 +12,7 @@ const EXPERIENCE_LEVELS = ['New to freelancing', '1-3 years', '3-5 years', '5+ y
 const STORE_TYPES = ['Individual seller', 'Small business', 'Registered company'];
 const BUDGET_RANGES = ['Under ₦20,000', '₦20,000 - ₦100,000', '₦100,000 - ₦500,000', '₦500,000+'];
 const PRIOR_WORK_OPTIONS = ['Worked for a company', 'Worked with freelance clients', 'Both', "Neither yet — I'm new"];
+const COUNTRIES = ['Nigeria', 'United States', 'United Kingdom', 'Ghana', 'Kenya', 'South Africa', 'Canada', 'Germany', 'France', 'India', 'Other'];
 
 export default function CreateProfilePage() {
   const { user, loading: authLoading } = useRequireAnyAuth();
