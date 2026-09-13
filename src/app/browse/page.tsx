@@ -14,46 +14,6 @@ import Avatar from '@/components/Avatar';
 import AdCarousel from '@/components/AdCarousel';
 import { getProfileDirectory, DirectoryProfile } from '@/lib/profile';
 
-const CATEGORY_GRADIENTS: Record<string, string> = {
-  'Web Development': 'linear-gradient(135deg,#1e2a3a,#2c3e50)',
-  'Design & Creative': 'linear-gradient(135deg,#3d1e57,#5c2a5c)',
-  'Writing & Translation': 'linear-gradient(135deg,#1f3a4d,#2c4a4a)',
-  'Marketing': 'linear-gradient(135deg,#5c1a2e,#7a3a1a)',
-  'Video & Audio': 'linear-gradient(135deg,#0f2027,#203a43,#2c5364)',
-  'Electronics': 'linear-gradient(135deg,#0f3d3d,#2d5c4a)',
-  'Fashion': 'linear-gradient(135deg,#5c2020,#3a1030)',
-  'Home & Living': 'linear-gradient(135deg,#3a2050,#1f4a48)',
-  'Business Services': 'linear-gradient(135deg,#232526,#414345)',
-  'Other': 'linear-gradient(135deg,#3e3e3e,#1a1a1a)',
-};
-
-const CATEGORY_ICON_PATHS: Record<string, string[]> = {
-  'Web Development': ['M8 9l-4 3 4 3', 'M16 9l4 3-4 3', 'M13 6l-2 12'],
-  'Design & Creative': ['M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5L12 2z'],
-  'Writing & Translation': ['M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7', 'M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z'],
-  'Marketing': ['M3 11l18-5v12L3 13v-2z', 'M11.6 16.8a3 3 0 11-5.8-1.6'],
-  'Video & Audio': ['M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14', 'M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
-  'Electronics': ['M9 3v2', 'M15 3v2', 'M9 19v2', 'M15 19v2', 'M3 9h2', 'M19 9h2', 'M3 15h2', 'M19 15h2', 'M7 7h10v10H7V7z'],
-  'Fashion': ['M8 4L4 8l3 3-2 8h14l-2-8 3-3-4-4-3 2h-2L8 4z'],
-  'Home & Living': ['M4 11l8-7 8 7', 'M6 9.5V20h12V9.5'],
-  'Business Services': ['M3 7h18v11a2 2 0 01-2 2H5a2 2 0 01-2-2V7z', 'M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2'],
-  'Other': ['M4 4h6v6H4V4z', 'M14 4h6v6h-6V4z', 'M4 14h6v6H4v-6z', 'M14 14h6v6h-6v-6z'],
-};
-
-function CategoryIcon({ cat }: { cat: string }) {
-  const paths = CATEGORY_ICON_PATHS[cat] || [];
-  return (
-    <svg
-      width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={1.2}
-      className="absolute -right-4 -bottom-4 opacity-[0.14] pointer-events-none"
-    >
-      {paths.map((d, i) => (
-        <path key={i} d={d} strokeLinecap="round" strokeLinejoin="round" />
-      ))}
-    </svg>
-  );
-}
-
 function Chevron() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -100,6 +60,64 @@ function kindLabel(kind: ListingKind, plural = true) {
   return plural ? 'requests' : 'request';
 }
 
+interface CategoryRow {
+  category: string;
+  listings: Listing[];
+}
+
+function ListingCard({ item }: { item: Listing }) {
+  return (
+    <Link
+      href={`/listing/${item.id}`}
+      className="shrink-0 snap-start w-48 bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.97] transition-transform"
+    >
+      {item.images && item.images.length > 0 && (
+        <div className="relative aspect-video overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
+        </div>
+      )}
+      <div className="p-3">
+        <div className="flex items-center gap-1.5 mb-1">
+          <Avatar avatar={item.seller.avatar} name={item.seller.full_name} size={16} />
+          <span className="text-xs text-muted truncate">{item.seller.full_name}</span>
+        </div>
+        <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1">{item.title}</div>
+        {item.rating_count > 0 && (
+          <span className="text-xs text-muted">★ {item.rating_avg.toFixed(1)}</span>
+        )}
+      </div>
+    </Link>
+  );
+}
+
+function ScrollRow({
+  title,
+  seeAllHref,
+  children,
+}: {
+  title: string;
+  seeAllHref: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="pt-8">
+      <div className="flex items-center justify-between px-5 mb-3">
+        <h2 className="font-display font-bold text-fg text-lg">{title}</h2>
+        <Link href={seeAllHref} className="text-xs text-fg underline underline-offset-2">
+          See All
+        </Link>
+      </div>
+      <div className="relative">
+        <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+          {children}
+        </div>
+        <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-paper to-transparent" />
+      </div>
+    </section>
+  );
+}
+
 export default function BrowsePage() {
   const { user } = useAuth();
   const tabs = useMemo(() => tabsForRole(user?.role), [user?.role]);
@@ -107,11 +125,12 @@ export default function BrowsePage() {
   const [tab, setTab] = useState<ListingKind>('gig');
   const [hasSetDefault, setHasSetDefault] = useState(false);
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('');
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [directory, setDirectory] = useState<DirectoryProfile[]>([]);
+  const [categoryRows, setCategoryRows] = useState<CategoryRow[]>([]);
+  const [categoryRowsLoading, setCategoryRowsLoading] = useState(true);
 
   // Set the default tab once we know the viewer's role (only on first resolution,
   // so we don't yank the tab out from under someone who already picked one).
@@ -132,12 +151,12 @@ export default function BrowsePage() {
     let ignore = false;
     setLoading(true);
     setError('');
-    getListings({ kind: tab, search: search || undefined, category: category || undefined })
+    getListings({ kind: tab, search: search || undefined })
       .then((res) => { if (!ignore) setListings(res.listings); })
       .catch((err) => { if (!ignore) setError(err instanceof Error ? err.message : 'Could not load listings'); })
       .finally(() => { if (!ignore) setLoading(false); });
     return () => { ignore = true; };
-  }, [hasSetDefault, tab, search, category]);
+  }, [hasSetDefault, tab, search]);
 
   useEffect(() => {
     if (!hasSetDefault) return;
@@ -148,6 +167,26 @@ export default function BrowsePage() {
       .catch(() => { if (!ignore) setDirectory([]); });
     return () => { ignore = true; };
   }, [hasSetDefault, tab, user?.role]);
+
+  // One row per category, populated with real listings — only categories that
+  // actually have something to show get a row.
+  useEffect(() => {
+    if (!hasSetDefault) return;
+    let ignore = false;
+    setCategoryRowsLoading(true);
+    Promise.all(
+      CATEGORIES.map((cat) =>
+        getListings({ kind: tab, category: cat, limit: 6 })
+          .then((res) => ({ category: cat, listings: res.listings }))
+          .catch(() => ({ category: cat, listings: [] }))
+      )
+    )
+      .then((rows) => {
+        if (!ignore) setCategoryRows(rows.filter((r) => r.listings.length > 0));
+      })
+      .finally(() => { if (!ignore) setCategoryRowsLoading(false); });
+    return () => { ignore = true; };
+  }, [hasSetDefault, tab]);
 
   const featured = useMemo(
     () => [...listings].sort((a, b) => b.rating_avg - a.rating_avg).slice(0, 4),
@@ -213,122 +252,31 @@ export default function BrowsePage() {
 
       <AdCarousel />
 
-      <section className="pt-5">
-        <div className="flex items-center justify-between px-5 mb-3">
-          <h2 className="font-display font-bold text-fg text-lg">Explore categories</h2>
-          <Link href="/search" className="text-xs text-fg underline underline-offset-2">
-            See All
-          </Link>
-        </div>
-        <div className="relative">
-        <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setCategory(category === cat ? '' : cat)}
-              style={{ backgroundImage: CATEGORY_GRADIENTS[cat] }}
-              className={`relative shrink-0 snap-start w-36 h-28 rounded-2xl overflow-hidden text-left p-3.5 flex items-end active:scale-[0.96] transition-transform ${
-                category === cat ? 'ring-2 ring-white' : ''
-              }`}
-            >
-              <span className="absolute inset-0 bg-black/20" />
-              <CategoryIcon cat={cat} />
-              <span className="relative text-sm font-semibold text-white leading-tight">{cat}</span>
-            </button>
-          ))}
-        </div>
-        <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-paper to-transparent" />
-        </div>
-      </section>
-
-      {directory.length > 0 && (
-        <section className="pt-8">
-          <div className="flex items-center justify-between px-5 mb-3">
-            <h2 className="font-display font-bold text-fg text-lg">{directoryLabel}</h2>
-            <Link href="/search" className="text-xs text-fg underline underline-offset-2">
-              See All
-            </Link>
-          </div>
-          <div className="relative">
-          <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
-            {directory.map((p) => (
-              <Link
-                key={p.username}
-                href={`/u/${p.username}`}
-                className="shrink-0 snap-start w-52 bg-mist border border-line rounded-2xl p-3 active:scale-[0.97] transition-transform"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <Avatar avatar={p.avatar} name={p.full_name} size={36} />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm font-semibold text-fg truncate">{p.full_name}</span>
-                      {p.verified_badge && <VerifiedBadge size={11} />}
-                    </div>
-                    {p.location && <span className="text-xs text-muted truncate block">{p.location}</span>}
-                  </div>
-                </div>
-                <p className="text-xs text-muted line-clamp-2">{p.bio || (directoryRole === 'freelancer' ? 'Freelancer' : 'Vendor')}</p>
-                <div className="flex justify-end mt-1">
-                  <Chevron />
-                </div>
-              </Link>
-            ))}
-          </div>
-          <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-paper to-transparent" />
-          </div>
-        </section>
-      )}
-
       {!loading && !error && featured.length > 0 && (
-        <section className="pt-8">
-          <div className="flex items-center justify-between px-5 mb-3">
-            <h2 className="font-display font-bold text-fg text-lg">Featured</h2>
-            <Link href="/search" className="text-xs text-fg underline underline-offset-2">
-              See All
-            </Link>
-          </div>
-          <div className="relative">
-          <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
-            {featured.map((item) => (
-              <Link
-                key={item.id}
-                href={`/listing/${item.id}`}
-                className="shrink-0 snap-start w-48 bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.97] transition-transform"
-              >
-                {item.images && item.images.length > 0 && (
-                  <div className="relative aspect-video overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
-                  </div>
-                )}
-                <div className="p-3">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <Avatar avatar={item.seller.avatar} name={item.seller.full_name} size={16} />
-                    <span className="text-xs text-muted truncate">{item.seller.full_name}</span>
-                  </div>
-                  <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1">{item.title}</div>
-                  {item.rating_count > 0 && (
-                    <span className="text-xs text-muted">★ {item.rating_avg.toFixed(1)}</span>
-                  )}
-                </div>
-              </Link>
-            ))}
-          </div>
-          <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-paper to-transparent" />
-          </div>
-        </section>
+        <ScrollRow title="Featured" seeAllHref="/search">
+          {featured.map((item) => (
+            <ListingCard key={item.id} item={item} />
+          ))}
+        </ScrollRow>
       )}
+
+      {!categoryRowsLoading && categoryRows.map((row) => (
+        <ScrollRow
+          key={row.category}
+          title={row.category}
+          seeAllHref={`/search?kind=${tab}&category=${encodeURIComponent(row.category)}`}
+        >
+          {row.listings.map((item) => (
+            <ListingCard key={item.id} item={item} />
+          ))}
+        </ScrollRow>
+      ))}
 
       <section className="px-5 pt-8">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display font-bold text-fg text-lg">
             All {kindLabel(tab)}
           </h2>
-          {category && (
-            <button onClick={() => setCategory('')} className="text-xs text-muted underline">
-              Clear filter: {category}
-            </button>
-          )}
         </div>
 
         {loading && (
@@ -422,6 +370,33 @@ export default function BrowsePage() {
           </>
         )}
       </section>
+
+      {directory.length > 0 && (
+        <ScrollRow title={directoryLabel} seeAllHref="/search">
+          {directory.map((p) => (
+            <Link
+              key={p.username}
+              href={`/u/${p.username}`}
+              className="shrink-0 snap-start w-52 bg-mist border border-line rounded-2xl p-3 active:scale-[0.97] transition-transform"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Avatar avatar={p.avatar} name={p.full_name} size={36} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm font-semibold text-fg truncate">{p.full_name}</span>
+                    {p.verified_badge && <VerifiedBadge size={11} />}
+                  </div>
+                  {p.location && <span className="text-xs text-muted truncate block">{p.location}</span>}
+                </div>
+              </div>
+              <p className="text-xs text-muted line-clamp-2">{p.bio || (directoryRole === 'freelancer' ? 'Freelancer' : 'Vendor')}</p>
+              <div className="flex justify-end mt-1">
+                <Chevron />
+              </div>
+            </Link>
+          ))}
+        </ScrollRow>
+      )}
 
       <BottomNav />
     </main>
