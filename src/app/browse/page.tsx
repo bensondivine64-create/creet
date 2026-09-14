@@ -14,6 +14,32 @@ import Avatar from '@/components/Avatar';
 import AdCarousel from '@/components/AdCarousel';
 import { getProfileDirectory, DirectoryProfile } from '@/lib/profile';
 
+const CATEGORY_GRADIENTS: Record<string, string> = {
+  'Web Development': 'linear-gradient(135deg,#1e2a3a,#2c3e50)',
+  'Design & Creative': 'linear-gradient(135deg,#3d1e57,#5c2a5c)',
+  'Writing & Translation': 'linear-gradient(135deg,#1f3a4d,#2c4a4a)',
+  'Marketing': 'linear-gradient(135deg,#5c1a2e,#7a3a1a)',
+  'Video & Audio': 'linear-gradient(135deg,#0f2027,#203a43,#2c5364)',
+  'Electronics': 'linear-gradient(135deg,#0f3d3d,#2d5c4a)',
+  'Fashion': 'linear-gradient(135deg,#5c2020,#3a1030)',
+  'Home & Living': 'linear-gradient(135deg,#3a2050,#1f4a48)',
+  'Business Services': 'linear-gradient(135deg,#232526,#414345)',
+  'Other': 'linear-gradient(135deg,#3e3e3e,#1a1a1a)',
+};
+
+const CATEGORY_DOT: Record<string, string> = {
+  'Web Development': '#2c3e50',
+  'Design & Creative': '#7a3a8c',
+  'Writing & Translation': '#2c4a4a',
+  'Marketing': '#a83a1a',
+  'Video & Audio': '#2c5364',
+  'Electronics': '#2d5c4a',
+  'Fashion': '#a33050',
+  'Home & Living': '#3a5a48',
+  'Business Services': '#5a5c60',
+  'Other': '#5a5a5a',
+};
+
 function Chevron() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -63,18 +89,23 @@ interface CategoryRow {
   listings: Listing[];
 }
 
-function ListingCard({ item }: { item: Listing }) {
+function ListingCard({ item, category }: { item: Listing; category?: string }) {
+  const gradient = category ? CATEGORY_GRADIENTS[category] : undefined;
   return (
     <Link
       href={`/listing/${item.id}`}
       className="shrink-0 snap-start w-48 bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.97] transition-transform"
     >
-      {item.images && item.images.length > 0 && (
+      {item.images && item.images.length > 0 ? (
         <div className="relative aspect-video overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
         </div>
-      )}
+      ) : gradient ? (
+        <div className="relative aspect-video overflow-hidden flex items-center justify-center" style={{ backgroundImage: gradient }}>
+          <span className="text-white/90 text-xs font-semibold px-3 text-center leading-tight">{category}</span>
+        </div>
+      ) : null}
       <div className="p-3">
         <div className="flex items-center gap-1.5 mb-1">
           <Avatar avatar={item.seller.avatar} name={item.seller.full_name} size={16} />
@@ -92,16 +123,21 @@ function ListingCard({ item }: { item: Listing }) {
 function ScrollRow({
   title,
   seeAllHref,
+  titleDotColor,
   children,
 }: {
   title: string;
   seeAllHref: string;
+  titleDotColor?: string;
   children: React.ReactNode;
 }) {
   return (
     <section className="pt-8">
       <div className="flex items-center justify-between px-5 mb-3">
-        <h2 className="font-display font-bold text-fg text-lg">{title}</h2>
+        <h2 className="font-display font-bold text-fg text-lg flex items-center gap-2">
+          {titleDotColor && <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: titleDotColor }} />}
+          {title}
+        </h2>
         <Link href={seeAllHref} className="text-xs text-fg underline underline-offset-2">
           See All
         </Link>
@@ -258,10 +294,11 @@ export default function BrowsePage() {
         <ScrollRow
           key={row.category}
           title={row.category}
+          titleDotColor={CATEGORY_DOT[row.category]}
           seeAllHref={`/search?kind=${tab}&category=${encodeURIComponent(row.category)}`}
         >
           {row.listings.map((item) => (
-            <ListingCard key={item.id} item={item} />
+            <ListingCard key={item.id} item={item} category={row.category} />
           ))}
         </ScrollRow>
       ))}
