@@ -14,6 +14,7 @@ import VerifiedBadge from '@/components/VerifiedBadge';
 import Avatar from '@/components/Avatar';
 import AdCarousel from '@/components/AdCarousel';
 import { getProfileDirectory, DirectoryProfile } from '@/lib/profile';
+import { getCachedListings, setCachedListings } from '@/lib/listingsCache';
 
 interface TileDef {
   label: string;
@@ -340,12 +341,33 @@ export default function BrowsePage() {
   useEffect(() => {
     if (!hasSetDefault) return;
     let ignore = false;
-    setLoading(true);
-    setError('');
-    getListings({ kind: tab, search: search || undefined })
-      .then((res) => { if (!ignore) setListings(res.listings); })
-      .catch((err) => { if (!ignore) setError(err instanceof Error ? err.message : 'Could not load listings'); })
-      .finally(() => { if (!ignore) setLoading(false); });
+    const cached = getCachedListings(tab, search);
+
+    if (cached) {
+      // Show cached data immediately, no skeleton — then quietly refresh in the background.
+      setListings(cached);
+      setLoading(false);
+      setError('');
+      getListings({ kind: tab, search: search || undefined })
+        .then((res) => {
+          if (ignore) return;
+          setCachedListings(tab, search, res.listings);
+          setListings(res.listings);
+        })
+        .catch(() => {});
+    } else {
+      setLoading(true);
+      setError('');
+      getListings({ kind: tab, search: search || undefined })
+        .then((res) => {
+          if (ignore) return;
+          setCachedListings(tab, search, res.listings);
+          setListings(res.listings);
+        })
+        .catch((err) => { if (!ignore) setError(err instanceof Error ? err.message : 'Could not load listings'); })
+        .finally(() => { if (!ignore) setLoading(false); });
+    }
+
     return () => { ignore = true; };
   }, [hasSetDefault, tab, search]);
 

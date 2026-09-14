@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createProduct } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
+import { clearListingsCache } from '@/lib/listingsCache';
 import ImagePicker from '@/components/ImagePicker';
 
 export default function PostProductPage() {
@@ -45,6 +46,7 @@ export default function PostProductPage() {
         stock: Number(form.stock) || 0,
         images,
       });
+      clearListingsCache();
       router.push(`/listing/${res.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not post product');

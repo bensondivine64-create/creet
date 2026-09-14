@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createGig } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
+import { clearListingsCache } from '@/lib/listingsCache';
 import ImagePicker from '@/components/ImagePicker';
 
 export default function PostGigPage() {
@@ -33,6 +34,7 @@ export default function PostGigPage() {
         delivery_days: Number(form.delivery_days) || 1,
         images,
       });
+      clearListingsCache();
       router.push(`/listing/${res.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not post gig');

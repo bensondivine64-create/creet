@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { postRequest } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
+import { clearListingsCache } from '@/lib/listingsCache';
 import { CATEGORIES } from '@/lib/categories';
 import ImagePicker from '@/components/ImagePicker';
 
@@ -34,6 +35,7 @@ export default function PostRequestPage() {
         deadline: form.deadline || undefined,
         images,
       });
+      clearListingsCache();
       router.push(`/listing/${res.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not post request');

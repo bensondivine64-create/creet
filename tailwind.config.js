@@ -10,7 +10,7 @@ module.exports = {
       colors: {
         ink: '#F4F5F7',
         paper: '#000000',
-        mist: '#20242E',
+        mist: '#0A0A0C',
         line: 'rgba(255,255,255,0.08)',
         fg: '#F4F5F7',
         muted: '#8B98A5',
