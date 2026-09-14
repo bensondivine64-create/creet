@@ -9,6 +9,7 @@ import { uploadAvatar, uploadCoverPhoto } from '@/lib/profile';
 import BottomNav from '@/components/BottomNav';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import Avatar from '@/components/Avatar';
+import ImageCropModal from '@/components/ImageCropModal';
 
 function GearIcon() {
   return (
@@ -35,13 +36,21 @@ function buildHeadline(role: string, categories: string[], location?: string | n
   return parts.join(' · ');
 }
 
+type CropTarget = 'avatar' | 'cover' | null;
+
 export default function ProfilePage() {
   const { user, loading } = useRequireAnyAuth();
   const { refreshUser } = useAuth();
   const [connectionCount, setConnectionCount] = useState<number | null>(null);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [uploadingCover, setUploadingCover] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
+
+  const [cropTarget, setCropTarget] = useState<CropTarget>(null);
+  const [rawImageSrc, setRawImageSrc] = useState<string | null>(null);
+
+  const [previewAvatar, setPreviewAvatar] = useState<string | null>(null);
+  const [previewCover, setPreviewCover] = useState<string | null>(null);
+
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
 
@@ -52,47 +61,63 @@ export default function ProfilePage() {
       .catch(() => {});
   }, [user]);
 
-  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploadError('');
-    setUploadingAvatar(true);
-    try {
-      await uploadAvatar(file);
-      await refreshUser();
-    } catch (err) {
-      setUploadError(err instanceof Error ? err.message : 'Could not upload photo');
-    } finally {
-      setUploadingAvatar(false);
+  function handlePickFile(target: CropTarget) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const src = URL.createObjectURL(file);
+      setRawImageSrc(src);
+      setCropTarget(target);
       e.target.value = '';
-    }
+    };
   }
 
-  async function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  function closeCropper() {
+    if (rawImageSrc) URL.revokeObjectURL(rawImageSrc);
+    setRawImageSrc(null);
+    setCropTarget(null);
+  }
+
+  async function handleCropConfirm(croppedFile: File) {
+    const target = cropTarget;
+    const localPreviewUrl = URL.createObjectURL(croppedFile);
+
+    // Show the cropped result instantly, before the network round-trip finishes.
+    if (target === 'avatar') setPreviewAvatar(localPreviewUrl);
+    if (target === 'cover') setPreviewCover(localPreviewUrl);
+    closeCropper();
+
     setUploadError('');
-    setUploadingCover(true);
+    setUploading(true);
     try {
-      await uploadCoverPhoto(file);
+      if (target === 'avatar') {
+        await uploadAvatar(croppedFile);
+      } else if (target === 'cover') {
+        await uploadCoverPhoto(croppedFile);
+      }
       await refreshUser();
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : 'Could not upload photo');
+      // Revert the optimistic preview on failure so we don't show a photo that never saved.
+      if (target === 'avatar') setPreviewAvatar(null);
+      if (target === 'cover') setPreviewCover(null);
     } finally {
-      setUploadingCover(false);
-      e.target.value = '';
+      setUploading(false);
+      if (target === 'avatar') URL.revokeObjectURL(localPreviewUrl);
+      if (target === 'cover') URL.revokeObjectURL(localPreviewUrl);
     }
   }
 
   if (loading || !user) {
-    return <div className="min-h-screen bg-paper flex items-center justify-center text-muted text-sm">Loading...</div>;
+    return <div className="min-h-screen bg-black flex items-center justify-center text-muted text-sm">Loading...</div>;
   }
 
   const headline = buildHeadline(user.role, user.categories || [], user.location);
+  const coverSrc = previewCover || user.cover_photo;
 
   return (
-    <main className="min-h-screen bg-paper pb-24 animate-fade-in-up">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line relative z-10 bg-paper">
+    <main className="min-h-screen bg-black pb-24 animate-fade-in-up">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line/60 relative z-10 bg-black">
         <Link href="/browse" className="text-sm text-muted hover:text-fg transition-colors">
           ← Back
         </Link>
@@ -104,35 +129,35 @@ export default function ProfilePage() {
 
       <div className="relative">
         <div className="h-36 bg-mist relative overflow-hidden">
-          {user.cover_photo && (
-            <img src={user.cover_photo} alt="" className="w-full h-full object-cover" />
+          {coverSrc && (
+            <img src={coverSrc} alt="" className="w-full h-full object-cover" />
           )}
           <button
             onClick={() => coverInputRef.current?.click()}
-            disabled={uploadingCover}
+            disabled={uploading}
             className="absolute bottom-3 right-3 h-8 w-8 rounded-full bg-blue flex items-center justify-center active:scale-95 transition-transform disabled:opacity-50"
             aria-label="Change cover photo"
           >
             <CameraIcon />
           </button>
-          <input ref={coverInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleCoverChange} />
+          <input ref={coverInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handlePickFile('cover')} />
         </div>
 
         <div className="max-w-2xl mx-auto px-5">
           <div className="relative -mt-10 flex items-end justify-between">
             <div className="relative">
-              <div className="rounded-full ring-4 ring-paper">
-                <Avatar avatar={user.avatar} name={user.full_name} size={80} />
+              <div className="rounded-full ring-4 ring-black">
+                <Avatar avatar={previewAvatar || user.avatar} name={user.full_name} size={80} />
               </div>
               <button
                 onClick={() => avatarInputRef.current?.click()}
-                disabled={uploadingAvatar}
+                disabled={uploading}
                 className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-blue flex items-center justify-center active:scale-95 transition-transform disabled:opacity-50"
                 aria-label="Change profile photo"
               >
                 <CameraIcon />
               </button>
-              <input ref={avatarInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleAvatarChange} />
+              <input ref={avatarInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handlePickFile('avatar')} />
             </div>
           </div>
 
@@ -154,7 +179,7 @@ export default function ProfilePage() {
 
           <Link
             href={`/u/${user.username}`}
-            className="block text-center text-xs text-muted mt-4 bg-mist border border-line rounded-xl py-2.5 active:scale-[0.98] transition-transform"
+            className="block text-center text-xs text-muted mt-4 border border-line/60 rounded-xl py-2.5 active:opacity-60 transition-opacity"
           >
             View how others see your profile
           </Link>
@@ -180,6 +205,17 @@ export default function ProfilePage() {
           )}
         </div>
       </div>
+
+      {cropTarget && rawImageSrc && (
+        <ImageCropModal
+          imageSrc={rawImageSrc}
+          aspect={cropTarget === 'avatar' ? 1 : 3}
+          cropShape={cropTarget === 'avatar' ? 'round' : 'rect'}
+          fileName={cropTarget === 'avatar' ? 'avatar.jpg' : 'cover.jpg'}
+          onCancel={closeCropper}
+          onConfirm={handleCropConfirm}
+        />
+      )}
 
       <BottomNav />
     </main>
