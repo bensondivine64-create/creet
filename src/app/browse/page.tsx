@@ -121,6 +121,45 @@ const THEMES: ThemeRow[] = [
   },
 ];
 
+function BrowseSkeleton() {
+  return (
+    <main className="min-h-screen bg-paper pb-40 animate-pulse">
+      <div className="flex items-center justify-between px-5 pt-5 pb-4">
+        <div className="h-6 w-20 bg-line/20 rounded" />
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-full bg-line/20" />
+          <div className="h-8 w-8 rounded-full bg-line/20" />
+        </div>
+      </div>
+      <div className="px-5">
+        <div className="h-12 w-full bg-line/20 rounded-2xl" />
+      </div>
+      <div className="flex gap-2 px-5 pt-4 pb-2">
+        <div className="h-9 w-24 bg-line/20 rounded-full" />
+        <div className="h-9 w-24 bg-line/20 rounded-full" />
+      </div>
+      <div className="pt-8">
+        <div className="px-5 mb-3">
+          <div className="h-5 w-32 bg-line/20 rounded" />
+        </div>
+        <div className="flex gap-3 px-5">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-28 w-36 shrink-0 bg-line/20 rounded-2xl" />
+          ))}
+        </div>
+      </div>
+      <div className="px-5 pt-8">
+        <div className="h-5 w-28 bg-line/20 rounded mb-3" />
+        <div className="grid grid-cols-2 gap-4">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="h-40 bg-line/20 rounded-2xl" />
+          ))}
+        </div>
+      </div>
+    </main>
+  );
+}
+
 function Chevron() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -329,6 +368,10 @@ export default function BrowsePage() {
 
   const directoryRole = directoryRoleForTab(user?.role, tab);
   const directoryLabel = directoryRole === 'freelancer' ? 'Popular freelancers' : 'Popular vendors';
+
+  if (!hasSetDefault || loading) {
+    return <BrowseSkeleton />;
+  }
 
   return (
     <main className="min-h-screen bg-paper pb-40">

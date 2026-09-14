@@ -128,6 +128,14 @@ function SearchPageInner() {
         >
           Products
         </button>
+        <button
+          onClick={() => setTab('request')}
+          className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
+            tab === 'request' ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
+          }`}
+        >
+          Requests
+        </button>
       </div>
 
       <div className="px-5 pt-2">
