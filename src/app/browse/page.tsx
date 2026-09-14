@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { getListings } from '@/lib/listings';
 import { Listing, ListingKind } from '@/types/listing';
-import { CATEGORIES } from '@/lib/categories';
 import BottomNav from '@/components/BottomNav';
 import NotificationBell from '@/components/NotificationBell';
 import EmptyState from '@/components/EmptyState';
@@ -14,31 +13,100 @@ import Avatar from '@/components/Avatar';
 import AdCarousel from '@/components/AdCarousel';
 import { getProfileDirectory, DirectoryProfile } from '@/lib/profile';
 
-const CATEGORY_GRADIENTS: Record<string, string> = {
-  'Web Development': 'linear-gradient(135deg,#1e2a3a,#2c3e50)',
-  'Design & Creative': 'linear-gradient(135deg,#3d1e57,#5c2a5c)',
-  'Writing & Translation': 'linear-gradient(135deg,#1f3a4d,#2c4a4a)',
-  'Marketing': 'linear-gradient(135deg,#5c1a2e,#7a3a1a)',
-  'Video & Audio': 'linear-gradient(135deg,#0f2027,#203a43,#2c5364)',
-  'Electronics': 'linear-gradient(135deg,#0f3d3d,#2d5c4a)',
-  'Fashion': 'linear-gradient(135deg,#5c2020,#3a1030)',
-  'Home & Living': 'linear-gradient(135deg,#3a2050,#1f4a48)',
-  'Business Services': 'linear-gradient(135deg,#232526,#414345)',
-  'Other': 'linear-gradient(135deg,#3e3e3e,#1a1a1a)',
-};
+interface TileDef {
+  label: string;
+  category: string;
+  search: string;
+  gradient: string;
+}
 
-const CATEGORY_DOT: Record<string, string> = {
-  'Web Development': '#2c3e50',
-  'Design & Creative': '#7a3a8c',
-  'Writing & Translation': '#2c4a4a',
-  'Marketing': '#a83a1a',
-  'Video & Audio': '#2c5364',
-  'Electronics': '#2d5c4a',
-  'Fashion': '#a33050',
-  'Home & Living': '#3a5a48',
-  'Business Services': '#5a5c60',
-  'Other': '#5a5a5a',
-};
+interface ThemeRow {
+  title: string;
+  tiles: TileDef[];
+}
+
+const THEMES: ThemeRow[] = [
+  {
+    title: 'Build a website',
+    tiles: [
+      { label: 'Website Design', category: 'Web Development', search: 'website', gradient: 'linear-gradient(135deg,#7a2e1e,#a8431f)' },
+      { label: 'Web App Development', category: 'Web Development', search: 'app', gradient: 'linear-gradient(135deg,#7a1a3a,#a8225a)' },
+      { label: 'Bug Fixes & Maintenance', category: 'Web Development', search: 'fix', gradient: 'linear-gradient(135deg,#1e2a3a,#2c3e50)' },
+    ],
+  },
+  {
+    title: 'Develop a brand identity',
+    tiles: [
+      { label: 'Logo Design', category: 'Design & Creative', search: 'logo', gradient: 'linear-gradient(135deg,#3d5c1a,#6a8c2e)' },
+      { label: 'Brand Kit', category: 'Design & Creative', search: 'brand', gradient: 'linear-gradient(135deg,#5c3a1a,#8c5a2e)' },
+      { label: 'UI/UX Design', category: 'Design & Creative', search: 'UI', gradient: 'linear-gradient(135deg,#3d1e57,#5c2a5c)' },
+    ],
+  },
+  {
+    title: 'Get your content written',
+    tiles: [
+      { label: 'Blog Writing', category: 'Writing & Translation', search: 'blog', gradient: 'linear-gradient(135deg,#1f3a4d,#2c4a4a)' },
+      { label: 'Translation', category: 'Writing & Translation', search: 'translat', gradient: 'linear-gradient(135deg,#3a1f4d,#4a2c5a)' },
+      { label: 'Product Descriptions', category: 'Writing & Translation', search: 'product', gradient: 'linear-gradient(135deg,#4d3a1f,#5a4a2c)' },
+    ],
+  },
+  {
+    title: 'Grow your business',
+    tiles: [
+      { label: 'Social Media Ads', category: 'Marketing', search: 'ads', gradient: 'linear-gradient(135deg,#5c1a2e,#7a3a1a)' },
+      { label: 'SEO & Marketing', category: 'Marketing', search: 'SEO', gradient: 'linear-gradient(135deg,#1a4a3a,#2e6a4a)' },
+      { label: 'Email Campaigns', category: 'Marketing', search: 'email', gradient: 'linear-gradient(135deg,#1a3a5c,#2e4a7a)' },
+    ],
+  },
+  {
+    title: 'Create video & audio',
+    tiles: [
+      { label: 'Video Editing', category: 'Video & Audio', search: 'video', gradient: 'linear-gradient(135deg,#0f2027,#203a43,#2c5364)' },
+      { label: 'Music Production', category: 'Video & Audio', search: 'music', gradient: 'linear-gradient(135deg,#3a1a5c,#5a2e7a)' },
+      { label: 'Voiceovers', category: 'Video & Audio', search: 'voice', gradient: 'linear-gradient(135deg,#5c1a1a,#7a2e2e)' },
+    ],
+  },
+  {
+    title: 'Shop electronics',
+    tiles: [
+      { label: 'Phones', category: 'Electronics', search: 'phone', gradient: 'linear-gradient(135deg,#0f3d3d,#2d5c4a)' },
+      { label: 'Laptops', category: 'Electronics', search: 'laptop', gradient: 'linear-gradient(135deg,#1a3a3a,#2e5a5a)' },
+      { label: 'Accessories', category: 'Electronics', search: 'headphone', gradient: 'linear-gradient(135deg,#2a2a4a,#3a3a6a)' },
+    ],
+  },
+  {
+    title: 'Shop fashion',
+    tiles: [
+      { label: 'Dresses', category: 'Fashion', search: 'dress', gradient: 'linear-gradient(135deg,#5c2020,#3a1030)' },
+      { label: 'Bags', category: 'Fashion', search: 'bag', gradient: 'linear-gradient(135deg,#5c3a1a,#7a4a2e)' },
+      { label: 'Custom Tailoring', category: 'Fashion', search: 'tailor', gradient: 'linear-gradient(135deg,#4a1a3a,#6a2e5a)' },
+    ],
+  },
+  {
+    title: 'Upgrade your home',
+    tiles: [
+      { label: 'Furniture', category: 'Home & Living', search: 'sofa', gradient: 'linear-gradient(135deg,#3a2050,#1f4a48)' },
+      { label: 'Interior Design', category: 'Home & Living', search: 'interior', gradient: 'linear-gradient(135deg,#1a3a2a,#2e5a4a)' },
+      { label: 'Home Organization', category: 'Home & Living', search: 'organiz', gradient: 'linear-gradient(135deg,#3a3a1a,#5a5a2e)' },
+    ],
+  },
+  {
+    title: 'Business essentials',
+    tiles: [
+      { label: 'Bookkeeping', category: 'Business Services', search: 'bookkeep', gradient: 'linear-gradient(135deg,#232526,#414345)' },
+      { label: 'Business Plans', category: 'Business Services', search: 'business plan', gradient: 'linear-gradient(135deg,#1a2a4a,#2e3a6a)' },
+      { label: 'Office Supplies', category: 'Business Services', search: 'office', gradient: 'linear-gradient(135deg,#3a2a1a,#5a4a2e)' },
+    ],
+  },
+  {
+    title: 'Explore more',
+    tiles: [
+      { label: 'Virtual Assistant', category: 'Other', search: 'assistant', gradient: 'linear-gradient(135deg,#3e3e3e,#1a1a1a)' },
+      { label: 'Research', category: 'Other', search: 'research', gradient: 'linear-gradient(135deg,#2a3a3a,#1a2a2a)' },
+      { label: 'Everything Else', category: 'Other', search: '', gradient: 'linear-gradient(135deg,#1a1a1a,#0a0a0a)' },
+    ],
+  },
+];
 
 function Chevron() {
   return (
@@ -84,28 +152,25 @@ function kindLabel(kind: ListingKind, plural = true) {
   return plural ? 'requests' : 'request';
 }
 
-interface CategoryRow {
-  category: string;
-  listings: Listing[];
+function postHrefForRole(role: string | undefined) {
+  if (role === 'freelancer') return '/post-gig';
+  if (role === 'vendor') return '/post-product';
+  if (role === 'buyer') return '/post-request';
+  return null;
 }
 
-function ListingCard({ item, category }: { item: Listing; category?: string }) {
-  const gradient = category ? CATEGORY_GRADIENTS[category] : undefined;
+function ListingCard({ item }: { item: Listing }) {
   return (
     <Link
       href={`/listing/${item.id}`}
       className="shrink-0 snap-start w-48 bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.97] transition-transform"
     >
-      {item.images && item.images.length > 0 ? (
+      {item.images && item.images.length > 0 && (
         <div className="relative aspect-video overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
         </div>
-      ) : gradient ? (
-        <div className="relative aspect-video overflow-hidden flex items-center justify-center" style={{ backgroundImage: gradient }}>
-          <span className="text-white/90 text-xs font-semibold px-3 text-center leading-tight">{category}</span>
-        </div>
-      ) : null}
+      )}
       <div className="p-3">
         <div className="flex items-center gap-1.5 mb-1">
           <Avatar avatar={item.seller.avatar} name={item.seller.full_name} size={16} />
@@ -120,24 +185,11 @@ function ListingCard({ item, category }: { item: Listing; category?: string }) {
   );
 }
 
-function ScrollRow({
-  title,
-  seeAllHref,
-  titleDotColor,
-  children,
-}: {
-  title: string;
-  seeAllHref: string;
-  titleDotColor?: string;
-  children: React.ReactNode;
-}) {
+function ScrollRow({ title, seeAllHref, children }: { title: string; seeAllHref: string; children: React.ReactNode }) {
   return (
     <section className="pt-8">
       <div className="flex items-center justify-between px-5 mb-3">
-        <h2 className="font-display font-bold text-fg text-lg flex items-center gap-2">
-          {titleDotColor && <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: titleDotColor }} />}
-          {title}
-        </h2>
+        <h2 className="font-display font-bold text-fg text-lg">{title}</h2>
         <Link href={seeAllHref} className="text-xs text-fg underline underline-offset-2">
           See All
         </Link>
@@ -152,6 +204,63 @@ function ScrollRow({
   );
 }
 
+function ThemeTileRow({ tab, theme }: { tab: ListingKind; theme: ThemeRow }) {
+  return (
+    <ScrollRow title={theme.title} seeAllHref={`/search?kind=${tab}&category=${encodeURIComponent(theme.tiles[0].category)}`}>
+      {theme.tiles.map((tile) => (
+        <Link
+          key={tile.label}
+          href={`/search?kind=${tab}&category=${encodeURIComponent(tile.category)}${tile.search ? `&search=${encodeURIComponent(tile.search)}` : ''}`}
+          style={{ backgroundImage: tile.gradient }}
+          className="relative shrink-0 snap-start w-36 h-28 rounded-2xl overflow-hidden text-left p-3.5 flex items-end active:scale-[0.96] transition-transform"
+        >
+          <span className="absolute inset-0 bg-black/20" />
+          <span className="relative text-sm font-semibold text-white leading-tight">{tile.label}</span>
+        </Link>
+      ))}
+    </ScrollRow>
+  );
+}
+
+function PremiumBanner() {
+  return (
+    <div className="px-5 pt-8">
+      <Link
+        href="/premium"
+        className="block rounded-2xl p-5 active:scale-[0.98] transition-transform"
+        style={{ backgroundImage: 'linear-gradient(135deg,#e8b4c8,#d89ab8)' }}
+      >
+        <h3 className="font-display font-bold text-base text-black/90 mb-1">Get Premium today</h3>
+        <p className="text-sm text-black/70 leading-snug mb-2">Stand out with priority placement and a premium badge.</p>
+        <span className="text-sm font-semibold text-black/90">Upgrade now →</span>
+      </Link>
+    </div>
+  );
+}
+
+function PostCtaBanner({ role }: { role: string | undefined }) {
+  const href = postHrefForRole(role);
+  if (!href) return null;
+  const copy =
+    role === 'freelancer'
+      ? { title: 'Grow your gigs', body: 'Post a new gig and get discovered by buyers today.', cta: 'Post a gig →' }
+      : role === 'vendor'
+      ? { title: 'List something new', body: 'Add a product and start reaching more buyers.', cta: 'Post a product →' }
+      : { title: "What's new on CREET?", body: 'Post a request and let sellers come to you.', cta: 'Post a request →' };
+  return (
+    <div className="px-5 pt-8">
+      <Link
+        href={href}
+        className="block rounded-2xl p-5 bg-mist border border-line active:scale-[0.98] transition-transform"
+      >
+        <h3 className="font-display font-bold text-base text-fg mb-1">{copy.title}</h3>
+        <p className="text-sm text-muted leading-snug mb-2">{copy.body}</p>
+        <span className="text-sm font-semibold text-fg">{copy.cta}</span>
+      </Link>
+    </div>
+  );
+}
+
 export default function BrowsePage() {
   const { user } = useAuth();
   const tabs = useMemo(() => tabsForRole(user?.role), [user?.role]);
@@ -163,8 +272,6 @@ export default function BrowsePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [directory, setDirectory] = useState<DirectoryProfile[]>([]);
-  const [categoryRows, setCategoryRows] = useState<CategoryRow[]>([]);
-  const [categoryRowsLoading, setCategoryRowsLoading] = useState(true);
 
   useEffect(() => {
     if (hasSetDefault) return;
@@ -199,24 +306,6 @@ export default function BrowsePage() {
       .catch(() => { if (!ignore) setDirectory([]); });
     return () => { ignore = true; };
   }, [hasSetDefault, tab, user?.role]);
-
-  useEffect(() => {
-    if (!hasSetDefault) return;
-    let ignore = false;
-    setCategoryRowsLoading(true);
-    Promise.all(
-      CATEGORIES.map((cat) =>
-        getListings({ kind: tab, category: cat, limit: 6 })
-          .then((res) => ({ category: cat, listings: res.listings }))
-          .catch(() => ({ category: cat, listings: [] }))
-      )
-    )
-      .then((rows) => {
-        if (!ignore) setCategoryRows(rows.filter((r) => r.listings.length > 0));
-      })
-      .finally(() => { if (!ignore) setCategoryRowsLoading(false); });
-    return () => { ignore = true; };
-  }, [hasSetDefault, tab]);
 
   const featured = useMemo(
     () => [...listings].sort((a, b) => b.rating_avg - a.rating_avg).slice(0, 4),
@@ -290,17 +379,12 @@ export default function BrowsePage() {
         </ScrollRow>
       )}
 
-      {!categoryRowsLoading && categoryRows.map((row) => (
-        <ScrollRow
-          key={row.category}
-          title={row.category}
-          titleDotColor={CATEGORY_DOT[row.category]}
-          seeAllHref={`/search?kind=${tab}&category=${encodeURIComponent(row.category)}`}
-        >
-          {row.listings.map((item) => (
-            <ListingCard key={item.id} item={item} category={row.category} />
-          ))}
-        </ScrollRow>
+      {THEMES.map((theme, i) => (
+        <div key={theme.title}>
+          <ThemeTileRow tab={tab} theme={theme} />
+          {i === 1 && <PremiumBanner />}
+          {i === 5 && <PostCtaBanner role={user?.role} />}
+        </div>
       ))}
 
       <section className="px-5 pt-8">
