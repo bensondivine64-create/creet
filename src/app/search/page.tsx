@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { getListings } from '@/lib/listings';
 import { Listing, ListingKind } from '@/types/listing';
 import { CATEGORIES } from '@/lib/categories';
+import { CATEGORY_GRADIENTS } from '@/lib/categoryColors';
 import BottomNav from '@/components/BottomNav';
 import EmptyState from '@/components/EmptyState';
 import VerifiedBadge from '@/components/VerifiedBadge';
@@ -250,20 +251,11 @@ function SearchPageInner() {
                     <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
                   </div>
                 ) : (
-                  <div className="w-28 h-28 shrink-0 bg-line/20 flex items-center justify-center">
-                    <svg
-                      className="h-7 w-7 text-fg/15"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z"
-                      />
-                    </svg>
+                  <div
+                    className="w-28 h-28 shrink-0 relative flex items-center justify-center p-2"
+                    style={{ backgroundImage: CATEGORY_GRADIENTS[item.category] || CATEGORY_GRADIENTS['Other'] }}
+                  >
+                    <span className="text-white/90 text-[11px] font-semibold text-center leading-tight">{item.category}</span>
                   </div>
                 )}
                 <div className="flex-1 min-w-0 py-2.5 pr-3 flex flex-col justify-between">

@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getListings } from '@/lib/listings';
 import { Listing, ListingKind } from '@/types/listing';
 import { CATEGORIES } from '@/lib/categories';
+import { CATEGORY_GRADIENTS } from '@/lib/categoryColors';
 import BottomNav from '@/components/BottomNav';
 import NotificationBell from '@/components/NotificationBell';
 import EmptyState from '@/components/EmptyState';
