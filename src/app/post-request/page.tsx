@@ -7,7 +7,9 @@ import { postRequest } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
 import { clearListingsCache } from '@/lib/listingsCache';
 import { CATEGORIES } from '@/lib/categories';
+import { localCurrencyForCountry, currencySymbol } from '@/lib/currency';
 import ImagePicker from '@/components/ImagePicker';
+import CurrencyToggle from '@/components/CurrencyToggle';
 
 export default function PostRequestPage() {
   const { user, loading: authLoading } = useRequireAuth('buyer');
@@ -15,8 +17,16 @@ export default function PostRequestPage() {
 
   const [form, setForm] = useState({ title: '', description: '', category: '', price: '', deadline: '' });
   const [images, setImages] = useState<string[]>([]);
+  const [currency, setCurrency] = useState('NGN');
+  const [currencyInit, setCurrencyInit] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const localCurrency = localCurrencyForCountry(user?.country);
+  if (user && !currencyInit) {
+    setCurrency(localCurrency);
+    setCurrencyInit(true);
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -32,6 +42,7 @@ export default function PostRequestPage() {
         description: form.description,
         category: form.category || 'General',
         price: Number(form.price) || 0,
+        currency,
         deadline: form.deadline || undefined,
         images,
       });
@@ -49,7 +60,7 @@ export default function PostRequestPage() {
   }
 
   return (
-    <main className="min-h-screen bg-paper">
+    <main className="min-h-screen bg-black">
       <div className="flex items-center justify-between px-5 py-4 border-b border-line">
         <Link href="/browse" className="text-sm text-fg/50 hover:text-fg transition-colors">
           ← Back
@@ -119,9 +130,12 @@ export default function PostRequestPage() {
               ))}
             </div>
           </div>
+
+          <CurrencyToggle localCurrency={localCurrency} value={currency} onChange={setCurrency} />
+
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1.5">Budget (₦)</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Budget ({currencySymbol(currency)})</label>
               <input
                 name="price"
                 type="number"

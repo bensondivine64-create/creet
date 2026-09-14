@@ -50,6 +50,7 @@ export interface CreateRequestPayload {
   description: string;
   category: string;
   price: number;
+  currency?: string;
   deadline?: string;
   images?: string[];
 }
@@ -59,6 +60,7 @@ export interface CreateGigPayload {
   description: string;
   category: string;
   price: number;
+  currency?: string;
   delivery_days: number;
   images?: string[];
 }
@@ -68,6 +70,7 @@ export interface CreateProductPayload {
   description: string;
   category: string;
   price: number;
+  currency?: string;
   condition: 'new' | 'used';
   stock: number;
   images?: string[];

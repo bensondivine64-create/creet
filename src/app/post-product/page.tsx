@@ -6,7 +6,9 @@ import Link from 'next/link';
 import { createProduct } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
 import { clearListingsCache } from '@/lib/listingsCache';
+import { localCurrencyForCountry, currencySymbol } from '@/lib/currency';
 import ImagePicker from '@/components/ImagePicker';
+import CurrencyToggle from '@/components/CurrencyToggle';
 
 export default function PostProductPage() {
   const { user, loading: authLoading } = useRequireAuth('vendor');
@@ -21,8 +23,16 @@ export default function PostProductPage() {
     stock: '',
   });
   const [images, setImages] = useState<string[]>([]);
+  const [currency, setCurrency] = useState('NGN');
+  const [currencyInit, setCurrencyInit] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const localCurrency = localCurrencyForCountry(user?.country);
+  if (user && !currencyInit) {
+    setCurrency(localCurrency);
+    setCurrencyInit(true);
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -42,6 +52,7 @@ export default function PostProductPage() {
         description: form.description,
         category: form.category,
         price: Number(form.price) || 0,
+        currency,
         condition: form.condition,
         stock: Number(form.stock) || 0,
         images,
@@ -60,7 +71,7 @@ export default function PostProductPage() {
   }
 
   return (
-    <main className="min-h-screen bg-paper">
+    <main className="min-h-screen bg-black">
       <div className="flex items-center justify-between px-5 py-4 border-b border-line">
         <Link href="/dashboard/vendor" className="text-sm text-fg/50 hover:text-fg transition-colors">
           ← Back
@@ -113,9 +124,12 @@ export default function PostProductPage() {
               className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg placeholder:text-fg/30 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
             />
           </div>
+
+          <CurrencyToggle localCurrency={localCurrency} value={currency} onChange={setCurrency} />
+
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1.5">Price (₦)</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Price ({currencySymbol(currency)})</label>
               <input
                 name="price"
                 type="number"
