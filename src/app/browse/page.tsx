@@ -46,8 +46,6 @@ function tabsForRole(role: string | undefined): TabOption[] {
   ];
 }
 
-// The directory ("Popular X") always shows the seller type this viewer would hire/browse,
-// never their own competitor type.
 function directoryRoleForTab(viewerRole: string | undefined, tab: ListingKind): 'freelancer' | 'vendor' {
   if (viewerRole === 'freelancer') return 'vendor';
   if (viewerRole === 'vendor') return 'freelancer';
@@ -132,8 +130,6 @@ export default function BrowsePage() {
   const [categoryRows, setCategoryRows] = useState<CategoryRow[]>([]);
   const [categoryRowsLoading, setCategoryRowsLoading] = useState(true);
 
-  // Set the default tab once we know the viewer's role (only on first resolution,
-  // so we don't yank the tab out from under someone who already picked one).
   useEffect(() => {
     if (hasSetDefault) return;
     if (user === null) {
@@ -168,8 +164,6 @@ export default function BrowsePage() {
     return () => { ignore = true; };
   }, [hasSetDefault, tab, user?.role]);
 
-  // One row per category, populated with real listings — only categories that
-  // actually have something to show get a row.
   useEffect(() => {
     if (!hasSetDefault) return;
     let ignore = false;
