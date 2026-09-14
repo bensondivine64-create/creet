@@ -15,14 +15,6 @@ function Chevron() {
   );
 }
 
-function IconWrap({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="h-10 w-10 rounded-full bg-paper border border-line flex items-center justify-center text-fg/70 shrink-0">
-      {children}
-    </span>
-  );
-}
-
 function PersonIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
@@ -71,10 +63,10 @@ function BadgeCheckIcon() {
   );
 }
 
-function StarIcon() {
+function StarIcon({ filled }: { filled?: boolean }) {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="black" stroke="none">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    <svg width="18" height="18" viewBox="0 0 24 24" fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
     </svg>
   );
 }
@@ -101,20 +93,14 @@ function Row({ href, icon, title, subtitle, accent, delay = 0 }: RowProps) {
     <Link
       href={href}
       style={{ animationDelay: `${delay}ms` }}
-      className={`opacity-0 animate-fade-in-up flex items-center gap-4 rounded-2xl px-4 py-4 active:scale-[0.98] transition-transform ${
-        accent ? 'bg-blue' : 'bg-mist border border-line'
-      }`}
+      className="opacity-0 animate-fade-in-up flex items-center gap-4 py-4 border-b border-line/60 active:opacity-60 transition-opacity"
     >
-      {accent ? (
-        <span className="h-10 w-10 rounded-full bg-black/10 flex items-center justify-center shrink-0">{icon}</span>
-      ) : (
-        <IconWrap>{icon}</IconWrap>
-      )}
+      <span className={accent ? 'text-blue shrink-0' : 'text-fg/60 shrink-0'}>{icon}</span>
       <div className="min-w-0 flex-1">
-        <div className={`font-semibold text-sm ${accent ? 'text-black' : 'text-fg'}`}>{title}</div>
-        <div className={`text-xs mt-0.5 truncate ${accent ? 'text-black/60' : 'text-muted'}`}>{subtitle}</div>
+        <div className={`text-sm ${accent ? 'text-blue font-semibold' : 'text-fg font-medium'}`}>{title}</div>
+        <div className="text-xs text-muted mt-0.5 truncate">{subtitle}</div>
       </div>
-      <span className={accent ? 'text-black shrink-0' : 'text-muted shrink-0'}>
+      <span className="text-muted shrink-0">
         <Chevron />
       </span>
     </Link>
@@ -126,12 +112,12 @@ export default function SettingsPage() {
   const { logout } = useAuth();
 
   if (loading || !user) {
-    return <div className="min-h-screen bg-paper flex items-center justify-center text-muted text-sm">Loading...</div>;
+    return <div className="min-h-screen bg-black flex items-center justify-center text-muted text-sm">Loading...</div>;
   }
 
   return (
-    <main className="min-h-screen bg-paper pb-24 animate-fade-in-up">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line">
+    <main className="min-h-screen bg-black pb-24 animate-fade-in-up">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line/60">
         <Link href="/profile" className="text-sm text-muted hover:text-fg transition-colors">
           ← Back
         </Link>
@@ -149,7 +135,7 @@ export default function SettingsPage() {
           <span className="text-sm text-muted mt-0.5">@{user.username}</span>
         </Link>
 
-        <div className="space-y-3">
+        <div>
           <Row href="/profile/edit" icon={<PersonIcon />} title="Edit profile" subtitle="Name, photo, bio, and categories" delay={0} />
           <Row href="/settings/notifications" icon={<BellIcon />} title="Notifications" subtitle="Push and email preferences" delay={20} />
           <Row href="/settings/account" icon={<KeyIcon />} title="Account & password" subtitle="Security and login details" delay={40} />
@@ -175,7 +161,7 @@ export default function SettingsPage() {
           {!user.is_premium && (
             <Row
               href="/premium"
-              icon={<StarIcon />}
+              icon={<StarIcon filled />}
               title="Get Premium"
               subtitle="Priority placement and a premium badge"
               accent
@@ -191,12 +177,10 @@ export default function SettingsPage() {
         <button
           onClick={logout}
           style={{ animationDelay: '280ms' }}
-          className="opacity-0 animate-fade-in-up w-full flex items-center gap-4 bg-mist border border-line rounded-2xl px-4 py-4 active:scale-[0.98] transition-transform mt-6"
+          className="opacity-0 animate-fade-in-up w-full flex items-center gap-4 py-4 border-b border-line/60 active:opacity-60 transition-opacity mt-2"
         >
-          <IconWrap>
-            <span className="text-red-400"><LogoutIcon /></span>
-          </IconWrap>
-          <span className="text-red-400 font-semibold text-sm">Log out</span>
+          <span className="text-red-400 shrink-0"><LogoutIcon /></span>
+          <span className="text-red-400 font-medium text-sm">Log out</span>
         </button>
       </div>
 

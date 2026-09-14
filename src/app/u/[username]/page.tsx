@@ -184,19 +184,22 @@ export default function PublicProfilePage() {
           )}
 
           {profile.bio && (
-            <div className="mt-6 bg-mist border border-line rounded-2xl p-5">
-              <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">About</h2>
-              <p className="text-sm text-fg leading-relaxed whitespace-pre-wrap">{profile.bio}</p>
+            <div className="mt-8 pt-6 border-t border-line">
+              <h2 className="font-display text-base font-bold text-fg mb-2">About</h2>
+              <p className="text-sm text-fg/80 leading-relaxed whitespace-pre-wrap">{profile.bio}</p>
             </div>
           )}
 
           {profile.categories.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {profile.categories.map((cat) => (
-                <span key={cat} className="px-3 py-1.5 rounded-full text-xs font-medium bg-mist border border-line text-muted">
-                  {cat}
-                </span>
-              ))}
+            <div className="mt-6 pt-6 border-t border-line">
+              <h2 className="font-display text-base font-bold text-fg mb-3">Skills</h2>
+              <div className="flex flex-wrap gap-2">
+                {profile.categories.map((cat) => (
+                  <span key={cat} className="px-3 py-1 rounded-md text-xs font-medium border border-line text-fg/70">
+                    {cat}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
 

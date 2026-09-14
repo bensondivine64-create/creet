@@ -7,12 +7,12 @@ import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import { updateProfile } from '@/lib/profile';
 import { CATEGORIES } from '@/lib/categories';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import CountryPicker from '@/components/CountryPicker';
 
 const EXPERIENCE_LEVELS = ['New to freelancing', '1-3 years', '3-5 years', '5+ years'];
 const STORE_TYPES = ['Individual seller', 'Small business', 'Registered company'];
 const BUDGET_RANGES = ['Under ₦20,000', '₦20,000 - ₦100,000', '₦100,000 - ₦500,000', '₦500,000+'];
 const PRIOR_WORK_OPTIONS = ['Worked for a company', 'Worked with freelance clients', 'Both', "Neither yet — I'm new"];
-const COUNTRIES = ['Nigeria', 'United States', 'United Kingdom', 'Ghana', 'Kenya', 'South Africa', 'Canada', 'Germany', 'France', 'India', 'Other'];
 const BUYER_INTENTS = ['Freelancers', 'Vendors'];
 const BUYER_FREELANCER_TYPES = ['Just looking for services', 'Recruiter — hiring for a company'];
 
@@ -233,16 +233,7 @@ export default function CreateProfilePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-fg/70 mb-1.5">Country *</label>
-                  <select
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    className={inputClass}
-                  >
-                    <option value="">Select your country</option>
-                    {COUNTRIES.map((c) => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
+                  <CountryPicker value={country} onChange={setCountry} />
                   <p className="text-xs text-muted mt-1.5">This sets your currency and what shows in your feed.</p>
                 </div>
               </>
