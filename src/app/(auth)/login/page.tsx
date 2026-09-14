@@ -26,7 +26,7 @@ export default function LoginPage() {
     if (!user.profile_completed) {
       router.push('/create-profile');
     } else {
-      router.push("/browse");
+      router.push('/browse');
     }
   }
 
@@ -75,14 +75,14 @@ export default function LoginPage() {
 
   if (suspended) {
     return (
-      <div className="fixed inset-0 z-50 bg-paper flex flex-col items-center justify-center px-8 text-center">
+      <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center px-8 text-center">
         <div className="h-16 w-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-5">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth={1.8}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0 4.5h.008M4.93 4.93l14.14 14.14M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
         <h1 className="font-display text-xl font-bold text-fg mb-2">This account has been suspended</h1>
-        <p className="text-sm text-muted max-w-xs">
+        <p className="text-sm text-muted max-w-xs leading-relaxed">
           If you think this is a mistake, please contact CREET support for help.
         </p>
         <button
@@ -99,18 +99,18 @@ export default function LoginPage() {
     <div>
       {loading && <LoadingOverlay label="Logging in..." />}
 
-      <h1 className="font-display text-xl font-bold text-fg mb-1">Log in to CREET</h1>
-      <p className="text-sm text-muted mb-6">Welcome back.</p>
+      <h1 className="font-display text-2xl font-bold text-fg mb-1.5">Log in to CREET</h1>
+      <p className="text-sm text-muted mb-7">Welcome back.</p>
 
       {error && (
-        <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+        <div className="mb-5 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3.5 py-2.5">
           {error}
         </div>
       )}
 
       <GoogleButton onCredential={handleGoogle} />
 
-      <div className="flex items-center gap-3 my-5">
+      <div className="flex items-center gap-3 my-6">
         <div className="h-px bg-line flex-1" />
         <span className="text-xs text-muted">or</span>
         <div className="h-px bg-line flex-1" />
@@ -125,13 +125,15 @@ export default function LoginPage() {
             value={form.email}
             onChange={handleChange}
             required
-            className="w-full rounded-lg border border-line bg-paper px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
+            autoComplete="email"
+            placeholder="you@example.com"
+            className="w-full rounded-lg border border-line bg-black px-3.5 py-3 text-sm text-fg placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-blue/40 focus:border-blue/50 transition-colors"
           />
         </div>
         <div>
-          <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center justify-between mb-1.5">
             <label className="block text-sm font-medium text-fg/70">Password</label>
-            <Link href="/forgot-password" className="text-xs text-fg underline underline-offset-2">
+            <Link href="/forgot-password" className="text-xs text-fg/70 hover:text-fg underline underline-offset-2 transition-colors">
               Forgot password?
             </Link>
           </div>
@@ -141,7 +143,9 @@ export default function LoginPage() {
             value={form.password}
             onChange={handleChange}
             required
-            className="w-full rounded-lg border border-line bg-paper px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
+            autoComplete="current-password"
+            placeholder="••••••••"
+            className="w-full rounded-lg border border-line bg-black px-3.5 py-3 text-sm text-fg placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-blue/40 focus:border-blue/50 transition-colors"
           />
         </div>
 
@@ -150,13 +154,13 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading || !captchaToken}
-          className="w-full bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg py-3.5"
+          className="w-full bg-blue disabled:opacity-40 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg py-3.5"
         >
           Log in
         </button>
       </form>
 
-      <p className="text-sm text-muted text-center mt-6">
+      <p className="text-sm text-muted text-center mt-7">
         New here?{' '}
         <Link href="/" className="text-fg font-medium underline underline-offset-2">
           Choose an account type
