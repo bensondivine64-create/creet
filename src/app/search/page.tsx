@@ -1,21 +1,46 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { getListings } from '@/lib/listings';
 import { Listing, ListingKind } from '@/types/listing';
+import { CATEGORIES } from '@/lib/categories';
 import BottomNav from '@/components/BottomNav';
 import EmptyState from '@/components/EmptyState';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import Avatar from '@/components/Avatar';
 
-export default function SearchPage() {
-  const [tab, setTab] = useState<ListingKind>('gig');
-  const [query, setQuery] = useState('');
+type ShopByMode = 'none' | 'category' | 'price' | 'rating';
+
+interface PriceBucket {
+  label: string;
+  min: number;
+  max: number | null;
+}
+
+const PRICE_BUCKETS: PriceBucket[] = [
+  { label: 'Under ₦10,000', min: 0, max: 10000 },
+  { label: '₦10,000 - ₦50,000', min: 10000, max: 50000 },
+  { label: '₦50,000 - ₦200,000', min: 50000, max: 200000 },
+  { label: '₦200,000+', min: 200000, max: null },
+];
+
+const RATING_BUCKETS = [4, 3, 2];
+
+function SearchPageInner() {
+  const params = useSearchParams();
+
+  const [tab, setTab] = useState<ListingKind>((params.get('kind') as ListingKind) || 'gig');
+  const [query, setQuery] = useState(params.get('search') || '');
+  const [category, setCategory] = useState(params.get('category') || '');
+  const [priceBucket, setPriceBucket] = useState<PriceBucket | null>(null);
+  const [minRating, setMinRating] = useState<number | null>(null);
+  const [shopByMode, setShopByMode] = useState<ShopByMode>('none');
+
   const [results, setResults] = useState<Listing[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [searched, setSearched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -23,22 +48,39 @@ export default function SearchPage() {
   }, []);
 
   useEffect(() => {
-    if (!query.trim()) {
-      setResults([]);
-      setSearched(false);
-      return;
-    }
-    setSearched(true);
+    let ignore = false;
     setLoading(true);
     setError('');
     const timeout = setTimeout(() => {
-      getListings({ kind: tab, search: query.trim() })
-        .then((res) => setResults(res.listings))
-        .catch((err) => setError(err instanceof Error ? err.message : 'Could not search'))
-        .finally(() => setLoading(false));
-    }, 400);
-    return () => clearTimeout(timeout);
-  }, [query, tab]);
+      getListings({ kind: tab, search: query.trim() || undefined, category: category || undefined })
+        .then((res) => { if (!ignore) setResults(res.listings); })
+        .catch((err) => { if (!ignore) setError(err instanceof Error ? err.message : 'Could not search'); })
+        .finally(() => { if (!ignore) setLoading(false); });
+    }, 350);
+    return () => { clearTimeout(timeout); ignore = true; };
+  }, [tab, query, category]);
+
+  const filtered = useMemo(() => {
+    return results.filter((item) => {
+      if (priceBucket) {
+        if (item.price < priceBucket.min) return false;
+        if (priceBucket.max !== null && item.price >= priceBucket.max) return false;
+      }
+      if (minRating !== null) {
+        if (item.rating_count === 0 || item.rating_avg < minRating) return false;
+      }
+      return true;
+    });
+  }, [results, priceBucket, minRating]);
+
+  const activeFilters: { label: string; onClear: () => void }[] = [];
+  if (category) activeFilters.push({ label: category, onClear: () => setCategory('') });
+  if (priceBucket) activeFilters.push({ label: priceBucket.label, onClear: () => setPriceBucket(null) });
+  if (minRating !== null) activeFilters.push({ label: `${minRating}★ & up`, onClear: () => setMinRating(null) });
+
+  function toggleShopBy(mode: ShopByMode) {
+    setShopByMode((prev) => (prev === mode ? 'none' : mode));
+  }
 
   return (
     <main className="min-h-screen bg-paper pb-20">
@@ -68,10 +110,10 @@ export default function SearchPage() {
         </div>
       </div>
 
-      <div className="flex gap-2 px-5 pt-4 pb-2">
+      <div className="flex gap-2 px-5 pt-4 pb-2 overflow-x-auto">
         <button
           onClick={() => setTab('gig')}
-          className={`px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
+          className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
             tab === 'gig' ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
           }`}
         >
@@ -79,7 +121,7 @@ export default function SearchPage() {
         </button>
         <button
           onClick={() => setTab('product')}
-          className={`px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
+          className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium active:scale-[0.97] transition-transform ${
             tab === 'product' ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
           }`}
         >
@@ -87,54 +129,143 @@ export default function SearchPage() {
         </button>
       </div>
 
+      <div className="px-5 pt-2">
+        <p className="text-xs text-muted mb-2">Shop by</p>
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {(['category', 'price', 'rating'] as ShopByMode[]).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => toggleShopBy(mode)}
+              className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
+                shopByMode === mode ? 'bg-fg text-black' : 'bg-mist border border-line text-muted'
+              }`}
+            >
+              {mode === 'category' ? 'Category' : mode === 'price' ? 'Price' : 'Rating'}
+            </button>
+          ))}
+        </div>
+
+        {shopByMode === 'category' && (
+          <div className="flex gap-2 overflow-x-auto pt-3 pb-1">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => { setCategory(category === cat ? '' : cat); setShopByMode('none'); }}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
+                  category === cat ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {shopByMode === 'price' && (
+          <div className="flex gap-2 overflow-x-auto pt-3 pb-1">
+            {PRICE_BUCKETS.map((b) => (
+              <button
+                key={b.label}
+                onClick={() => { setPriceBucket(priceBucket?.label === b.label ? null : b); setShopByMode('none'); }}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
+                  priceBucket?.label === b.label ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
+                }`}
+              >
+                {b.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {shopByMode === 'rating' && (
+          <div className="flex gap-2 overflow-x-auto pt-3 pb-1">
+            {RATING_BUCKETS.map((r) => (
+              <button
+                key={r}
+                onClick={() => { setMinRating(minRating === r ? null : r); setShopByMode('none'); }}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
+                  minRating === r ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
+                }`}
+              >
+                {r}★ & up
+              </button>
+            ))}
+          </div>
+        )}
+
+        {activeFilters.length > 0 && (
+          <div className="flex gap-2 overflow-x-auto pt-3 pb-1">
+            {activeFilters.map((f) => (
+              <button
+                key={f.label}
+                onClick={f.onClear}
+                className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-fg/10 text-fg"
+              >
+                {f.label}
+                <span className="text-fg/50">✕</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       <section className="px-5 pt-4">
-        {!searched && (
-          <EmptyState
-            icon="search"
-            title="Search CREET"
-            subtitle="Find freelancers, services, and products."
-          />
+        {loading && (
+          <div className="grid grid-cols-2 gap-4">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="bg-mist border border-line rounded-2xl overflow-hidden animate-pulse">
+                <div className="aspect-video bg-line/20" />
+                <div className="p-3 space-y-2">
+                  <div className="h-3 w-2/3 bg-line/20 rounded" />
+                  <div className="h-3 w-1/2 bg-line/20 rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
-        {searched && loading && (
-          <p className="text-sm text-muted text-center py-16">Searching...</p>
-        )}
-
-        {searched && !loading && error && (
+        {!loading && error && (
           <EmptyState icon="search" title="Couldn't search right now" subtitle="Try again." />
         )}
 
-        {searched && !loading && !error && results.length === 0 && (
+        {!loading && !error && filtered.length === 0 && (
           <EmptyState
             icon="search"
             title="No results found"
-            subtitle={`Nothing matched "${query}". Try a different search.`}
+            subtitle={query ? `Nothing matched "${query}". Try a different search or filter.` : 'Try a different filter, or check back soon.'}
           />
         )}
 
-        {searched && !loading && !error && results.length > 0 && (
+        {!loading && !error && filtered.length > 0 && (
           <div className="grid grid-cols-2 gap-4">
-            {results.map((item) => (
+            {filtered.map((item) => (
               <div
                 key={item.id}
                 className="bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30"
               >
                 <Link href={`/listing/${item.id}`} className="block active:scale-[0.98] transition-transform">
-                  <div className="relative aspect-video bg-line/20 flex items-center justify-center">
-                    <svg
-                      className="h-7 w-7 text-fg/15"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z"
-                      />
-                    </svg>
-                  </div>
+                  {item.images && item.images.length > 0 ? (
+                    <div className="relative aspect-video overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className="relative aspect-video bg-line/20 flex items-center justify-center">
+                      <svg
+                        className="h-7 w-7 text-fg/15"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={1.5}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z"
+                        />
+                      </svg>
+                    </div>
+                  )}
                 </Link>
                 <div className="p-3">
                   <Link href={`/u/${item.seller.username}`} className="flex items-center gap-1.5 mb-1.5 active:opacity-70">
@@ -148,6 +279,9 @@ export default function SearchPage() {
                     <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1.5">
                       {item.title}
                     </div>
+                    {item.rating_count > 0 && (
+                      <span className="text-xs text-muted">★ {item.rating_avg.toFixed(1)}</span>
+                    )}
                     <div className="text-xs text-muted mt-1.5 pt-1.5 border-t border-line">
                       From <span className="text-sm font-bold text-fg">{item.currency} {item.price.toLocaleString()}</span>
                     </div>
@@ -161,5 +295,13 @@ export default function SearchPage() {
 
       <BottomNav />
     </main>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-paper" />}>
+      <SearchPageInner />
+    </Suspense>
   );
 }
