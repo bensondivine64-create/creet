@@ -13,11 +13,17 @@ const STORE_TYPES = ['Individual seller', 'Small business', 'Registered company'
 const BUDGET_RANGES = ['Under ₦20,000', '₦20,000 - ₦100,000', '₦100,000 - ₦500,000', '₦500,000+'];
 const PRIOR_WORK_OPTIONS = ['Worked for a company', 'Worked with freelance clients', 'Both', "Neither yet — I'm new"];
 const COUNTRIES = ['Nigeria', 'United States', 'United Kingdom', 'Ghana', 'Kenya', 'South Africa', 'Canada', 'Germany', 'France', 'India', 'Other'];
+const BUYER_INTENTS = ['Freelancers', 'Vendors'];
+const BUYER_FREELANCER_TYPES = ['Just looking for services', 'Recruiter — hiring for a company'];
+
+const TOTAL_STEPS = 3;
 
 export default function CreateProfilePage() {
   const { user, loading: authLoading } = useRequireAnyAuth();
   const { refreshUser } = useAuth();
   const router = useRouter();
+
+  const [step, setStep] = useState(1);
 
   const [bio, setBio] = useState('');
   const [location, setLocation] = useState('');
@@ -28,15 +34,16 @@ export default function CreateProfilePage() {
   const [shipsNationwide, setShipsNationwide] = useState('');
   const [budgetRange, setBudgetRange] = useState('');
 
-  // Freelancer KYC (serious tier)
   const [legalName, setLegalName] = useState('');
   const [dob, setDob] = useState('');
   const [address, setAddress] = useState('');
   const [priorWorkType, setPriorWorkType] = useState('');
   const [priorWorkName, setPriorWorkName] = useState('');
 
-  // Vendor KYC (medium tier)
   const [businessName, setBusinessName] = useState('');
+
+  const [buyerIntent, setBuyerIntent] = useState('');
+  const [buyerFreelancerType, setBuyerFreelancerType] = useState('');
 
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -51,10 +58,17 @@ export default function CreateProfilePage() {
     return priorWorkType && priorWorkType !== "Neither yet — I'm new";
   }
 
-  function validate(): string {
+  function validateStep1(): string {
     if (!country) return 'Please select your country';
-    if (categories.length === 0) return 'Please select at least one category';
+    return '';
+  }
 
+  function validateStep2(): string {
+    if (categories.length === 0) return 'Please select at least one category';
+    return '';
+  }
+
+  function validateStep3(): string {
     if (user?.role === 'freelancer') {
       if (!experience) return 'Please select your experience level';
       if (!legalName.trim()) return 'Full legal name is required';
@@ -63,19 +77,36 @@ export default function CreateProfilePage() {
       if (!priorWorkType) return 'Please answer whether you have worked before';
       if (needsPriorWorkName() && !priorWorkName.trim()) return 'Please name the company or client';
     }
-
     if (user?.role === 'vendor') {
       if (!storeType) return 'Please select what kind of seller you are';
       if (!shipsNationwide) return 'Please answer the shipping question';
       if (!businessName.trim()) return 'Business name is required';
     }
-
+    if (user?.role === 'buyer') {
+      if (!buyerIntent) return "Please tell us what you're looking for";
+      if (buyerIntent === 'Freelancers' && !buyerFreelancerType) return 'Please answer the recruiter question';
+    }
     return '';
+  }
+
+  function handleNext() {
+    const err = step === 1 ? validateStep1() : validateStep2();
+    if (err) {
+      setError(err);
+      return;
+    }
+    setError('');
+    setStep((s) => s + 1);
+  }
+
+  function handleBack() {
+    setError('');
+    setStep((s) => s - 1);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const validationError = validate();
+    const validationError = validateStep3();
     if (validationError) {
       setError(validationError);
       return;
@@ -100,8 +131,10 @@ export default function CreateProfilePage() {
         onboarding_extra.business_name = businessName.trim();
       }
 
-      if (user?.role === 'buyer' && budgetRange) {
-        onboarding_extra.budget_range = budgetRange;
+      if (user?.role === 'buyer') {
+        if (budgetRange) onboarding_extra.budget_range = budgetRange;
+        onboarding_extra.buyer_intent = buyerIntent;
+        if (buyerIntent === 'Freelancers') onboarding_extra.buyer_freelancer_type = buyerFreelancerType;
       }
 
       await updateProfile({ bio, location, country, categories, onboarding_extra });
@@ -138,6 +171,8 @@ export default function CreateProfilePage() {
       ? 'What do you sell?'
       : "What are you interested in?";
 
+  const stepTitles = ['About you', categoryLabel.replace('?', ''), user.role === 'buyer' ? 'A few more questions' : 'Verification'];
+
   const inputClass =
     'w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors';
 
@@ -146,15 +181,22 @@ export default function CreateProfilePage() {
       {saving && <LoadingOverlay label="Saving your profile..." />}
 
       <div className="w-full max-w-md">
-        <div className="text-center mb-6">
-          <span className="font-display text-xl font-bold text-fg">Set up your profile</span>
-          <p className="text-sm text-muted mt-1">
-            {user.role === 'freelancer'
-              ? "A few required details so clients can trust who they're hiring."
-              : user.role === 'vendor'
-              ? 'A few details to verify your store.'
-              : 'Just a couple questions so CREET works better for you.'}
-          </p>
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-display text-xl font-bold text-fg">Set up your profile</span>
+            <span className="text-xs text-muted font-medium">{step} / {TOTAL_STEPS}</span>
+          </div>
+          <div className="flex gap-1.5">
+            {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
+              <div
+                key={i}
+                className={`h-1 flex-1 rounded-full transition-colors ${
+                  i < step ? 'bg-blue' : 'bg-line'
+                }`}
+              />
+            ))}
+          </div>
+          <p className="text-sm text-muted mt-3">{stepTitles[step - 1]}</p>
         </div>
 
         <div className="bg-mist border border-line rounded-2xl p-7">
@@ -165,64 +207,70 @@ export default function CreateProfilePage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1.5">{bioLabel}</label>
-              <textarea
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                placeholder={bioPlaceholder}
-                rows={3}
-                className={`${inputClass} resize-none`}
-              />
-            </div>
+            {step === 1 && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-fg/70 mb-1.5">{bioLabel}</label>
+                  <textarea
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    placeholder={bioPlaceholder}
+                    rows={3}
+                    className={`${inputClass} resize-none`}
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1.5">Location</label>
-              <input
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="e.g. Lagos, Nigeria"
-                className={inputClass}
-              />
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-fg/70 mb-1.5">Location</label>
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="e.g. Lagos, Nigeria"
+                    className={inputClass}
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1.5">Country *</label>
-              <select
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-                className={inputClass}
-              >
-                <option value="">Select your country</option>
-                {COUNTRIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-              <p className="text-xs text-muted mt-1.5">This sets your currency and what shows in your feed.</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-fg/70 mb-2">{categoryLabel}</label>
-              <div className="flex flex-wrap gap-2">
-                {CATEGORIES.map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => toggleCategory(cat)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
-                      categories.includes(cat)
-                        ? 'bg-blue text-black'
-                        : 'bg-paper border border-line text-muted'
-                    }`}
+                <div>
+                  <label className="block text-sm font-medium text-fg/70 mb-1.5">Country *</label>
+                  <select
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className={inputClass}
                   >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            </div>
+                    <option value="">Select your country</option>
+                    {COUNTRIES.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-muted mt-1.5">This sets your currency and what shows in your feed.</p>
+                </div>
+              </>
+            )}
 
-            {user.role === 'freelancer' && (
+            {step === 2 && (
+              <div>
+                <label className="block text-sm font-medium text-fg/70 mb-2">{categoryLabel}</label>
+                <div className="flex flex-wrap gap-2">
+                  {CATEGORIES.map((cat) => (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => toggleCategory(cat)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
+                        categories.includes(cat)
+                          ? 'bg-blue text-black'
+                          : 'bg-paper border border-line text-muted'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {step === 3 && user.role === 'freelancer' && (
               <>
                 <div>
                   <label className="block text-sm font-medium text-fg/70 mb-2">How much experience do you have? *</label>
@@ -244,7 +292,6 @@ export default function CreateProfilePage() {
 
                 <div className="pt-2 border-t border-line">
                   <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">A bit about you</p>
-
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-fg/70 mb-1.5">Full legal name *</label>
@@ -256,7 +303,6 @@ export default function CreateProfilePage() {
                         className={inputClass}
                       />
                     </div>
-
                     <div>
                       <label className="block text-sm font-medium text-fg/70 mb-1.5">Date of birth *</label>
                       <input
@@ -266,7 +312,6 @@ export default function CreateProfilePage() {
                         className={inputClass}
                       />
                     </div>
-
                     <div>
                       <label className="block text-sm font-medium text-fg/70 mb-1.5">Address *</label>
                       <input
@@ -315,7 +360,7 @@ export default function CreateProfilePage() {
               </>
             )}
 
-            {user.role === 'vendor' && (
+            {step === 3 && user.role === 'vendor' && (
               <>
                 <div>
                   <label className="block text-sm font-medium text-fg/70 mb-2">What kind of seller are you? *</label>
@@ -351,7 +396,6 @@ export default function CreateProfilePage() {
                     ))}
                   </div>
                 </div>
-
                 <div className="pt-2 border-t border-line">
                   <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Business details</p>
                   <div>
@@ -368,33 +412,94 @@ export default function CreateProfilePage() {
               </>
             )}
 
-            {user.role === 'buyer' && (
-              <div>
-                <label className="block text-sm font-medium text-fg/70 mb-2">What&apos;s your typical budget?</label>
-                <div className="flex flex-wrap gap-2">
-                  {BUDGET_RANGES.map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => setBudgetRange(budgetRange === r ? '' : r)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
-                        budgetRange === r ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
-                      }`}
-                    >
-                      {r}
-                    </button>
-                  ))}
+            {step === 3 && user.role === 'buyer' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-fg/70 mb-2">Are you looking for freelancers or vendors? *</label>
+                  <div className="flex flex-wrap gap-2">
+                    {BUYER_INTENTS.map((v) => (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => setBuyerIntent(buyerIntent === v ? '' : v)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
+                          buyerIntent === v ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
+                        }`}
+                      >
+                        {v}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+
+                {buyerIntent === 'Freelancers' && (
+                  <div>
+                    <label className="block text-sm font-medium text-fg/70 mb-2">Are you a recruiter or just looking for services? *</label>
+                    <div className="flex flex-wrap gap-2">
+                      {BUYER_FREELANCER_TYPES.map((v) => (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => setBuyerFreelancerType(buyerFreelancerType === v ? '' : v)}
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
+                            buyerFreelancerType === v ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
+                          }`}
+                        >
+                          {v}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-fg/70 mb-2">What&apos;s your typical budget?</label>
+                  <div className="flex flex-wrap gap-2">
+                    {BUDGET_RANGES.map((r) => (
+                      <button
+                        key={r}
+                        type="button"
+                        onClick={() => setBudgetRange(budgetRange === r ? '' : r)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
+                          budgetRange === r ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
+                        }`}
+                      >
+                        {r}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
             )}
 
-            <button
-              type="submit"
-              disabled={saving}
-              className="w-full bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg py-3.5"
-            >
-              Continue
-            </button>
+            <div className="flex gap-3 pt-1">
+              {step > 1 && (
+                <button
+                  type="button"
+                  onClick={handleBack}
+                  className="flex-1 bg-paper border border-line active:scale-[0.98] transition-transform text-fg text-sm font-semibold rounded-lg py-3.5"
+                >
+                  Back
+                </button>
+              )}
+              {step < TOTAL_STEPS ? (
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="flex-1 bg-blue active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg py-3.5"
+                >
+                  Next
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="flex-1 bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg py-3.5"
+                >
+                  Finish
+                </button>
+              )}
+            </div>
           </form>
         </div>
       </div>
