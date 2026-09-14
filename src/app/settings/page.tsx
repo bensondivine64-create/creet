@@ -139,6 +139,7 @@ export default function SettingsPage() {
           <Row href="/profile/edit" icon={<PersonIcon />} title="Edit profile" subtitle="Name, photo, bio, and categories" delay={0} />
           <Row href="/settings/notifications" icon={<BellIcon />} title="Notifications" subtitle="Push and email preferences" delay={20} />
           <Row href="/settings/account" icon={<KeyIcon />} title="Account & password" subtitle="Security and login details" delay={40} />
+          <Row href="/settings/blocked" icon={<PersonIcon />} title="Blocked accounts" subtitle="Manage who you've blocked" delay={50} />
 
           {user.role === 'buyer' && (
             <Row href="/dashboard/buyer" icon={<ListBulletIcon />} title="Manage my requests" subtitle="View and edit your posted requests" delay={60} />

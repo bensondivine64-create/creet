@@ -10,13 +10,64 @@ import Avatar from '@/components/Avatar';
 import ReportModal from '@/components/ReportModal';
 import PageLoader from '@/components/PageLoader';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/contexts/ToastContext';
 import { getConnectionStatus, sendConnectionRequest, acceptConnection, declineConnection, ConnectionStatus } from '@/lib/connections';
+import { getBlockStatus, blockUser, unblockUser } from '@/lib/blocks';
 
 function buildHeadline(role: string, categories: string[], location?: string | null) {
   const parts = [role.charAt(0).toUpperCase() + role.slice(1)];
   if (categories.length > 0) parts.push(categories[0]);
   if (location) parts.push(location);
   return parts.join(' · ');
+}
+
+function MoreMenu({
+  onReport,
+  onBlock,
+  isBlocked,
+  blockLoading,
+}: {
+  onReport: () => void;
+  onBlock: () => void;
+  isBlocked: boolean;
+  blockLoading: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-label="More options"
+        className="h-8 w-8 rounded-full bg-mist border border-line flex items-center justify-center text-muted hover:text-fg active:scale-95 transition-transform"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="5" cy="12" r="1.8" />
+          <circle cx="12" cy="12" r="1.8" />
+          <circle cx="19" cy="12" r="1.8" />
+        </svg>
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-20" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 top-10 z-30 w-44 bg-mist border border-line rounded-xl overflow-hidden shadow-lg shadow-black/50">
+            <button
+              onClick={() => { setOpen(false); onReport(); }}
+              className="w-full text-left px-4 py-3 text-sm text-fg active:bg-paper/50"
+            >
+              Report user
+            </button>
+            <button
+              onClick={() => { setOpen(false); onBlock(); }}
+              disabled={blockLoading}
+              className="w-full text-left px-4 py-3 text-sm text-red-400 active:bg-paper/50 border-t border-line disabled:opacity-50"
+            >
+              {blockLoading ? 'Working...' : isBlocked ? 'Unblock user' : 'Block user'}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
 
 export default function PublicProfilePage() {
@@ -28,9 +79,14 @@ export default function PublicProfilePage() {
   const [error, setError] = useState('');
   const [showReport, setShowReport] = useState(false);
   const { user: viewer } = useAuth();
+  const { showToast } = useToast();
   const [connStatus, setConnStatus] = useState<ConnectionStatus>('none');
   const [connId, setConnId] = useState<number | undefined>(undefined);
   const [connLoading, setConnLoading] = useState(false);
+
+  const [iBlockedThem, setIBlockedThem] = useState(false);
+  const [theyBlockedMe, setTheyBlockedMe] = useState(false);
+  const [blockLoading, setBlockLoading] = useState(false);
 
   useEffect(() => {
     getPublicProfile(username)
@@ -44,6 +100,10 @@ export default function PublicProfilePage() {
     getConnectionStatus(profile.id).then((res) => {
       setConnStatus(res.status);
       setConnId(res.connection_id);
+    }).catch(() => {});
+    getBlockStatus(profile.id).then((res) => {
+      setIBlockedThem(res.i_blocked_them);
+      setTheyBlockedMe(res.they_blocked_me);
     }).catch(() => {});
   }, [profile, viewer]);
 
@@ -80,6 +140,26 @@ export default function PublicProfilePage() {
     }
   }
 
+  async function handleToggleBlock() {
+    if (!profile) return;
+    setBlockLoading(true);
+    try {
+      if (iBlockedThem) {
+        await unblockUser(profile.id);
+        setIBlockedThem(false);
+        showToast('User unblocked', 'success');
+      } else {
+        await blockUser(profile.id);
+        setIBlockedThem(true);
+        showToast('User blocked', 'success');
+      }
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Could not update block status', 'error');
+    } finally {
+      setBlockLoading(false);
+    }
+  }
+
   if (loading) {
     return <PageLoader />;
   }
@@ -93,6 +173,7 @@ export default function PublicProfilePage() {
   }
 
   const headline = buildHeadline(profile.role, profile.categories, profile.location);
+  const isOwnProfile = viewer && viewer.username === profile.username;
 
   return (
     <main className="min-h-screen bg-paper pb-16 animate-fade-in-up">
@@ -101,16 +182,13 @@ export default function PublicProfilePage() {
           ← Back
         </Link>
         <span className="font-display text-lg font-bold tracking-tight text-fg">CREET</span>
-        {viewer && viewer.username !== profile.username ? (
-          <button
-            onClick={() => setShowReport(true)}
-            aria-label="Report user"
-            className="h-8 w-8 rounded-full bg-mist border border-line flex items-center justify-center text-muted hover:text-fg active:scale-95 transition-transform"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v16M4 4h11l-1.5 3L15 10H4" />
-            </svg>
-          </button>
+        {viewer && !isOwnProfile ? (
+          <MoreMenu
+            onReport={() => setShowReport(true)}
+            onBlock={handleToggleBlock}
+            isBlocked={iBlockedThem}
+            blockLoading={blockLoading}
+          />
         ) : (
           <span className="w-10" />
         )}
@@ -145,7 +223,20 @@ export default function PublicProfilePage() {
             )}
           </div>
 
-          {viewer && viewer.username !== profile.username && (
+          {viewer && !isOwnProfile && iBlockedThem && (
+            <div className="mt-4 bg-mist border border-line rounded-lg py-3 text-center">
+              <p className="text-sm text-muted mb-2">You've blocked this user</p>
+              <button
+                onClick={handleToggleBlock}
+                disabled={blockLoading}
+                className="text-sm text-fg underline underline-offset-2"
+              >
+                {blockLoading ? 'Working...' : 'Unblock'}
+              </button>
+            </div>
+          )}
+
+          {viewer && !isOwnProfile && !iBlockedThem && !theyBlockedMe && (
             <div className="mt-4">
               {connStatus === 'none' && (
                 <button
