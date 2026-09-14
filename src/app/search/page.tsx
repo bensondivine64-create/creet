@@ -237,57 +237,60 @@ function SearchPageInner() {
         )}
 
         {!loading && !error && filtered.length > 0 && (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-3">
             {filtered.map((item) => (
-              <div
+              <Link
                 key={item.id}
-                className="bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30"
+                href={`/listing/${item.id}`}
+                className="flex gap-3 bg-mist border border-line rounded-2xl overflow-hidden active:scale-[0.98] transition-transform"
               >
-                <Link href={`/listing/${item.id}`} className="block active:scale-[0.98] transition-transform">
-                  {item.images && item.images.length > 0 ? (
-                    <div className="relative aspect-video overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
-                    </div>
-                  ) : (
-                    <div className="relative aspect-video bg-line/20 flex items-center justify-center">
-                      <svg
-                        className="h-7 w-7 text-fg/15"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1.5}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z"
-                        />
-                      </svg>
-                    </div>
-                  )}
-                </Link>
-                <div className="p-3">
-                  <Link href={`/u/${item.seller.username}`} className="flex items-center gap-1.5 mb-1.5 active:opacity-70">
-                    <Avatar avatar={item.seller.avatar} name={item.seller.full_name} size={20} />
-                    <span className="text-xs text-muted truncate flex items-center gap-0.5">
-                      {item.seller.full_name}
-                      {item.seller.verified && <VerifiedBadge size={10} />}
-                    </span>
-                  </Link>
-                  <Link href={`/listing/${item.id}`}>
-                    <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1.5">
+                {item.images && item.images.length > 0 ? (
+                  <div className="w-28 h-28 shrink-0 relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-28 h-28 shrink-0 bg-line/20 flex items-center justify-center">
+                    <svg
+                      className="h-7 w-7 text-fg/15"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z"
+                      />
+                    </svg>
+                  </div>
+                )}
+                <div className="flex-1 min-w-0 py-2.5 pr-3 flex flex-col justify-between">
+                  <div>
+                    {item.rating_count > 0 && (
+                      <div className="flex items-center gap-1 text-xs text-muted mb-1">
+                        <span>★</span>
+                        <span className="text-fg font-medium">{item.rating_avg.toFixed(1)}</span>
+                        <span>({item.rating_count})</span>
+                      </div>
+                    )}
+                    <div className="text-sm font-semibold text-fg leading-snug line-clamp-2">
                       {item.title}
                     </div>
-                    {item.rating_count > 0 && (
-                      <span className="text-xs text-muted">★ {item.rating_avg.toFixed(1)}</span>
-                    )}
-                    <div className="text-xs text-muted mt-1.5 pt-1.5 border-t border-line">
-                      From <span className="text-sm font-bold text-fg">{item.currency} {item.price.toLocaleString()}</span>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Avatar avatar={item.seller.avatar} name={item.seller.full_name} size={14} />
+                      <span className="text-[11px] text-muted truncate flex items-center gap-0.5">
+                        {item.seller.full_name}
+                        {item.seller.verified && <VerifiedBadge size={9} />}
+                      </span>
                     </div>
-                  </Link>
+                  </div>
+                  <div className="text-right text-xs text-muted">
+                    From <span className="text-sm font-bold text-fg">{item.currency} {item.price.toLocaleString()}</span>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

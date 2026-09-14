@@ -8,6 +8,7 @@ import VerifiedBadge from '@/components/VerifiedBadge';
 import EmptyState from '@/components/EmptyState';
 import Avatar from '@/components/Avatar';
 import ReportModal from '@/components/ReportModal';
+import PageLoader from '@/components/PageLoader';
 import { useAuth } from '@/contexts/AuthContext';
 import { getConnectionStatus, sendConnectionRequest, acceptConnection, declineConnection, ConnectionStatus } from '@/lib/connections';
 
@@ -80,7 +81,7 @@ export default function PublicProfilePage() {
   }
 
   if (loading) {
-    return <div className="min-h-screen bg-paper flex items-center justify-center text-muted text-sm">Loading...</div>;
+    return <PageLoader />;
   }
 
   if (error || !profile) {
