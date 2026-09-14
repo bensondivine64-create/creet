@@ -175,6 +175,9 @@ export default function ProfilePage() {
                 {connectionCount} connection{connectionCount === 1 ? '' : 's'}
               </Link>
             )}
+            {user.short_bio && (
+              <p className="text-sm text-fg/70 mt-2 leading-relaxed">{user.short_bio}</p>
+            )}
           </div>
 
           <Link
@@ -183,13 +186,6 @@ export default function ProfilePage() {
           >
             View how others see your profile
           </Link>
-
-          {user.bio && (
-            <div className="mt-8 pt-6 border-t border-line">
-              <h2 className="font-display text-base font-bold text-fg mb-2">About</h2>
-              <p className="text-sm text-fg/80 leading-relaxed whitespace-pre-wrap">{user.bio}</p>
-            </div>
-          )}
 
           {user.categories && user.categories.length > 0 && (
             <div className="mt-6 pt-6 border-t border-line">

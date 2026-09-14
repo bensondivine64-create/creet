@@ -15,7 +15,7 @@ export interface PublicProfile {
   role: string;
   avatar?: string | null;
   cover_photo?: string | null;
-  bio?: string | null;
+  short_bio?: string | null;
   location?: string | null;
   categories: string[];
   is_verified: boolean;

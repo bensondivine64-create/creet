@@ -139,6 +139,9 @@ export default function PublicProfilePage() {
             <div className="text-sm text-blue font-medium mt-1.5">
               {profile.connection_count} connection{profile.connection_count === 1 ? '' : 's'}
             </div>
+            {profile.short_bio && (
+              <p className="text-sm text-fg/70 mt-2 leading-relaxed">{profile.short_bio}</p>
+            )}
           </div>
 
           {viewer && viewer.username !== profile.username && (
@@ -180,13 +183,6 @@ export default function PublicProfilePage() {
                   ✓ Connected
                 </div>
               )}
-            </div>
-          )}
-
-          {profile.bio && (
-            <div className="mt-8 pt-6 border-t border-line">
-              <h2 className="font-display text-base font-bold text-fg mb-2">About</h2>
-              <p className="text-sm text-fg/80 leading-relaxed whitespace-pre-wrap">{profile.bio}</p>
             </div>
           )}
 

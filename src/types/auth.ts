@@ -13,6 +13,7 @@ export interface User {
   avatar?: string | null;
   cover_photo?: string | null;
   bio?: string | null;
+  short_bio?: string | null;
   location?: string | null;
   country?: string | null;
   categories: string[];
@@ -64,6 +65,7 @@ export interface UpdateProfilePayload {
   full_name?: string;
   username?: string;
   bio?: string;
+  short_bio?: string;
   location?: string;
   categories?: string[];
   country?: string;

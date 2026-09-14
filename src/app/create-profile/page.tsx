@@ -26,6 +26,7 @@ export default function CreateProfilePage() {
   const [step, setStep] = useState(1);
 
   const [bio, setBio] = useState('');
+  const [shortBio, setShortBio] = useState('');
   const [location, setLocation] = useState('');
   const [country, setCountry] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
@@ -137,7 +138,7 @@ export default function CreateProfilePage() {
         if (buyerIntent === 'Freelancers') onboarding_extra.buyer_freelancer_type = buyerFreelancerType;
       }
 
-      await updateProfile({ bio, location, country, categories, onboarding_extra });
+      await updateProfile({ bio, short_bio: shortBio, location, country, categories, onboarding_extra });
       await refreshUser();
       router.push('/browse');
     } catch (err) {
@@ -210,6 +211,18 @@ export default function CreateProfilePage() {
             {step === 1 && (
               <>
                 <div>
+                  <label className="block text-sm font-medium text-fg/70 mb-1.5">Bio</label>
+                  <input
+                    type="text"
+                    value={shortBio}
+                    onChange={(e) => setShortBio(e.target.value.slice(0, 150))}
+                    placeholder="A short line that shows on your profile"
+                    className={inputClass}
+                  />
+                  <p className="text-xs text-muted mt-1.5">{shortBio.length}/150 · shown publicly</p>
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium text-fg/70 mb-1.5">{bioLabel}</label>
                   <textarea
                     value={bio}
@@ -218,6 +231,7 @@ export default function CreateProfilePage() {
                     rows={3}
                     className={`${inputClass} resize-none`}
                   />
+                  <p className="text-xs text-muted mt-1.5">Not shown on your profile — helps CREET match you with the right deals and feed.</p>
                 </div>
 
                 <div>
