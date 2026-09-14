@@ -42,7 +42,7 @@ export default function ImageCropModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black flex flex-col">
+    <div className="fixed inset-0 z-50 bg-black flex flex-col" style={{ height: '100dvh' }}>
       <div className="flex items-center justify-between px-5 py-4 border-b border-line/60 shrink-0">
         <button onClick={onCancel} className="text-sm text-muted" disabled={processing}>
           Cancel
@@ -57,7 +57,7 @@ export default function ImageCropModal({
         </button>
       </div>
 
-      <div className="relative flex-1 bg-black">
+      <div className="relative flex-1 min-h-0 bg-black" style={{ position: 'relative' }}>
         <Cropper
           image={imageSrc}
           crop={crop}
@@ -65,6 +65,9 @@ export default function ImageCropModal({
           aspect={aspect}
           cropShape={cropShape}
           showGrid={cropShape === 'rect'}
+          objectFit="horizontal-cover"
+          minZoom={1}
+          maxZoom={3}
           onCropChange={setCrop}
           onZoomChange={setZoom}
           onCropComplete={onCropComplete}
@@ -81,7 +84,7 @@ export default function ImageCropModal({
           onChange={(e) => setZoom(Number(e.target.value))}
           className="w-full accent-blue"
         />
-        <p className="text-center text-xs text-muted mt-2">Pinch or drag to reposition</p>
+        <p className="text-center text-xs text-muted mt-2">Drag to reposition, use the slider to zoom</p>
       </div>
     </div>
   );
