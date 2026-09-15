@@ -8,6 +8,7 @@ import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import BottomNav from '@/components/BottomNav';
 import EmptyState from '@/components/EmptyState';
 import VerifiedBadge from '@/components/VerifiedBadge';
+import PageLoader from '@/components/PageLoader';
 
 function formatRelativeTime(iso: string): string {
   const date = new Date(iso);
@@ -43,7 +44,7 @@ export default function InboxPage() {
   }, [user]);
 
   const totalUnread = useMemo(
-    () => conversations.reduce((sum, c) => sum + (c.unread_count > 0 ? 1 : 0), 0),
+    () => conversations.reduce((sum, c) => sum + c.unread_count, 0),
     [conversations]
   );
 
@@ -59,7 +60,7 @@ export default function InboxPage() {
   }, [conversations, query]);
 
   if (authLoading || !user) {
-    return <div className="min-h-screen flex items-center justify-center text-fg/40 text-sm">Loading...</div>;
+    return <PageLoader />;
   }
 
   return (
@@ -68,8 +69,8 @@ export default function InboxPage() {
         <div className="flex items-center gap-2">
           <span className="font-display text-xl font-bold text-fg">Inbox</span>
           {totalUnread > 0 && (
-            <span className="h-5 min-w-5 px-1.5 rounded-full bg-blue text-black text-[11px] font-bold flex items-center justify-center">
-              {totalUnread}
+            <span className="h-5 min-w-5 px-1.5 rounded-full bg-green-500 text-white text-[11px] font-bold flex items-center justify-center">
+              {totalUnread > 99 ? '99+' : totalUnread}
             </span>
           )}
         </div>
@@ -95,20 +96,20 @@ export default function InboxPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search messages"
-              className="w-full bg-mist rounded-xl pl-9 pr-3 py-3 text-sm text-fg placeholder:text-fg/30 outline-none focus:ring-1 focus:ring-blue/50"
+              className="w-full bg-mist rounded-xl pl-9 pr-3 py-3 text-sm text-fg placeholder:text-fg/30 outline-none focus:ring-1 focus:ring-fg/30"
             />
           </div>
         </div>
       )}
 
       {loading && (
-        <div className="px-5 space-y-3 pt-1">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="flex items-center gap-3 bg-mist rounded-2xl px-4 py-3.5 animate-pulse">
-              <div className="h-12 w-12 rounded-full bg-fg/10 shrink-0" />
+        <div className="px-5">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex items-center gap-3 py-3 border-b border-line animate-pulse">
+              <div className="h-14 w-14 rounded-full bg-mist shrink-0" />
               <div className="flex-1 space-y-2">
-                <div className="h-3 w-1/3 bg-fg/10 rounded" />
-                <div className="h-2.5 w-2/3 bg-fg/10 rounded" />
+                <div className="h-3 w-1/3 bg-mist rounded" />
+                <div className="h-2.5 w-2/3 bg-mist rounded" />
               </div>
             </div>
           ))}
@@ -138,67 +139,57 @@ export default function InboxPage() {
       )}
 
       {!loading && !error && filtered.length > 0 && (
-        <div className="px-5 space-y-3">
+        <div className="px-5">
           {filtered.map((c, i) => {
             const unread = c.unread_count > 0;
             return (
               <Link
                 key={c.id}
                 href={`/inbox/${c.id}`}
-                style={{ animationDelay: `${i * 50}ms` }}
-                className={`relative flex items-center gap-3 rounded-2xl pl-5 pr-5 py-4 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform opacity-0 animate-fade-in-up ${
-                  unread ? 'bg-mist' : 'bg-mist/60'
-                }`}
+                style={{ animationDelay: `${i * 40}ms` }}
+                className="flex items-center gap-3 py-3 border-b border-line active:bg-mist/60 transition-colors opacity-0 animate-fade-in-up"
               >
-                {unread && (
-                  <span className="absolute left-0 top-3 bottom-3 w-[3px] rounded-full bg-blue" />
-                )}
-
                 {c.participant.avatar ? (
                   <img
                     src={c.participant.avatar}
                     alt=""
-                    className="h-12 w-12 rounded-full object-cover shrink-0"
+                    className="h-14 w-14 rounded-full object-cover shrink-0"
                   />
                 ) : (
-                  <span className="h-12 w-12 rounded-full bg-blue text-black text-base font-bold flex items-center justify-center shrink-0">
+                  <span className="h-14 w-14 rounded-full bg-fg text-black text-lg font-bold flex items-center justify-center shrink-0">
                     {c.participant.full_name.charAt(0).toUpperCase()}
                   </span>
                 )}
 
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <span
-                      className={`text-sm truncate flex items-center gap-1 ${
-                        unread ? 'font-semibold text-fg' : 'font-medium text-fg/80'
-                      }`}
-                    >
+                  <div className="flex items-center gap-1">
+                    <span className={`text-sm truncate ${unread ? 'font-semibold text-fg' : 'font-medium text-fg/80'}`}>
                       {c.participant.full_name}
-                      {c.participant.verified && <VerifiedBadge size={12} />}
                     </span>
-                    <span className={`text-[11px] shrink-0 ${unread ? 'text-fg/70' : 'text-fg/30'}`}>
-                      {formatRelativeTime(c.last_message_at)}
-                    </span>
+                    {c.participant.verified && <VerifiedBadge size={12} />}
                   </div>
 
                   {c.listing_title && (
-                    <span className="inline-block mt-1 text-[10px] text-fg/50 bg-paper rounded-full px-2 py-0.5 truncate max-w-full">
-                      {c.listing_title}
+                    <span className="inline-block mt-0.5 text-[10px] text-fg/50 truncate max-w-full">
+                      Re: {c.listing_title}
                     </span>
                   )}
 
-                  <div
-                    className={`text-sm truncate mt-1 ${
-                      unread ? 'text-fg/80 font-medium' : 'text-fg/40'
-                    }`}
-                  >
+                  <div className={`text-sm truncate mt-0.5 ${unread ? 'text-fg/80 font-medium' : 'text-fg/40'}`}>
                     {c.last_message}
                   </div>
                 </div>
 
-                {unread && (
-                  <span className="h-2 w-2 rounded-full bg-blue shrink-0 self-start mt-1" />
-                )}
+                <div className="flex flex-col items-end gap-1.5 shrink-0">
+                  <span className={`text-[11px] ${unread ? 'text-green-500 font-medium' : 'text-fg/30'}`}>
+                    {formatRelativeTime(c.last_message_at)}
+                  </span>
+                  {unread && (
+                    <span className="h-5 min-w-5 px-1.5 rounded-full bg-green-500 text-white text-[11px] font-bold flex items-center justify-center">
+                      {c.unread_count > 99 ? '99+' : c.unread_count}
+                    </span>
+                  )}
+                </div>
               </Link>
             );
           })}

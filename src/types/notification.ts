@@ -8,6 +8,11 @@ export interface Notification {
   read: boolean;
   link?: string | null;
   created_at: string;
+  actor?: {
+    username: string;
+    full_name: string;
+    avatar: string | null;
+  } | null;
 }
 
 export interface NotificationsResponse {
