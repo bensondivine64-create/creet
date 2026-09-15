@@ -34,14 +34,30 @@ export default function InboxPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
+  const [total, setTotal] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const PAGE_SIZE = 30;
 
   useEffect(() => {
     if (!user) return;
-    getConversations()
-      .then((res) => setConversations(res.conversations))
+    getConversations({ limit: PAGE_SIZE, offset: 0 })
+      .then((res) => { setConversations(res.conversations); setTotal(res.total); })
       .catch((err) => setError(err instanceof Error ? err.message : 'Could not load inbox'))
       .finally(() => setLoading(false));
   }, [user]);
+
+  async function handleLoadMore() {
+    setLoadingMore(true);
+    try {
+      const res = await getConversations({ limit: PAGE_SIZE, offset: conversations.length });
+      setConversations((prev) => [...prev, ...res.conversations]);
+      setTotal(res.total);
+    } catch {
+      // silent — the button just stays available to retry
+    } finally {
+      setLoadingMore(false);
+    }
+  }
 
   const totalUnread = useMemo(
     () => conversations.reduce((sum, c) => sum + c.unread_count, 0),
@@ -193,6 +209,18 @@ export default function InboxPage() {
               </Link>
             );
           })}
+
+          {!query && conversations.length < total && (
+            <div className="py-4 text-center">
+              <button
+                onClick={handleLoadMore}
+                disabled={loadingMore}
+                className="text-sm text-fg font-medium underline underline-offset-2 disabled:opacity-50"
+              >
+                {loadingMore ? 'Loading...' : 'Load more'}
+              </button>
+            </div>
+          )}
         </div>
       )}
 

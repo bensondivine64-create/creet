@@ -1,8 +1,12 @@
 import { apiCall } from '@/lib/api';
 import { ConversationsResponse, MessagesResponse, Message } from '@/types/message';
 
-export function getConversations() {
-  return apiCall<ConversationsResponse>('/conversations');
+export function getConversations(params?: { limit?: number; offset?: number }) {
+  const q = new URLSearchParams();
+  if (params?.limit) q.set('limit', String(params.limit));
+  if (params?.offset) q.set('offset', String(params.offset));
+  const qs = q.toString();
+  return apiCall<ConversationsResponse>(`/conversations${qs ? `?${qs}` : ''}`);
 }
 
 export function getMessages(conversationId: string | number) {

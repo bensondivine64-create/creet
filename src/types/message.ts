@@ -25,6 +25,7 @@ export interface Message {
 
 export interface ConversationsResponse {
   conversations: Conversation[];
+  total: number;
 }
 
 export interface MessagesResponse {

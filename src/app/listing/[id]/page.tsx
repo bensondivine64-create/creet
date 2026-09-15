@@ -71,10 +71,13 @@ export default function ListingDetailPage() {
   const [showReport, setShowReport] = useState(false);
 
   const [comments, setComments] = useState<Comment[]>([]);
+  const [commentsTotal, setCommentsTotal] = useState(0);
   const [commentsLoading, setCommentsLoading] = useState(true);
+  const [loadingMoreComments, setLoadingMoreComments] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [posting, setPosting] = useState(false);
   const [commentError, setCommentError] = useState('');
+  const COMMENTS_PAGE_SIZE = 10;
 
   const [reviews, setReviews] = useState<Review[]>([]);
   const [submittingReview, setSubmittingReview] = useState(false);
@@ -89,8 +92,8 @@ export default function ListingDetailPage() {
       .finally(() => setLoading(false));
 
     setCommentsLoading(true);
-    getComments(params.id as string)
-      .then((res) => setComments(res.comments))
+    getComments(params.id as string, { limit: COMMENTS_PAGE_SIZE, offset: 0 })
+      .then((res) => { setComments(res.comments); setCommentsTotal(res.total); })
       .catch(() => setComments([]))
       .finally(() => setCommentsLoading(false));
 
@@ -128,6 +131,7 @@ export default function ListingDetailPage() {
     try {
       const res = await postComment(params.id as string, newComment.trim());
       setComments((prev) => [res.comment, ...prev]);
+      setCommentsTotal((prev) => prev + 1);
       setNewComment('');
     } catch (err) {
       setCommentError(err instanceof Error ? err.message : 'Could not post comment');
@@ -237,7 +241,7 @@ export default function ListingDetailPage() {
 
           <div className="mt-10 pt-8 border-t border-line">
             <h2 className="font-display font-semibold text-fg mb-5">
-              Comments {comments.length > 0 && `(${comments.length})`}
+              Comments {commentsTotal > 0 && `(${commentsTotal})`}
             </h2>
 
             {user ? (
@@ -289,6 +293,27 @@ export default function ListingDetailPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {!commentsLoading && comments.length < commentsTotal && (
+              <div className="text-center mt-4">
+                <button
+                  onClick={async () => {
+                    setLoadingMoreComments(true);
+                    try {
+                      const res = await getComments(params.id as string, { limit: COMMENTS_PAGE_SIZE, offset: comments.length });
+                      setComments((prev) => [...prev, ...res.comments]);
+                      setCommentsTotal(res.total);
+                    } finally {
+                      setLoadingMoreComments(false);
+                    }
+                  }}
+                  disabled={loadingMoreComments}
+                  className="text-sm text-fg font-medium underline underline-offset-2 disabled:opacity-50"
+                >
+                  {loadingMoreComments ? 'Loading...' : 'Load more comments'}
+                </button>
               </div>
             )}
           </div>
