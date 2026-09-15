@@ -1,9 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import HomeAuthRedirect from '@/components/HomeAuthRedirect';
 
 export default function HomePage() {
   return (
     <main className="relative min-h-screen w-full overflow-hidden bg-ink text-white">
+      <HomeAuthRedirect />
       <Image
         src="/hero.jpg"
         alt=""
