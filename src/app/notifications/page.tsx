@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
-import { getNotifications, markNotificationRead, markAllNotificationsRead } from '@/lib/notifications';
-import { Notification } from '@/types/notification';
+import { useNotifications } from '@/contexts/NotificationsContext';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import EmptyState from '@/components/EmptyState';
 import Avatar from '@/components/Avatar';
@@ -35,33 +34,20 @@ function BellIcon() {
 
 export default function NotificationsPage() {
   const { user, loading: authLoading } = useRequireAnyAuth();
-  const [items, setItems] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { notifications, loading, loaded, refresh, markRead, markAllRead } = useNotifications();
 
+  // Refresh in the background every time this page is opened, without blocking
+  // display of whatever's already cached from the shared context.
   useEffect(() => {
-    if (!user) return;
-    getNotifications()
-      .then((res) => setItems(res.notifications))
-      .catch((err) => setError(err instanceof Error ? err.message : 'Could not load notifications'))
-      .finally(() => setLoading(false));
+    if (user) refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
-
-  async function handleOpen(n: Notification) {
-    if (!n.read) {
-      setItems((prev) => prev.map((i) => (i.id === n.id ? { ...i, read: true } : i)));
-      markNotificationRead(n.id).catch(() => {});
-    }
-  }
-
-  async function handleMarkAll() {
-    setItems((prev) => prev.map((i) => ({ ...i, read: true })));
-    markAllNotificationsRead().catch(() => {});
-  }
 
   if (authLoading) {
     return <PageLoader />;
   }
+
+  const showSkeleton = loading && !loaded;
 
   return (
     <main className="min-h-screen bg-paper pb-10">
@@ -70,12 +56,12 @@ export default function NotificationsPage() {
           ← Back
         </Link>
         <span className="font-display text-lg font-bold text-fg">Notifications</span>
-        <button onClick={handleMarkAll} className="text-xs text-fg font-medium underline underline-offset-2">
+        <button onClick={markAllRead} className="text-xs text-fg font-medium underline underline-offset-2">
           Mark all read
         </button>
       </div>
 
-      {loading && (
+      {showSkeleton && (
         <div className="px-5">
           {[0, 1, 2, 3, 4].map((i) => (
             <div key={i} className="flex items-center gap-3 py-3 border-b border-line animate-pulse">
@@ -89,19 +75,17 @@ export default function NotificationsPage() {
         </div>
       )}
 
-      {!loading && error && <EmptyState icon="bell" title="Couldn't load notifications" />}
-
-      {!loading && !error && items.length === 0 && (
+      {!showSkeleton && loaded && notifications.length === 0 && (
         <EmptyState icon="bell" title="You're all caught up" subtitle="Nothing new right now." />
       )}
 
-      {!loading && !error && items.length > 0 && (
+      {!showSkeleton && notifications.length > 0 && (
         <div className="px-5">
-          {items.map((n) => (
+          {notifications.map((n) => (
             <Link
               key={n.id}
               href={n.link || '#'}
-              onClick={() => handleOpen(n)}
+              onClick={() => !n.read && markRead(n.id)}
               className="flex items-center gap-3 py-3 border-b border-line active:bg-mist/60 transition-colors"
             >
               {n.actor ? (

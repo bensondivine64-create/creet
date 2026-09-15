@@ -1,20 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
-import { getNotifications } from '@/lib/notifications';
+import { useNotifications } from '@/contexts/NotificationsContext';
 
 export default function NotificationBell() {
-  const { user } = useAuth();
-  const [unread, setUnread] = useState(0);
-
-  useEffect(() => {
-    if (!user) return;
-    getNotifications()
-      .then((res) => setUnread(res.unread_count))
-      .catch(() => setUnread(0));
-  }, [user]);
+  const { unreadCount } = useNotifications();
 
   return (
     <Link
@@ -28,7 +18,7 @@ export default function NotificationBell() {
           d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
         />
       </svg>
-      {unread > 0 && (
+      {unreadCount > 0 && (
         <>
           <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-blue border-2 border-paper z-10" />
           <span className="absolute -top-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-blue animate-pulse-ring" />

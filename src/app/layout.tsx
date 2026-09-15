@@ -3,6 +3,7 @@ import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { ConfirmProvider } from "@/contexts/ConfirmContext";
+import { NotificationsProvider } from "@/contexts/NotificationsContext";
 import IntroSplash from "@/components/IntroSplash";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
 import AttributionCapture from "@/components/AttributionCapture";
@@ -39,7 +40,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <IntroSplash />
         <AuthProvider>
           <ToastProvider>
-            <ConfirmProvider>{children}</ConfirmProvider>
+            <ConfirmProvider>
+              <NotificationsProvider>{children}</NotificationsProvider>
+            </ConfirmProvider>
           </ToastProvider>
         </AuthProvider>
         <CookieConsentBanner />
