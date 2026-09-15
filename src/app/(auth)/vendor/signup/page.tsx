@@ -9,13 +9,17 @@ import GoogleButton from '@/components/GoogleButton';
 import LoadingOverlay from '@/components/LoadingOverlay';
 
 const TOTAL_STEPS = 3;
-const STEP_TITLES = ['Your name', 'Contact & password', 'Finish up'];
+const STEP_TITLES = ['Your details', 'Contact & password', 'Finish up'];
+const REFERRAL_SOURCES = ['Friend or family', 'Social media', 'Search engine', 'Advertisement', 'Other'];
 
 export default function VendorSignupPage() {
   const { signup, loginWithGoogle } = useAuth();
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [form, setForm] = useState({ full_name: '', username: '', email: '', password: '' });
+  const [form, setForm] = useState({
+    full_name: '', username: '', date_of_birth: '', phone_number: '',
+    email: '', password: '', referral_source: '',
+  });
   const [agreed, setAgreed] = useState(false);
   const [captchaToken, setCaptchaToken] = useState('');
   const [error, setError] = useState('');
@@ -28,6 +32,8 @@ export default function VendorSignupPage() {
   function validateStep1(): string {
     if (!form.full_name.trim()) return 'Please enter your full name';
     if (form.username.trim().length < 3) return 'Username must be at least 3 characters';
+    if (!form.date_of_birth) return 'Date of birth is required';
+    if (!form.phone_number.trim()) return 'Phone number is required';
     return '';
   }
 
@@ -131,6 +137,14 @@ export default function VendorSignupPage() {
               <label className="block text-sm font-medium text-fg/70 mb-1.5">Username</label>
               <input name="username" value={form.username} onChange={handleChange} required minLength={3} className={inputClass} />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Date of birth</label>
+              <input type="date" name="date_of_birth" value={form.date_of_birth} onChange={handleChange} required className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Phone number</label>
+              <input type="tel" name="phone_number" value={form.phone_number} onChange={handleChange} required placeholder="e.g. 08012345678" className={inputClass} />
+            </div>
           </>
         )}
 
@@ -149,6 +163,26 @@ export default function VendorSignupPage() {
 
         {step === 3 && (
           <>
+            <div>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">
+                How did you hear about CREET? <span className="text-muted font-normal">(optional)</span>
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {REFERRAL_SOURCES.map((src) => (
+                  <button
+                    key={src}
+                    type="button"
+                    onClick={() => setForm((prev) => ({ ...prev, referral_source: prev.referral_source === src ? '' : src }))}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
+                      form.referral_source === src ? 'bg-blue text-black' : 'border border-line text-muted'
+                    }`}
+                  >
+                    {src}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <Recaptcha onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
 
             <label className="flex items-start gap-2 text-sm text-fg/60">

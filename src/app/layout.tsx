@@ -4,6 +4,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { ConfirmProvider } from "@/contexts/ConfirmContext";
 import IntroSplash from "@/components/IntroSplash";
+import CookieConsentBanner from "@/components/CookieConsentBanner";
+import AttributionCapture from "@/components/AttributionCapture";
 import "./globals.css";
 
 const display = Space_Grotesk({
@@ -40,6 +42,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <ConfirmProvider>{children}</ConfirmProvider>
           </ToastProvider>
         </AuthProvider>
+        <CookieConsentBanner />
+        <AttributionCapture />
       </body>
     </html>
   );

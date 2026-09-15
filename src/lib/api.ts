@@ -30,6 +30,7 @@ export async function apiCall<T = unknown>(path: string, options: ApiOptions = {
     res = await fetch(`${API_BASE}${path}`, {
       method,
       headers,
+      credentials: 'include',
       body: body ? JSON.stringify(body) : undefined,
     });
   } catch {

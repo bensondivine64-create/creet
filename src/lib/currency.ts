@@ -1,3 +1,13 @@
+
+import { getCookie, setCookie } from '@/lib/cookies';
+
+export function getRememberedCurrency(): string | null {
+  return getCookie('creet_currency_pref');
+}
+
+export function rememberCurrency(currency: string) {
+  setCookie('creet_currency_pref', currency, 365);
+}
 export const COUNTRY_CURRENCY: Record<string, string> = {
   Nigeria: 'NGN',
   'United States': 'USD',

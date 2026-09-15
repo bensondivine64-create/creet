@@ -16,6 +16,9 @@ export interface User {
   short_bio?: string | null;
   location?: string | null;
   country?: string | null;
+  phone_number?: string | null;
+  referral_source?: string | null;
+  date_of_birth?: string | null;
   categories: string[];
   profile_completed: boolean;
   account_status: 'active' | 'suspended';
@@ -43,6 +46,9 @@ export interface SignupPayload {
   password: string;
   full_name: string;
   role: Role;
+  phone_number: string;
+  date_of_birth: string;
+  referral_source?: string;
   recaptcha_token?: string;
 }
 

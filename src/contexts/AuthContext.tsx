@@ -149,6 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   function logout() {
+    apiCall('/auth/logout', { method: 'POST', auth: false }).catch(() => {});
     localStorage.removeItem('creet_token');
     setUser(null);
     router.push('/');
