@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { initiatePremium, verifyPremium, PremiumPlan } from '@/lib/payments';
+import { initiatePremium, verifyPremium, getPremiumQuote, PremiumPlan } from '@/lib/payments';
+import { currencySymbol } from '@/lib/currency';
+import { readCachedQuote, writeCachedQuote } from '@/lib/premiumQuoteCache';
 
 declare global {
   interface Window {
@@ -11,10 +13,10 @@ declare global {
   }
 }
 
-const PLANS: { id: PremiumPlan; label: string; price: number; note?: string }[] = [
-  { id: 'monthly', label: 'Monthly', price: 2000 },
-  { id: 'three_months', label: '3 Months', price: 5500, note: 'Save vs monthly' },
-  { id: 'yearly', label: 'Yearly', price: 20000, note: 'Best value' },
+const PLAN_META: { id: PremiumPlan; label: string; note?: string }[] = [
+  { id: 'monthly', label: 'Monthly' },
+  { id: 'three_months', label: '3 Months', note: 'Save vs monthly' },
+  { id: 'yearly', label: 'Yearly', note: 'Best value' },
 ];
 
 const perks = [
@@ -27,6 +29,8 @@ const perks = [
 export default function PremiumPage() {
   const [selected, setSelected] = useState<PremiumPlan>('monthly');
   const [loading, setLoading] = useState(false);
+  const [currency, setCurrency] = useState<string | null>(null);
+  const [amounts, setAmounts] = useState<Record<PremiumPlan, number> | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -36,6 +40,33 @@ export default function PremiumPage() {
     script.src = 'https://checkout.flutterwave.com/v3.js';
     document.body.appendChild(script);
   }, []);
+
+  useEffect(() => {
+    const cached = readCachedQuote();
+    if (cached) {
+      setCurrency(cached.currency);
+      setAmounts(cached.amounts);
+    }
+
+    getPremiumQuote()
+      .then((res) => {
+        setCurrency(res.currency);
+        setAmounts(res.amounts);
+        writeCachedQuote(res.currency, res.amounts);
+      })
+      .catch(() => {
+        // Quote fetch failed — if we had a cached quote it's still showing,
+        // otherwise currency/amounts stay null and the button stays disabled
+        // rather than showing a guessed currency.
+      });
+  }, []);
+
+  const quoteLoaded = currency !== null && amounts !== null;
+  const symbol = currency ? currencySymbol(currency) : '';
+
+  function formatAmount(amount: number) {
+    return amount.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  }
 
   async function handleUpgrade() {
     setLoading(true);
@@ -83,7 +114,7 @@ export default function PremiumPage() {
   }
 
   return (
-    <main className="min-h-screen bg-paper">
+    <main className="min-h-screen bg-black">
       <div className="flex items-center justify-between px-5 py-4 border-b border-line">
         <Link href="/profile" className="text-sm text-fg/50 hover:text-fg transition-colors">
           ← Back
@@ -99,7 +130,7 @@ export default function PremiumPage() {
         </p>
 
         <div className="grid grid-cols-3 gap-2 mb-8">
-          {PLANS.map((plan) => {
+          {PLAN_META.map((plan) => {
             const active = selected === plan.id;
             return (
               <button
@@ -110,7 +141,15 @@ export default function PremiumPage() {
                 }`}
               >
                 <div className={`text-sm font-semibold ${active ? 'text-blue' : 'text-fg'}`}>{plan.label}</div>
-                <div className="text-xs text-fg/60 mt-1">₦{plan.price.toLocaleString()}</div>
+                <div className="text-xs text-fg/60 mt-1 h-4 flex items-center justify-center">
+                  {quoteLoaded ? (
+                    <span className="animate-fade-in-up opacity-0" style={{ animationDuration: '250ms' }}>
+                      {symbol}{formatAmount(amounts![plan.id])}
+                    </span>
+                  ) : (
+                    <span className="h-3 w-12 rounded bg-fg/10 animate-pulse" />
+                  )}
+                </div>
                 {plan.note && <div className="text-[10px] text-fg/40 mt-1">{plan.note}</div>}
               </button>
             );
@@ -128,10 +167,19 @@ export default function PremiumPage() {
 
         <button
           onClick={handleUpgrade}
-          disabled={loading}
+          disabled={loading || !quoteLoaded}
           className="w-full bg-blue hover:bg-blue-deep disabled:opacity-60 text-white text-sm font-semibold rounded-lg py-3 transition-colors"
         >
-          {loading ? 'Processing…' : `Upgrade — ₦${PLANS.find((p) => p.id === selected)!.price.toLocaleString()}`}
+          {loading ? (
+            'Processing…'
+          ) : quoteLoaded ? (
+            `Upgrade — ${symbol}${formatAmount(amounts![selected])}`
+          ) : (
+            <span className="inline-flex items-center gap-2">
+              Upgrade
+              <span className="h-3 w-14 rounded bg-white/20 animate-pulse" />
+            </span>
+          )}
         </button>
       </div>
     </main>

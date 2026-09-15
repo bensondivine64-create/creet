@@ -3,6 +3,9 @@
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
+import { useEffect } from 'react';
+import { getPremiumQuote } from '@/lib/payments';
+import { writeCachedQuote } from '@/lib/premiumQuoteCache';
 import BottomNav from '@/components/BottomNav';
 import Avatar from '@/components/Avatar';
 import VerifiedBadge from '@/components/VerifiedBadge';
@@ -110,6 +113,13 @@ function Row({ href, icon, title, subtitle, accent, delay = 0 }: RowProps) {
 export default function SettingsPage() {
   const { user, loading } = useRequireAnyAuth();
   const { logout } = useAuth();
+
+  useEffect(() => {
+    if (!user || user.is_premium) return;
+    getPremiumQuote()
+      .then((res) => writeCachedQuote(res.currency, res.amounts))
+      .catch(() => {});
+  }, [user]);
 
   if (loading || !user) {
     return <div className="min-h-screen bg-black flex items-center justify-center text-muted text-sm">Loading...</div>;

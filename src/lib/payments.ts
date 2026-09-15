@@ -2,6 +2,15 @@ import { apiCall } from '@/lib/api';
 
 export type PremiumPlan = 'monthly' | 'three_months' | 'yearly';
 
+export interface PremiumQuoteResponse {
+  currency: string;
+  amounts: Record<PremiumPlan, number>;
+}
+
+export function getPremiumQuote() {
+  return apiCall<PremiumQuoteResponse>('/payments/premium/quote');
+}
+
 export interface InitiatePremiumResponse {
   tx_ref: string;
   amount: number;
