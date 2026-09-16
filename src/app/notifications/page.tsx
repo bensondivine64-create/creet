@@ -50,7 +50,7 @@ export default function NotificationsPage() {
   const showSkeleton = loading && !loaded;
 
   return (
-    <main className="min-h-screen bg-paper pb-10">
+    <main className="min-h-screen bg-black pb-10">
       <div className="flex items-center justify-between px-5 py-6">
         <Link href="/browse" className="text-sm text-fg/50 hover:text-fg transition-colors">
           ← Back
