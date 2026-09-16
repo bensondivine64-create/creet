@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import { getMyConnections, getConnectionsFeed, acceptConnection, declineConnection, ConnectionUser } from '@/lib/connections';
+import { getCachedConnections, setCachedConnections, clearConnectionsCache } from '@/lib/connectionsCache';
 import { Listing } from '@/types/listing';
 import Avatar from '@/components/Avatar';
 import VerifiedBadge from '@/components/VerifiedBadge';
@@ -17,32 +18,50 @@ export default function ConnectionsPage() {
   const [feed, setFeed] = useState<Listing[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
 
-  function load() {
-    setDataLoading(true);
-    Promise.all([getMyConnections(), getConnectionsFeed()])
-      .then(([connRes, feedRes]) => {
-        setConnections(connRes.connections);
-        setPending(connRes.pending_received);
-        setFeed(feedRes.listings);
-      })
-      .catch(() => {})
-      .finally(() => setDataLoading(false));
+  function fetchFresh() {
+    return Promise.all([getMyConnections(), getConnectionsFeed()]).then(([connRes, feedRes]) => {
+      const data = {
+        connections: connRes.connections,
+        pending: connRes.pending_received,
+        feed: feedRes.listings,
+      };
+      setConnections(data.connections);
+      setPending(data.pending);
+      setFeed(data.feed);
+      setCachedConnections(data);
+    });
   }
 
   useEffect(() => {
     if (!user) return;
-    load();
+
+    const cached = getCachedConnections();
+    if (cached) {
+      // Show cached data instantly, no loading state — then quietly refresh.
+      setConnections(cached.connections);
+      setPending(cached.pending);
+      setFeed(cached.feed);
+      setDataLoading(false);
+      fetchFresh().catch(() => {});
+    } else {
+      setDataLoading(true);
+      fetchFresh()
+        .catch(() => {})
+        .finally(() => setDataLoading(false));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   async function handleAccept(connectionId: number) {
     await acceptConnection(connectionId);
-    load();
+    clearConnectionsCache();
+    fetchFresh().catch(() => {});
   }
 
   async function handleDecline(connectionId: number) {
     await declineConnection(connectionId);
-    load();
+    clearConnectionsCache();
+    fetchFresh().catch(() => {});
   }
 
   if (loading || !user) {
@@ -132,7 +151,7 @@ export default function ConnectionsPage() {
                     {item.images && item.images.length > 0 && (
                       <div className="aspect-video overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
+                        <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" loading="lazy" decoding="async" />
                       </div>
                     )}
                     <div className="p-3">

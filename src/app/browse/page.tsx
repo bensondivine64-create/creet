@@ -221,7 +221,7 @@ function ListingCard({ item }: { item: Listing }) {
       {item.images && item.images.length > 0 && (
         <div className="relative aspect-video overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
+          <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover"  loading="lazy" decoding="async" />
         </div>
       )}
       <div className="p-3">
@@ -541,7 +541,7 @@ export default function BrowsePage() {
                     {item.images && item.images.length > 0 && (
                       <div className="relative aspect-video overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" />
+                        <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover"  loading="lazy" decoding="async" />
                       </div>
                     )}
                   </Link>
