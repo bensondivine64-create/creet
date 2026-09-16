@@ -65,11 +65,11 @@ export default function ConnectionsPage() {
   }
 
   if (loading || !user) {
-    return <div className="min-h-screen bg-paper flex items-center justify-center text-muted text-sm">Loading...</div>;
+    return <div className="min-h-screen bg-black flex items-center justify-center text-muted text-sm">Loading...</div>;
   }
 
   return (
-    <main className="min-h-screen bg-paper pb-40">
+    <main className="min-h-screen bg-black pb-40">
       <div className="flex items-center justify-between px-5 py-4 border-b border-line">
         <Link href="/browse" className="text-sm text-muted hover:text-fg transition-colors">← Back</Link>
         <span className="font-display text-lg font-bold text-fg">Connections</span>
@@ -97,7 +97,7 @@ export default function ConnectionsPage() {
                   </Link>
                   <div className="flex gap-2 shrink-0">
                     <button onClick={() => handleAccept(p.connection_id)} className="text-xs bg-blue text-black font-semibold rounded-full px-3 py-1.5">Accept</button>
-                    <button onClick={() => handleDecline(p.connection_id)} className="text-xs bg-paper border border-line text-fg rounded-full px-3 py-1.5">Decline</button>
+                    <button onClick={() => handleDecline(p.connection_id)} className="text-xs bg-black border border-line text-fg rounded-full px-3 py-1.5">Decline</button>
                   </div>
                 </div>
               ))}

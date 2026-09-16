@@ -84,7 +84,7 @@ function SearchPageInner() {
   }
 
   return (
-    <main className="min-h-screen bg-paper pb-20">
+    <main className="min-h-screen bg-black pb-20">
       <div className="px-5 pt-5 pb-4">
         <span className="font-display text-xl font-bold tracking-tight text-fg">Search</span>
       </div>
@@ -303,7 +303,7 @@ function SearchPageInner() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-paper" />}>
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
       <SearchPageInner />
     </Suspense>
   );

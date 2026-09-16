@@ -124,7 +124,7 @@ const THEMES: ThemeRow[] = [
 
 function BrowseSkeleton() {
   return (
-    <main className="min-h-screen bg-paper pb-40 animate-pulse">
+    <main className="min-h-screen bg-black pb-40 animate-pulse">
       <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <div className="h-6 w-20 bg-line/20 rounded" />
         <div className="flex items-center gap-2">
@@ -396,7 +396,7 @@ export default function BrowsePage() {
   }
 
   return (
-    <main className="min-h-screen bg-paper pb-40">
+    <main className="min-h-screen bg-black pb-40">
       <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <span className="font-display text-xl font-bold tracking-tight text-fg">CREET</span>
         <div className="flex items-center gap-2">
