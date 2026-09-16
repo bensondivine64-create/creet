@@ -8,6 +8,7 @@ import { getMyListings, deleteListing, markSold } from '@/lib/listings';
 import { Listing } from '@/types/listing';
 import BottomNav from '@/components/BottomNav';
 import EmptyState from '@/components/EmptyState';
+import { formatRelativeTime } from '@/lib/time';
 import { useConfirm } from '@/contexts/ConfirmContext';
 import { useToast } from '@/contexts/ToastContext';
 
@@ -36,7 +37,7 @@ export default function FreelancerDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-paper pb-20 animate-fade-in-up">
+    <div className="min-h-screen bg-black pb-20 animate-fade-in-up">
       <header className="border-b border-line px-5 py-4 flex items-center justify-between">
         <span className="font-display text-lg font-bold tracking-tight text-fg">CREET</span>
         <button onClick={logout} className="text-sm text-fg/50 hover:text-blue transition-colors">
@@ -125,6 +126,7 @@ export default function FreelancerDashboard() {
                     <div className="text-sm font-bold text-blue mt-0.5">
                       {item.currency} {item.price.toLocaleString()}
                     </div>
+                    <div className="text-[11px] text-fg/40 mt-0.5">{formatRelativeTime(item.created_at)}</div>
                   </div>
                 </Link>
 

@@ -18,6 +18,7 @@ interface ListingBase {
   seller: ListingSeller;
   rating_avg: number;
   rating_count: number;
+  comment_count?: number;
   created_at: string;
 }
 

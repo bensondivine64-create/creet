@@ -51,6 +51,10 @@ export function createProduct(payload: CreateProductPayload) {
   });
 }
 
+export function getFeedListings(kind: ListingKind, limit = 20) {
+  return apiCall<ListingsResponse>(`/listings/feed?type=${kind}&limit=${limit}`);
+}
+
 export function getMyListings() {
   return apiCall<ListingsResponse>('/listings/mine');
 }

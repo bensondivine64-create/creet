@@ -7,7 +7,7 @@ import { postRequest } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
 import { clearListingsCache } from '@/lib/listingsCache';
 import { CATEGORIES } from '@/lib/categories';
-import { localCurrencyForCountry, currencySymbol } from '@/lib/currency';
+import { localCurrencyForCountry, currencySymbol, getRememberedCurrency, rememberCurrency } from '@/lib/currency';
 import ImagePicker from '@/components/ImagePicker';
 import CurrencyToggle from '@/components/CurrencyToggle';
 
@@ -24,7 +24,8 @@ export default function PostRequestPage() {
 
   const localCurrency = localCurrencyForCountry(user?.country);
   if (user && !currencyInit) {
-    setCurrency(localCurrency);
+    const remembered = getRememberedCurrency();
+    setCurrency(remembered && (remembered === localCurrency || remembered === 'USD') ? remembered : localCurrency);
     setCurrencyInit(true);
   }
 
@@ -131,7 +132,11 @@ export default function PostRequestPage() {
             </div>
           </div>
 
-          <CurrencyToggle localCurrency={localCurrency} value={currency} onChange={setCurrency} />
+          <CurrencyToggle
+            localCurrency={localCurrency}
+            value={currency}
+            onChange={(c) => { setCurrency(c); rememberCurrency(c); }}
+          />
 
           <div className="grid grid-cols-2 gap-4">
             <div>

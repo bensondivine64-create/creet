@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
-import { getListings, getMyListings, deleteListing } from '@/lib/listings';
+import { getFeedListings, getMyListings, deleteListing } from '@/lib/listings';
 import { getProfileDirectory, DirectoryProfile } from '@/lib/profile';
 import { Listing } from '@/types/listing';
+import { formatRelativeTime } from '@/lib/time';
 import BottomNav from '@/components/BottomNav';
 import NotificationBell from '@/components/NotificationBell';
 import Avatar from '@/components/Avatar';
@@ -24,6 +25,30 @@ function Chevron() {
   );
 }
 
+function CommentIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
+    </svg>
+  );
+}
+
+function ListingMeta({ item }: { item: Listing }) {
+  return (
+    <div className="flex items-center gap-2.5 text-[11px] text-muted mt-2">
+      {item.rating_count > 0 && (
+        <span>★ {item.rating_avg.toFixed(1)} ({item.rating_count})</span>
+      )}
+      {typeof item.comment_count === 'number' && item.comment_count > 0 && (
+        <span className="flex items-center gap-1">
+          <CommentIcon /> {item.comment_count}
+        </span>
+      )}
+      <span className="ml-auto">{formatRelativeTime(item.created_at)}</span>
+    </div>
+  );
+}
+
 export default function FreelancerHomePage() {
   const { user, loading } = useRequireAuth('freelancer');
   const { logout } = useAuth();
@@ -38,7 +63,7 @@ export default function FreelancerHomePage() {
   useEffect(() => {
     if (!user) return;
     Promise.all([
-      getListings({ kind: 'request', limit: 5 }),
+      getFeedListings('request', 8),
       getMyListings(),
       getProfileDirectory('freelancer', 8),
     ])
@@ -52,11 +77,11 @@ export default function FreelancerHomePage() {
   }, [user]);
 
   if (loading || !user) {
-    return <div className="min-h-screen bg-paper flex items-center justify-center text-muted text-sm">Loading...</div>;
+    return <div className="min-h-screen bg-black flex items-center justify-center text-muted text-sm">Loading...</div>;
   }
 
   return (
-    <main className="min-h-screen bg-paper pb-40 animate-fade-in-up">
+    <main className="min-h-screen bg-black pb-40 animate-fade-in-up">
       <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <span className="font-display text-xl font-bold tracking-tight text-fg">CREET</span>
         <div className="flex items-center gap-2">
@@ -69,7 +94,7 @@ export default function FreelancerHomePage() {
 
       <section className="px-5 pt-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-display font-bold text-fg text-lg">Open requests</h2>
+          <h2 className="font-display font-bold text-fg text-lg">For you</h2>
           <Link href="/requests" className="text-xs text-fg underline underline-offset-2">See All</Link>
         </div>
 
@@ -111,6 +136,7 @@ export default function FreelancerHomePage() {
                 <div className="text-sm font-bold text-fg mt-2">
                   Budget: {item.currency} {item.price.toLocaleString()}
                 </div>
+                <ListingMeta item={item} />
               </Link>
             ))}
           </div>
@@ -137,6 +163,7 @@ export default function FreelancerHomePage() {
                 >
                   <div className="text-sm font-semibold text-fg line-clamp-2 mb-1">{item.title}</div>
                   <div className="text-xs text-muted">{item.currency} {item.price.toLocaleString()}</div>
+                  <div className="text-[10px] text-muted mt-1">{formatRelativeTime(item.created_at)}</div>
                 </Link>
                 <div className="flex items-center gap-1.5 mt-1.5 px-0.5">
                   <Link
