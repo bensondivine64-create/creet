@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #0b0e14;
+  --background: #000000;
+  --foreground: #f5f5f5;
 }
 
 * {
@@ -19,7 +19,6 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 a {
@@ -37,4 +36,17 @@ a {
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Safe-area support for notches, status bars, and home-indicator bars
+   on iOS/Android when the app is installed to the home screen or run
+   in a browser that respects viewport-fit=cover. */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.safe-bottom-nav {
+  padding-bottom: calc(0.625rem + env(safe-area-inset-bottom));
 }

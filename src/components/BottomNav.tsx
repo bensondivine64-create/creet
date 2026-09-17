@@ -83,14 +83,15 @@ export default function BottomNav() {
         <Link
           href={postHref}
           aria-label="Post"
-          className="fixed bottom-24 right-5 z-30 h-14 w-14 rounded-full bg-fg shadow-lg shadow-black/50 flex items-center justify-center active:scale-95 transition-transform"
+          className="fixed right-5 z-30 h-14 w-14 rounded-full bg-fg shadow-lg shadow-black/50 flex items-center justify-center active:scale-95 transition-transform"
+          style={{ bottom: 'calc(6rem + env(safe-area-inset-bottom))' }}
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth={2.2} strokeLinecap="round">
             <path d="M12 5v14M5 12h14" />
           </svg>
         </Link>
       )}
-    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-mist border-t border-line">
+    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-mist border-t border-line safe-bottom">
       <div className={`max-w-2xl mx-auto grid ${gridColsClass}`}>
         {tabs.map((tab, i) => {
           const active = pathname === tab.href;

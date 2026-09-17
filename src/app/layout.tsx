@@ -28,6 +28,12 @@ const mono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "CREET",
   description: "CREET — buy, hire, and sell, all in one place.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "CREET",
+  },
 };
 
 export const viewport: Viewport = {
@@ -36,6 +42,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

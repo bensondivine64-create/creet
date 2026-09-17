@@ -1,0 +1,10 @@
+{
+  "name": "CREET",
+  "short_name": "CREET",
+  "description": "Buy, hire, and sell, all in one place.",
+  "start_url": "/browse",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait"
+}
