@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Recaptcha from '@/components/Recaptcha';
 import GoogleButton from '@/components/GoogleButton';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import PasswordInput from '@/components/PasswordInput';
 
 const TOTAL_STEPS = 3;
 const STEP_TITLES = ['Your details', 'Contact & password', 'Finish up'];
@@ -156,7 +157,7 @@ export default function VendorSignupPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-fg/70 mb-1.5">Password</label>
-              <input type="password" name="password" value={form.password} onChange={handleChange} required minLength={8} className={inputClass} />
+              <PasswordInput name="password" value={form.password} onChange={handleChange} required minLength={8} className={inputClass} />
             </div>
           </>
         )}

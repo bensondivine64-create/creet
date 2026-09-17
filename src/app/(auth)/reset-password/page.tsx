@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import PasswordInput from '@/components/PasswordInput';
 
 function ResetPasswordForm() {
   const { resetPassword } = useAuth();
@@ -73,8 +74,7 @@ function ResetPasswordForm() {
         </div>
         <div>
           <label className="block text-sm font-medium text-fg/70 mb-1.5">New password</label>
-          <input
-            type="password"
+          <PasswordInput
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             required

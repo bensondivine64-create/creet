@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/contexts/ToastContext';
 import { getMyConnections } from '@/lib/connections';
 import { uploadAvatar, uploadCoverPhoto } from '@/lib/profile';
 import BottomNav from '@/components/BottomNav';
@@ -29,6 +30,15 @@ function CameraIcon() {
   );
 }
 
+function CalendarIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+      <rect x="3.5" y="5" width="17" height="16" rx="2" />
+      <path strokeLinecap="round" d="M8 3v4M16 3v4M3.5 10h17" />
+    </svg>
+  );
+}
+
 function buildHeadline(role: string, categories: string[], location?: string | null) {
   const parts = [role.charAt(0).toUpperCase() + role.slice(1)];
   if (categories.length > 0) parts.push(categories[0]);
@@ -36,11 +46,18 @@ function buildHeadline(role: string, categories: string[], location?: string | n
   return parts.join(' · ');
 }
 
+function formatJoined(iso?: string | null) {
+  if (!iso) return null;
+  const date = new Date(iso);
+  return `Joined ${date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+}
+
 type CropTarget = 'avatar' | 'cover' | null;
 
 export default function ProfilePage() {
   const { user, loading } = useRequireAnyAuth();
   const { refreshUser } = useAuth();
+  const { showToast } = useToast();
   const [connectionCount, setConnectionCount] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
@@ -82,7 +99,6 @@ export default function ProfilePage() {
     const target = cropTarget;
     const localPreviewUrl = URL.createObjectURL(croppedFile);
 
-    // Show the cropped result instantly, before the network round-trip finishes.
     if (target === 'avatar') setPreviewAvatar(localPreviewUrl);
     if (target === 'cover') setPreviewCover(localPreviewUrl);
     closeCropper();
@@ -98,7 +114,6 @@ export default function ProfilePage() {
       await refreshUser();
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : 'Could not upload photo');
-      // Revert the optimistic preview on failure so we don't show a photo that never saved.
       if (target === 'avatar') setPreviewAvatar(null);
       if (target === 'cover') setPreviewCover(null);
     } finally {
@@ -108,12 +123,32 @@ export default function ProfilePage() {
     }
   }
 
+  async function handleShare() {
+    if (!user) return;
+    const url = `https://creet.name.ng/u/${user.username}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: user.full_name, url });
+      } catch {
+        // user cancelled the share sheet — not an error
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast('Profile link copied', 'success');
+    } catch {
+      showToast('Could not copy link', 'error');
+    }
+  }
+
   if (loading || !user) {
     return <div className="min-h-screen bg-black flex items-center justify-center text-muted text-sm">Loading...</div>;
   }
 
   const headline = buildHeadline(user.role, user.categories || [], user.location);
   const coverSrc = previewCover || user.cover_photo;
+  const joined = formatJoined(user.created_at);
 
   return (
     <main className="min-h-screen bg-black pb-24 animate-fade-in-up">
@@ -144,10 +179,10 @@ export default function ProfilePage() {
         </div>
 
         <div className="max-w-2xl mx-auto px-5">
-          <div className="relative -mt-10 flex items-end justify-between">
+          <div className="relative -mt-11 flex items-end justify-between">
             <div className="relative">
               <div className="rounded-full ring-4 ring-black">
-                <Avatar avatar={previewAvatar || user.avatar} name={user.full_name} size={80} />
+                <Avatar avatar={previewAvatar || user.avatar} name={user.full_name} size={88} />
               </div>
               <button
                 onClick={() => avatarInputRef.current?.click()}
@@ -158,6 +193,21 @@ export default function ProfilePage() {
                 <CameraIcon />
               </button>
               <input ref={avatarInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handlePickFile('avatar')} />
+            </div>
+
+            <div className="flex gap-2 pb-2">
+              <button
+                onClick={handleShare}
+                className="px-4 py-2 rounded-full border border-line text-fg text-sm font-semibold active:scale-[0.96] transition-transform"
+              >
+                Share
+              </button>
+              <Link
+                href="/profile/edit"
+                className="px-4 py-2 rounded-full border border-line text-fg text-sm font-semibold active:scale-[0.96] transition-transform"
+              >
+                Edit profile
+              </Link>
             </div>
           </div>
 
@@ -170,25 +220,36 @@ export default function ProfilePage() {
             </div>
             <div className="text-sm text-muted">@{user.username}</div>
             <div className="text-sm text-fg/70 mt-1">{headline}</div>
-            {connectionCount !== null && (
-              <Link href="/connections" className="inline-block text-sm text-blue font-medium mt-1.5">
-                {connectionCount} connection{connectionCount === 1 ? '' : 's'}
-              </Link>
-            )}
+
             {user.short_bio && (
-              <p className="text-sm text-fg/70 mt-2 leading-relaxed">{user.short_bio}</p>
+              <p className="text-sm text-fg/80 mt-2.5 leading-relaxed">{user.short_bio}</p>
+            )}
+
+            <div className="flex items-center gap-3 mt-3 text-sm text-muted">
+              {joined && (
+                <span className="flex items-center gap-1.5">
+                  <CalendarIcon /> {joined}
+                </span>
+              )}
+            </div>
+
+            {connectionCount !== null && (
+              <Link href="/connections" className="inline-block text-sm mt-2">
+                <span className="font-semibold text-fg">{connectionCount}</span>{' '}
+                <span className="text-muted">connection{connectionCount === 1 ? '' : 's'}</span>
+              </Link>
             )}
           </div>
 
           <Link
             href={`/u/${user.username}`}
-            className="block text-center text-xs text-muted mt-4 border border-line/60 rounded-xl py-2.5 active:opacity-60 transition-opacity"
+            className="block text-center text-xs text-muted mt-5 border border-line/60 rounded-xl py-2.5 active:opacity-60 transition-opacity"
           >
             View how others see your profile
           </Link>
 
           {user.categories && user.categories.length > 0 && (
-            <div className="mt-6 pt-6 border-t border-line">
+            <div className="mt-6 pt-6 border-t border-line/60">
               <h2 className="font-display text-base font-bold text-fg mb-3">Skills</h2>
               <div className="flex flex-wrap gap-2">
                 {user.categories.map((cat) => (

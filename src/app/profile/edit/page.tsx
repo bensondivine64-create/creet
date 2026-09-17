@@ -17,6 +17,7 @@ export default function EditProfilePage() {
 
   const [fullName, setFullName] = useState(user?.full_name || '');
   const [username, setUsername] = useState(user?.username || '');
+  const [shortBio, setShortBio] = useState(user?.short_bio || '');
   const [bio, setBio] = useState(user?.bio || '');
   const [location, setLocation] = useState(user?.location || '');
   const [categories, setCategories] = useState<string[]>(user?.categories || []);
@@ -43,7 +44,7 @@ export default function EditProfilePage() {
   }
 
   if (loading || !user) {
-    return <div className="min-h-screen bg-paper flex items-center justify-center text-muted text-sm">Loading...</div>;
+    return <div className="min-h-screen bg-black flex items-center justify-center text-muted text-sm">Loading...</div>;
   }
 
   function toggleCategory(cat: string) {
@@ -56,7 +57,7 @@ export default function EditProfilePage() {
     setError('');
     setSaving(true);
     try {
-      await updateProfile({ full_name: fullName, username, bio, location, categories });
+      await updateProfile({ full_name: fullName, username, short_bio: shortBio, bio, location, categories });
       await refreshUser();
       router.push('/profile');
     } catch (err) {
@@ -67,8 +68,8 @@ export default function EditProfilePage() {
   }
 
   return (
-    <main className="min-h-screen bg-paper pb-24 animate-fade-in-up">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line">
+    <main className="min-h-screen bg-black pb-24 animate-fade-in-up">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line/60">
         <Link href="/profile" className="text-sm text-muted hover:text-fg transition-colors">
           ← Back
         </Link>
@@ -86,7 +87,7 @@ export default function EditProfilePage() {
         <div className="flex flex-col items-center">
           <div className="relative">
             <Avatar avatar={avatarUrl} name={fullName || user.full_name} size={88} />
-            <label className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-blue border-2 border-paper flex items-center justify-center cursor-pointer active:scale-90 transition-transform">
+            <label className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-blue border-2 border-black flex items-center justify-center cursor-pointer active:scale-90 transition-transform">
               {avatarUploading ? (
                 <span className="h-3 w-3 rounded-full border-2 border-black/30 border-t-black animate-spin-fast" />
               ) : (
@@ -112,7 +113,7 @@ export default function EditProfilePage() {
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
+            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue/40 transition-colors"
           />
         </div>
 
@@ -123,22 +124,34 @@ export default function EditProfilePage() {
             value={username}
             onChange={(e) => setUsername(e.target.value.toLowerCase())}
             minLength={3}
-            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
+            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue/40 transition-colors"
           />
           <p className="text-xs text-muted mt-1">This is used in your profile link: creet.name.ng/u/{username || 'username'}</p>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-fg/70 mb-1.5">Bio</label>
+          <input
+            type="text"
+            value={shortBio}
+            onChange={(e) => setShortBio(e.target.value.slice(0, 150))}
+            placeholder="A short line shown on your profile"
+            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue/40 transition-colors"
+          />
+          <div className="text-right text-xs text-muted mt-1">{shortBio.length}/150 · shown publicly</div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-fg/70 mb-1.5">About</label>
           <textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             rows={4}
-            maxLength={280}
-            placeholder="A short intro sellers and buyers will see on your profile."
-            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
+            maxLength={1000}
+            placeholder="More detail for CREET to better match you with deals — not shown publicly."
+            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted resize-none focus:outline-none focus:ring-2 focus:ring-blue/40 transition-colors"
           />
-          <div className="text-right text-xs text-muted mt-1">{bio.length}/280</div>
+          <div className="text-right text-xs text-muted mt-1">{bio.length}/1000 · not shown on your profile</div>
         </div>
 
         <div>
@@ -148,7 +161,7 @@ export default function EditProfilePage() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="e.g. Lagos, Nigeria"
-            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
+            className="w-full rounded-xl border border-line bg-mist px-3.5 py-3 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue/40 transition-colors"
           />
         </div>
 

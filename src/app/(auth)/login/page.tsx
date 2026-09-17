@@ -8,6 +8,7 @@ import { ApiError } from '@/lib/api';
 import Recaptcha from '@/components/Recaptcha';
 import GoogleButton from '@/components/GoogleButton';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import PasswordInput from '@/components/PasswordInput';
 
 export default function LoginPage() {
   const { login, loginWithGoogle } = useAuth();
@@ -137,8 +138,7 @@ export default function LoginPage() {
               Forgot password?
             </Link>
           </div>
-          <input
-            type="password"
+          <PasswordInput
             name="password"
             value={form.password}
             onChange={handleChange}

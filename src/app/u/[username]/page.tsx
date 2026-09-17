@@ -21,6 +21,21 @@ function buildHeadline(role: string, categories: string[], location?: string | n
   return parts.join(' · ');
 }
 
+function formatJoined(iso?: string | null) {
+  if (!iso) return null;
+  const date = new Date(iso);
+  return `Joined ${date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+}
+
+function CalendarIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+      <rect x="3.5" y="5" width="17" height="16" rx="2" />
+      <path strokeLinecap="round" d="M8 3v4M16 3v4M3.5 10h17" />
+    </svg>
+  );
+}
+
 function MoreMenu({
   onReport,
   onBlock,
@@ -52,14 +67,14 @@ function MoreMenu({
           <div className="absolute right-0 top-10 z-30 w-44 bg-mist border border-line rounded-xl overflow-hidden shadow-lg shadow-black/50">
             <button
               onClick={() => { setOpen(false); onReport(); }}
-              className="w-full text-left px-4 py-3 text-sm text-fg active:bg-paper/50"
+              className="w-full text-left px-4 py-3 text-sm text-fg active:bg-black/50"
             >
               Report user
             </button>
             <button
               onClick={() => { setOpen(false); onBlock(); }}
               disabled={blockLoading}
-              className="w-full text-left px-4 py-3 text-sm text-red-400 active:bg-paper/50 border-t border-line disabled:opacity-50"
+              className="w-full text-left px-4 py-3 text-sm text-red-400 active:bg-black/50 border-t border-line disabled:opacity-50"
             >
               {blockLoading ? 'Working...' : isBlocked ? 'Unblock user' : 'Block user'}
             </button>
@@ -166,18 +181,19 @@ export default function PublicProfilePage() {
 
   if (error || !profile) {
     return (
-      <main className="min-h-screen bg-paper">
+      <main className="min-h-screen bg-black">
         <EmptyState icon="search" title="Profile not found" subtitle="This user may not exist." />
       </main>
     );
   }
 
   const headline = buildHeadline(profile.role, profile.categories, profile.location);
+  const joined = formatJoined(profile.created_at);
   const isOwnProfile = viewer && viewer.username === profile.username;
 
   return (
-    <main className="min-h-screen bg-paper pb-16 animate-fade-in-up">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line relative z-10 bg-paper">
+    <main className="min-h-screen bg-black pb-16 animate-fade-in-up">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line/60 relative z-10 bg-black">
         <Link href="/browse" className="text-sm text-muted hover:text-fg transition-colors">
           ← Back
         </Link>
@@ -202,9 +218,9 @@ export default function PublicProfilePage() {
         </div>
 
         <div className="max-w-2xl mx-auto px-5">
-          <div className="relative -mt-10">
-            <div className="rounded-full ring-4 ring-paper inline-block">
-              <Avatar avatar={profile.avatar} name={profile.full_name} size={80} />
+          <div className="relative -mt-11">
+            <div className="rounded-full ring-4 ring-black inline-block">
+              <Avatar avatar={profile.avatar} name={profile.full_name} size={88} />
             </div>
           </div>
 
@@ -215,17 +231,28 @@ export default function PublicProfilePage() {
             </div>
             <div className="text-sm text-muted">@{profile.username}</div>
             <div className="text-sm text-fg/70 mt-1">{headline}</div>
-            <div className="text-sm text-blue font-medium mt-1.5">
-              {profile.connection_count} connection{profile.connection_count === 1 ? '' : 's'}
-            </div>
+
             {profile.short_bio && (
-              <p className="text-sm text-fg/70 mt-2 leading-relaxed">{profile.short_bio}</p>
+              <p className="text-sm text-fg/80 mt-2.5 leading-relaxed">{profile.short_bio}</p>
             )}
+
+            <div className="flex items-center gap-3 mt-3 text-sm text-muted">
+              {joined && (
+                <span className="flex items-center gap-1.5">
+                  <CalendarIcon /> {joined}
+                </span>
+              )}
+            </div>
+
+            <div className="text-sm mt-2">
+              <span className="font-semibold text-fg">{profile.connection_count}</span>{' '}
+              <span className="text-muted">connection{profile.connection_count === 1 ? '' : 's'}</span>
+            </div>
           </div>
 
           {viewer && !isOwnProfile && iBlockedThem && (
             <div className="mt-4 bg-mist border border-line rounded-lg py-3 text-center">
-              <p className="text-sm text-muted mb-2">You've blocked this user</p>
+              <p className="text-sm text-muted mb-2">You&apos;ve blocked this user</p>
               <button
                 onClick={handleToggleBlock}
                 disabled={blockLoading}
@@ -237,18 +264,18 @@ export default function PublicProfilePage() {
           )}
 
           {viewer && !isOwnProfile && !iBlockedThem && !theyBlockedMe && (
-            <div className="mt-4">
+            <div className="mt-5">
               {connStatus === 'none' && (
                 <button
                   onClick={handleConnect}
                   disabled={connLoading}
-                  className="w-full bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3"
+                  className="w-full bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-full py-3"
                 >
                   {connLoading ? 'Sending...' : 'Connect'}
                 </button>
               )}
               {connStatus === 'pending_sent' && (
-                <div className="w-full bg-mist border border-line text-muted text-sm font-semibold rounded-lg py-2.5 text-center">
+                <div className="w-full border border-line text-muted text-sm font-semibold rounded-full py-2.5 text-center">
                   Request sent
                 </div>
               )}
@@ -257,21 +284,21 @@ export default function PublicProfilePage() {
                   <button
                     onClick={handleAccept}
                     disabled={connLoading}
-                    className="flex-1 bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3"
+                    className="flex-1 bg-blue disabled:opacity-50 text-black text-sm font-semibold rounded-full py-3"
                   >
                     Accept
                   </button>
                   <button
                     onClick={handleDecline}
                     disabled={connLoading}
-                    className="flex-1 bg-mist border border-line text-fg text-sm font-semibold rounded-lg py-3"
+                    className="flex-1 border border-line text-fg text-sm font-semibold rounded-full py-3"
                   >
                     Decline
                   </button>
                 </div>
               )}
               {connStatus === 'connected' && (
-                <div className="w-full bg-mist border border-line text-fg text-sm font-semibold rounded-lg py-2.5 text-center">
+                <div className="w-full border border-line text-fg text-sm font-semibold rounded-full py-2.5 text-center">
                   ✓ Connected
                 </div>
               )}
@@ -279,7 +306,7 @@ export default function PublicProfilePage() {
           )}
 
           {profile.categories.length > 0 && (
-            <div className="mt-6 pt-6 border-t border-line">
+            <div className="mt-6 pt-6 border-t border-line/60">
               <h2 className="font-display text-base font-bold text-fg mb-3">Skills</h2>
               <div className="flex flex-wrap gap-2">
                 {profile.categories.map((cat) => (
