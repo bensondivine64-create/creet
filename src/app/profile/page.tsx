@@ -243,13 +243,13 @@ export default function ProfilePage() {
 
           <Link
             href={`/u/${user.username}`}
-            className="block text-center text-xs text-muted mt-5 border border-line/60 rounded-xl py-2.5 active:opacity-60 transition-opacity"
+            className="block text-center text-xs text-muted mt-5 border border-line/60 rounded-full py-2.5 active:opacity-60 transition-opacity"
           >
             View how others see your profile
           </Link>
 
           {user.categories && user.categories.length > 0 && (
-            <div className="mt-6 pt-6 border-t border-line/60">
+            <div className="mt-6 pt-6 pb-16 border-t border-line/60">
               <h2 className="font-display text-base font-bold text-fg mb-3">Skills</h2>
               <div className="flex flex-wrap gap-2">
                 {user.categories.map((cat) => (
