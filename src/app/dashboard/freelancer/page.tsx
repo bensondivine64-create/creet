@@ -30,7 +30,7 @@ export default function FreelancerDashboard() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-fg/40 text-sm font-mono">
+      <div className="min-h-screen flex items-center justify-center text-fg/40 text-sm">
         Loading...
       </div>
     );

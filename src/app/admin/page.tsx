@@ -32,7 +32,7 @@ export default function AdminSystemPage() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-muted text-sm font-mono">
+      <div className="min-h-screen flex items-center justify-center text-muted text-sm">
         Loading...
       </div>
     );
