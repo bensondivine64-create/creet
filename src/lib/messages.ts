@@ -20,6 +20,26 @@ export function sendMessage(conversationId: string | number, content: string) {
   });
 }
 
+export async function sendMessageImage(conversationId: string | number, file: File) {
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+  const token = typeof window !== 'undefined' ? localStorage.getItem('creet_token') : null;
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const res = await fetch(`${API_BASE}/conversations/${conversationId}/messages/image`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    credentials: 'include',
+    body: formData,
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.detail || 'Could not send image');
+  }
+  return data as { success: boolean; message: Message };
+}
+
 export function startConversation(listingId: number) {
   return apiCall<{ conversation_id: number }>('/conversations', {
     method: 'POST',

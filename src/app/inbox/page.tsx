@@ -165,17 +165,22 @@ export default function InboxPage() {
                 style={{ animationDelay: `${i * 40}ms` }}
                 className="flex items-center gap-3 py-3 border-b border-line active:bg-mist/60 transition-colors opacity-0 animate-fade-in-up"
               >
-                {c.participant.avatar ? (
-                  <img
-                    src={c.participant.avatar}
-                    alt=""
-                    className="h-14 w-14 rounded-full object-cover shrink-0"
-                  />
-                ) : (
-                  <span className="h-14 w-14 rounded-full bg-fg text-black text-lg font-bold flex items-center justify-center shrink-0">
-                    {c.participant.full_name.charAt(0).toUpperCase()}
-                  </span>
-                )}
+                <div className="relative shrink-0">
+                  {c.participant.avatar ? (
+                    <img
+                      src={c.participant.avatar}
+                      alt=""
+                      className="h-14 w-14 rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="h-14 w-14 rounded-full bg-fg text-black text-lg font-bold flex items-center justify-center">
+                      {c.participant.full_name.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                  {c.participant.is_online && (
+                    <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-paper" />
+                  )}
+                </div>
 
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1">

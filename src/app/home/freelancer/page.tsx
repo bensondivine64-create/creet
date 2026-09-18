@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
 import { getFeedListings, getMyListings, deleteListing } from '@/lib/listings';
 import { getProfileDirectory, DirectoryProfile } from '@/lib/profile';
@@ -49,9 +48,47 @@ function ListingMeta({ item }: { item: Listing }) {
   );
 }
 
+function DashboardSkeleton() {
+  return (
+    <main className="min-h-screen bg-black pb-40 animate-pulse">
+      <div className="flex items-center justify-between px-5 pt-5 pb-4">
+        <div className="h-6 w-20 bg-line/20 rounded" />
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-full bg-line/20" />
+          <div className="h-8 w-8 rounded-full bg-line/20" />
+        </div>
+      </div>
+      <div className="px-5 pt-4 space-y-4">
+        {[0, 1].map((i) => (
+          <div key={i} className="bg-mist border border-line rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="h-5 w-5 rounded-full bg-line/20" />
+              <div className="h-3 w-24 bg-line/20 rounded" />
+            </div>
+            <div className="h-4 w-3/4 bg-line/20 rounded mb-2" />
+            <div className="h-3 w-full bg-line/20 rounded" />
+          </div>
+        ))}
+      </div>
+    </main>
+  );
+}
+
+function GigsSkeleton() {
+  return (
+    <div className="flex gap-3 overflow-x-auto pb-1 pr-5">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="shrink-0 w-40 bg-mist border border-line rounded-2xl p-4 animate-pulse">
+          <div className="h-4 w-full bg-line/20 rounded mb-2" />
+          <div className="h-3 w-1/2 bg-line/20 rounded" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function FreelancerHomePage() {
   const { user, loading } = useRequireAuth('freelancer');
-  const { logout } = useAuth();
   const confirmDialog = useConfirm();
   const { showToast } = useToast();
 
@@ -59,6 +96,7 @@ export default function FreelancerHomePage() {
   const [myGigs, setMyGigs] = useState<Listing[]>([]);
   const [directory, setDirectory] = useState<DirectoryProfile[]>([]);
   const [sectionsLoading, setSectionsLoading] = useState(true);
+  const [pendingId, setPendingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -76,8 +114,28 @@ export default function FreelancerHomePage() {
       .finally(() => setSectionsLoading(false));
   }, [user]);
 
+  async function handleDelete(item: Listing) {
+    const ok = await confirmDialog({
+      title: 'Delete this listing?',
+      description: 'This cannot be undone.',
+      confirmLabel: 'Delete',
+      danger: true,
+    });
+    if (!ok) return;
+    setPendingId(item.id);
+    try {
+      await deleteListing(item.id);
+      showToast('Listing deleted', 'success');
+      setMyGigs((prev) => prev.filter((l) => l.id !== item.id));
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Could not delete listing', 'error');
+    } finally {
+      setPendingId(null);
+    }
+  }
+
   if (loading || !user) {
-    return <div className="min-h-screen bg-black flex items-center justify-center text-muted text-sm">Loading...</div>;
+    return <DashboardSkeleton />;
   }
 
   return (
@@ -86,7 +144,9 @@ export default function FreelancerHomePage() {
         <span className="font-display text-xl font-bold tracking-tight text-fg">CREET</span>
         <div className="flex items-center gap-2">
           <NotificationBell />
-          <Link href="/profile" className="h-8 w-8 rounded-full overflow-hidden border border-line active:scale-95 transition-transform"><Avatar avatar={user?.avatar} name={user?.full_name} size={32} /></Link>
+          <Link href="/profile" className="h-8 w-8 rounded-full overflow-hidden border border-line active:scale-95 transition-transform">
+            <Avatar avatar={user?.avatar} name={user?.full_name} size={32} />
+          </Link>
         </div>
       </div>
 
@@ -149,50 +209,45 @@ export default function FreelancerHomePage() {
           <Link href="/post-gig" className="text-xs text-fg underline underline-offset-2">Post new</Link>
         </div>
 
+        {sectionsLoading && <GigsSkeleton />}
+
         {!sectionsLoading && myGigs.length === 0 && (
           <EmptyState icon="listing" title="No gigs posted yet" ctaLabel="Post your first gig" ctaHref="/post-gig" />
         )}
 
         {!sectionsLoading && myGigs.length > 0 && (
           <div className="flex gap-3 overflow-x-auto snap-x scrollbar-hide pb-1 pr-5">
-            {myGigs.map((item) => (
-              <div key={item.id} className="shrink-0 snap-start w-40">
-                <Link
-                  href={`/listing/${item.id}`}
-                  className="block bg-mist border border-line rounded-2xl p-4 active:scale-[0.97] transition-transform"
-                >
-                  <div className="text-sm font-semibold text-fg line-clamp-2 mb-1">{item.title}</div>
-                  <div className="text-xs text-muted">{item.currency} {item.price.toLocaleString()}</div>
-                  <div className="text-[10px] text-muted mt-1">{formatRelativeTime(item.created_at)}</div>
-                </Link>
-                <div className="flex items-center gap-1.5 mt-1.5 px-0.5">
+            {myGigs.map((item) => {
+              const isPending = pendingId === item.id;
+              return (
+                <div key={item.id} className="shrink-0 snap-start w-40">
                   <Link
-                    href={`/listing/${item.id}/edit-gig`}
-                    className="text-[11px] text-fg/60 underline underline-offset-2"
+                    href={`/listing/${item.id}`}
+                    className="block bg-mist border border-line rounded-2xl p-4 active:scale-[0.97] transition-transform"
                   >
-                    Edit
+                    <div className="text-sm font-semibold text-fg line-clamp-2 mb-1">{item.title}</div>
+                    <div className="text-xs text-muted">{item.currency} {item.price.toLocaleString()}</div>
+                    <div className="text-[10px] text-muted mt-1">{formatRelativeTime(item.created_at)}</div>
                   </Link>
-                  <span className="text-fg/20 text-[11px]">·</span>
-                  <button
-                    onClick={async () => {
-                      const ok = await confirmDialog({
-                        title: 'Delete this listing?',
-                        description: 'This cannot be undone.',
-                        confirmLabel: 'Delete',
-                        danger: true,
-                      });
-                      if (!ok) return;
-                      await deleteListing(item.id);
-                      showToast('Listing deleted', 'success');
-                      setMyGigs((prev) => prev.filter((l) => l.id !== item.id));
-                    }}
-                    className="text-[11px] text-red-400 underline underline-offset-2"
-                  >
-                    Delete
-                  </button>
+                  <div className="flex items-center gap-1.5 mt-1.5 px-0.5">
+                    <Link
+                      href={`/listing/${item.id}/edit-gig`}
+                      className="text-[11px] text-fg/60 underline underline-offset-2"
+                    >
+                      Edit
+                    </Link>
+                    <span className="text-fg/20 text-[11px]">·</span>
+                    <button
+                      onClick={() => handleDelete(item)}
+                      disabled={isPending}
+                      className="text-[11px] text-red-400 underline underline-offset-2 disabled:opacity-50"
+                    >
+                      {isPending ? 'Working...' : 'Delete'}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>

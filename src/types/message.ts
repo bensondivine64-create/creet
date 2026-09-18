@@ -3,6 +3,8 @@ interface Participant {
   full_name: string;
   avatar?: string | null;
   verified: boolean;
+  last_active?: string | null;
+  is_online?: boolean;
 }
 
 export interface Conversation {
@@ -20,6 +22,7 @@ export interface Message {
   conversation_id: number;
   sender_username: string;
   content: string;
+  image_url?: string | null;
   created_at: string;
 }
 
@@ -30,4 +33,5 @@ export interface ConversationsResponse {
 
 export interface MessagesResponse {
   messages: Message[];
+  participant?: Participant | null;
 }

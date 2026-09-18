@@ -25,6 +25,7 @@ export interface User {
   notify_messages: boolean;
   notify_announcements: boolean;
   notify_listing_activity: boolean;
+  hide_online_status: boolean;
   onboarding_extra: Record<string, string>;
   created_at: string;
 }
@@ -76,4 +77,5 @@ export interface UpdateProfilePayload {
   categories?: string[];
   country?: string;
   onboarding_extra?: Record<string, string>;
+  hide_online_status?: boolean;
 }

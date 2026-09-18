@@ -1,0 +1,64 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
+import { updateProfile } from '@/lib/profile';
+
+function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`relative h-6 w-11 rounded-full transition-colors shrink-0 ${on ? 'bg-blue' : 'bg-line/40'}`}
+    >
+      <span
+        className={`absolute top-0.5 h-5 w-5 rounded-full transition-transform ${on ? 'bg-black translate-x-5' : 'bg-white translate-x-0.5'}`}
+      />
+    </button>
+  );
+}
+
+export default function PrivacySettingsPage() {
+  const { user, loading } = useRequireAnyAuth();
+  const { refreshUser } = useAuth();
+  const [saving, setSaving] = useState(false);
+
+  if (loading || !user) {
+    return <div className="min-h-screen bg-black flex items-center justify-center text-muted text-sm">Loading...</div>;
+  }
+
+  async function toggleActiveStatus() {
+    if (!user) return;
+    setSaving(true);
+    try {
+      await updateProfile({ hide_online_status: !user.hide_online_status });
+      await refreshUser();
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <main className="min-h-screen bg-black pb-24">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line/60">
+        <Link href="/settings" className="text-sm text-muted hover:text-fg transition-colors">← Back</Link>
+        <span className="font-display text-lg font-bold text-fg">Privacy</span>
+        <span className="w-10" />
+      </div>
+
+      <div className="max-w-2xl mx-auto px-5 py-6">
+        <div className="flex items-center justify-between py-4 border-b border-line/60">
+          <div className="min-w-0 pr-3">
+            <div className="text-fg text-sm font-medium">Show when I&apos;m active</div>
+            <div className="text-xs text-muted mt-0.5">
+              Let your connections and people you&apos;ve messaged see when you&apos;re online, in the Inbox.
+            </div>
+          </div>
+          <Toggle on={!user.hide_online_status} onClick={toggleActiveStatus} />
+        </div>
+        {saving && <p className="text-xs text-muted text-center mt-4">Saving...</p>}
+      </div>
+    </main>
+  );
+}
