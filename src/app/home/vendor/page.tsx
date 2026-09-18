@@ -97,7 +97,7 @@ export default function VendorHomePage() {
   const [myProducts, setMyProducts] = useState<Listing[]>([]);
   const [directory, setDirectory] = useState<DirectoryProfile[]>([]);
   const [sectionsLoading, setSectionsLoading] = useState(true);
-  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [pendingId, setPendingId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!user) return;
