@@ -43,7 +43,8 @@ function StateIcon({ icon }: { icon: EmptyStateProps['icon'] }) {
   }
   return (
     <svg {...common}>
-      <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 8h16M4 4h16v16H4V4z" />
+      <rect x="4" y="4" width="16" height="6" rx="1.5" />
+      <rect x="4" y="14" width="16" height="6" rx="1.5" />
     </svg>
   );
 }

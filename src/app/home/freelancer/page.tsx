@@ -86,7 +86,7 @@ export default function FreelancerHomePage() {
         <span className="font-display text-xl font-bold tracking-tight text-fg">CREET</span>
         <div className="flex items-center gap-2">
           <NotificationBell />
-          <button onClick={logout} className="text-xs text-muted hover:text-fg transition-colors">Log out</button>
+          <Link href="/profile" className="h-8 w-8 rounded-full overflow-hidden border border-line active:scale-95 transition-transform"><Avatar avatar={user?.avatar} name={user?.full_name} size={32} /></Link>
         </div>
       </div>
 

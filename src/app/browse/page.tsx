@@ -525,7 +525,7 @@ export default function BrowsePage() {
 
         {!loading && !error && listings.length > 0 && rest.length === 0 && (
           <p className="text-center text-xs text-muted py-6">
-            That&apos;s everything for now — check the Featured row above.
+            All caught up — every {kindLabel(tab)} is already in Featured above.
           </p>
         )}
 
