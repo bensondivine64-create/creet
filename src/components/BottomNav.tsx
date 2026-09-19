@@ -125,7 +125,7 @@ export default function BottomNav() {
           </svg>
         </Link>
       )}
-    <nav className="fixed bottom-0 left-0 right-0 z-20 bg-mist border-t border-line safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-20 header-blur border-t border-line safe-bottom">
       <div className={`max-w-2xl mx-auto grid ${gridColsClass}`}>
         {tabs.map((tab, i) => {
           const active = pathname === tab.href;

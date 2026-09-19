@@ -7,6 +7,7 @@ import { NotificationsProvider } from "@/contexts/NotificationsContext";
 import IntroSplash from "@/components/IntroSplash";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
 import AttributionCapture from "@/components/AttributionCapture";
+import PageTransition from "@/components/PageTransition";
 import "./globals.css";
 
 const display = Space_Grotesk({
@@ -56,7 +57,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <AuthProvider>
           <ToastProvider>
             <ConfirmProvider>
-              <NotificationsProvider>{children}</NotificationsProvider>
+              <NotificationsProvider>
+                <PageTransition>{children}</PageTransition>
+              </NotificationsProvider>
             </ConfirmProvider>
           </ToastProvider>
         </AuthProvider>

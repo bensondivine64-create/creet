@@ -50,3 +50,10 @@ a {
 .safe-bottom-nav {
   padding-bottom: calc(0.625rem + env(safe-area-inset-bottom));
 }
+
+/* Blurred sticky/fixed header, used across page headers and the bottom nav */
+.header-blur {
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
