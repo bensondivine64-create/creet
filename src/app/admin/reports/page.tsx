@@ -53,7 +53,7 @@ export default function AdminReportsPage() {
 
         <div className="space-y-3">
           {reports.map((r) => (
-            <div key={r.id} className="bg-mist border border-line rounded-2xl p-5">
+            <div key={r.id} className="ripple card-elevated bg-mist border border-line rounded-2xl p-5">
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-xs font-semibold text-fg">{r.reason}</span>
                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${r.status === 'pending' ? 'bg-yellow-500/15 text-yellow-400' : 'bg-green-500/15 text-green-400'}`}>

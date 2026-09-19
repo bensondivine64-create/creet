@@ -70,7 +70,7 @@ export default function AdminListingsPage() {
 
         <div className="space-y-3">
           {listings.map((item) => (
-            <div key={item.id} className="bg-mist border border-line rounded-2xl p-5">
+            <div key={item.id} className="ripple card-elevated bg-mist border border-line rounded-2xl p-5">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-fg truncate">{item.title}</p>

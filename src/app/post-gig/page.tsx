@@ -154,7 +154,7 @@ export default function PostGigPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3.5 transition-colors"
+            className="ripple btn-elevated w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-xl py-3.5 transition-colors active:scale-[0.98]"
           >
             {loading ? 'Posting...' : 'Post gig'}
           </button>

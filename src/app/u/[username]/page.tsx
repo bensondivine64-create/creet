@@ -333,7 +333,7 @@ export default function PublicProfilePage() {
                   <Link
                     key={item.id}
                     href={`/listing/${item.id}`}
-                    className="block bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.98] transition-transform"
+                    className="block ripple card-elevated bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.98] transition-transform"
                   >
                     <div className="aspect-video bg-line/20" />
                     <div className="p-3">

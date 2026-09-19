@@ -168,7 +168,7 @@ export default function PremiumPage() {
         <button
           onClick={handleUpgrade}
           disabled={loading || !quoteLoaded}
-          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-60 text-white text-sm font-semibold rounded-lg py-3 transition-colors"
+          className="ripple btn-elevated w-full bg-blue hover:bg-blue-deep disabled:opacity-60 text-white text-sm font-semibold rounded-xl py-3 transition-colors active:scale-[0.98]"
         >
           {loading ? (
             'Processing…'

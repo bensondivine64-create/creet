@@ -57,3 +57,17 @@ a {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
+
+/* Material-style elevated surface, used on cards across the app */
+.card-elevated {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.45), 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Material-style filled button elevation */
+.btn-elevated {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.22);
+  transition: box-shadow 0.15s ease, transform 0.1s ease;
+}
+.btn-elevated:active {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}

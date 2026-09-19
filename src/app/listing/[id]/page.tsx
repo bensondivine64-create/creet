@@ -314,7 +314,7 @@ export default function ListingDetailPage() {
           <p className="text-sm text-fg/70 leading-relaxed mt-5">{listing.description}</p>
 
           {canRate && (
-            <div className="mt-8 bg-mist border border-line rounded-2xl p-4 flex items-center justify-between">
+            <div className="mt-8 ripple card-elevated bg-mist border border-line rounded-2xl p-4 flex items-center justify-between">
               <span className="text-sm text-fg font-medium">Rate this {listing.kind === 'product' ? 'product' : listing.kind === 'request' ? 'request' : 'gig'}</span>
               <StarPicker value={myRating} onChange={handleRate} />
             </div>
@@ -340,7 +340,7 @@ export default function ListingDetailPage() {
                 <button
                   type="submit"
                   disabled={posting || !newComment.trim()}
-                  className="mt-3 bg-blue disabled:opacity-40 active:scale-[0.98] transition-transform text-black text-xs font-semibold rounded-lg px-5 py-2.5"
+                  className="ripple btn-elevated mt-3 bg-blue disabled:opacity-40 active:scale-[0.98] transition-transform text-black text-xs font-semibold rounded-xl px-5 py-2.5"
                 >
                   {posting ? 'Posting...' : 'Post comment'}
                 </button>
@@ -421,7 +421,7 @@ export default function ListingDetailPage() {
             <button
               onClick={handleMessageSeller}
               disabled={messaging || outOfStock}
-              className="bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg px-6 py-3"
+              className="ripple btn-elevated bg-blue disabled:opacity-50 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-xl px-6 py-3"
             >
               {outOfStock ? 'Out of stock' : messaging ? 'Opening...' : ctaLabel}
             </button>

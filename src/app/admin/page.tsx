@@ -8,7 +8,7 @@ import { getAdminStats, AdminStats } from '@/lib/admin';
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="bg-mist border border-line rounded-2xl p-4">
+    <div className="ripple card-elevated bg-mist border border-line rounded-2xl p-4">
       <div className="text-2xl font-bold text-fg">{value}</div>
       <div className="text-xs text-muted mt-1">{label}</div>
     </div>

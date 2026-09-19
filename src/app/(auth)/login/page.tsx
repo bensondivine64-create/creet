@@ -154,7 +154,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading || !captchaToken}
-          className="w-full bg-blue disabled:opacity-40 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg py-3.5"
+          className="ripple btn-elevated w-full bg-blue disabled:opacity-40 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-xl py-3.5"
         >
           Log in
         </button>

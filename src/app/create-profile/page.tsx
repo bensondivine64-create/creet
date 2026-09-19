@@ -200,7 +200,7 @@ export default function CreateProfilePage() {
           <p className="text-sm text-muted mt-3">{stepTitles[step - 1]}</p>
         </div>
 
-        <div className="bg-mist border border-line rounded-2xl p-7">
+        <div className="ripple card-elevated bg-mist border border-line rounded-2xl p-7">
           {error && (
             <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
               {error}

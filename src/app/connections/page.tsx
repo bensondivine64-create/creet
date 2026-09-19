@@ -42,7 +42,7 @@ function ConnectionsSkeleton() {
   return (
     <div className="px-5 py-6 space-y-3 animate-pulse">
       {[0, 1, 2].map((i) => (
-        <div key={i} className="flex items-center gap-3 bg-mist border border-line rounded-2xl p-4">
+        <div key={i} className="flex items-center gap-3 ripple card-elevated bg-mist border border-line rounded-2xl p-4">
           <div className="h-11 w-11 rounded-full bg-line/20 shrink-0" />
           <div className="flex-1 space-y-2">
             <div className="h-3 w-28 bg-line/20 rounded" />
@@ -131,7 +131,7 @@ export default function ConnectionsPage() {
                 {pending.map((p) => (
                   <div
                     key={p.connection_id}
-                    className="flex items-center gap-3 bg-mist border border-line rounded-2xl p-3.5 shadow-lg shadow-black/30"
+                    className="flex items-center gap-3 ripple card-elevated bg-mist border border-line rounded-2xl p-3.5 shadow-lg shadow-black/30"
                   >
                     <Link href={`/u/${p.username}`} className="flex items-center gap-3 flex-1 min-w-0">
                       <Avatar avatar={p.avatar} name={p.full_name} size={44} />
@@ -186,7 +186,7 @@ export default function ConnectionsPage() {
                   <Link
                     key={c.connection_id}
                     href={`/u/${c.username}`}
-                    className="flex items-center gap-3 bg-mist border border-line rounded-2xl p-3.5 shadow-lg shadow-black/30 active:scale-[0.98] transition-transform"
+                    className="flex items-center gap-3 ripple card-elevated bg-mist border border-line rounded-2xl p-3.5 shadow-lg shadow-black/30 active:scale-[0.98] transition-transform"
                   >
                     <Avatar avatar={c.avatar} name={c.full_name} size={44} />
                     <div className="min-w-0 flex-1">
@@ -224,7 +224,7 @@ export default function ConnectionsPage() {
                   <Link
                     key={item.id}
                     href={`/listing/${item.id}`}
-                    className="block bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.98] transition-transform"
+                    className="block ripple card-elevated bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.98] transition-transform"
                   >
                     {item.images && item.images.length > 0 && (
                       <div className="aspect-video overflow-hidden">

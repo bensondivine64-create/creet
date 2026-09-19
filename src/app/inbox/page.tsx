@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { getConversations } from '@/lib/messages';
 import { Conversation } from '@/types/message';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
@@ -26,6 +27,27 @@ function formatRelativeTime(iso: string): string {
     return date.toLocaleDateString('en-US', { weekday: 'short' });
   }
   return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+}
+
+const AVATAR_PALETTE = [
+  { bg: '#2D3A8C', fg: '#C9D2FF' },
+  { bg: '#8C2D5C', fg: '#FFD4E8' },
+  { bg: '#1F6B4F', fg: '#C6F5DE' },
+  { bg: '#8C5A1F', fg: '#FFE0BC' },
+  { bg: '#5C2D8C', fg: '#E6D4FF' },
+  { bg: '#1F5C8C', fg: '#C6E6FF' },
+  { bg: '#8C1F2E', fg: '#FFCBD1' },
+  { bg: '#3D6B1F', fg: '#DCF5C6' },
+];
+
+function avatarColor(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length];
+}
+
+function isPhotoMessage(text: string) {
+  return text.trim().toLowerCase() === '📷 photo';
 }
 
 export default function InboxPage() {
@@ -80,12 +102,12 @@ export default function InboxPage() {
   }
 
   return (
-    <main className="min-h-screen bg-paper pb-20 animate-fade-in-up">
-      <div className="px-5 pt-6 pb-4 safe-top">
+    <main className="min-h-screen bg-paper pb-24">
+      <div className="px-5 pt-5 pb-4 safe-top">
         <div className="flex items-center gap-2">
-          <span className="font-display text-xl font-bold text-fg">Inbox</span>
+          <span className="font-display text-2xl font-bold text-fg">Inbox</span>
           {totalUnread > 0 && (
-            <span className="h-5 min-w-5 px-1.5 rounded-full bg-green-500 text-white text-[11px] font-bold flex items-center justify-center">
+            <span className="h-5 min-w-5 px-1.5 rounded-full bg-blue text-black text-[11px] font-bold flex items-center justify-center">
               {totalUnread > 99 ? '99+' : totalUnread}
             </span>
           )}
@@ -96,7 +118,7 @@ export default function InboxPage() {
         <div className="px-5 pb-4">
           <div className="relative">
             <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2"
               width="16"
               height="16"
               viewBox="0 0 24 24"
@@ -112,20 +134,20 @@ export default function InboxPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search messages"
-              className="w-full bg-mist rounded-xl pl-9 pr-3 py-3 text-sm text-fg placeholder:text-fg/30 outline-none focus:ring-1 focus:ring-fg/30"
+              className="w-full bg-mist rounded-2xl pl-10 pr-4 py-3.5 text-sm text-fg placeholder:text-fg/30 outline-none focus:ring-2 focus:ring-white/20 transition-all"
             />
           </div>
         </div>
       )}
 
       {loading && (
-        <div className="px-5">
+        <div className="px-5 space-y-2.5">
           {[0, 1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex items-center gap-3 py-3 border-b border-line animate-pulse">
-              <div className="h-14 w-14 rounded-full bg-mist shrink-0" />
+            <div key={i} className="flex items-center gap-3 p-3 rounded-2xl bg-mist animate-pulse">
+              <div className="h-14 w-14 rounded-full bg-line/20 shrink-0" />
               <div className="flex-1 space-y-2">
-                <div className="h-3 w-1/3 bg-mist rounded" />
-                <div className="h-2.5 w-2/3 bg-mist rounded" />
+                <div className="h-3 w-1/3 bg-line/20 rounded" />
+                <div className="h-2.5 w-2/3 bg-line/20 rounded" />
               </div>
             </div>
           ))}
@@ -155,63 +177,82 @@ export default function InboxPage() {
       )}
 
       {!loading && !error && filtered.length > 0 && (
-        <div className="px-5">
+        <div className="px-5 space-y-2.5">
           {filtered.map((c, i) => {
             const unread = c.unread_count > 0;
+            const color = avatarColor(c.participant.full_name);
+            const photo = isPhotoMessage(c.last_message);
+
             return (
-              <Link
+              <motion.div
                 key={c.id}
-                href={`/inbox/${c.id}`}
-                style={{ animationDelay: `${i * 40}ms` }}
-                className="flex items-center gap-3 py-3 border-b border-line active:bg-mist/60 transition-colors opacity-0 animate-fade-in-up"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: i * 0.03 }}
               >
-                <div className="relative shrink-0">
-                  {c.participant.avatar ? (
-                    <img
-                      src={c.participant.avatar}
-                      alt=""
-                      className="h-14 w-14 rounded-full object-cover"
-                    />
-                  ) : (
-                    <span className="h-14 w-14 rounded-full bg-fg text-black text-lg font-bold flex items-center justify-center">
-                      {c.participant.full_name.charAt(0).toUpperCase()}
-                    </span>
-                  )}
-                  {c.participant.is_online && (
-                    <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-paper" />
-                  )}
-                </div>
-
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1">
-                    <span className={`text-sm truncate ${unread ? 'font-semibold text-fg' : 'font-medium text-fg/80'}`}>
-                      {c.participant.full_name}
-                    </span>
-                    {c.participant.verified && <VerifiedBadge size={12} />}
+                <Link
+                  href={`/inbox/${c.id}`}
+                  className="ripple flex items-center gap-3 p-3.5 rounded-2xl bg-mist transition-colors duration-150"
+                  style={{ boxShadow: unread ? '0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3)' : 'none' }}
+                >
+                  <div className="relative shrink-0">
+                    {c.participant.avatar ? (
+                      <img
+                        src={c.participant.avatar}
+                        alt=""
+                        className="h-14 w-14 rounded-full object-cover"
+                      />
+                    ) : (
+                      <span
+                        className="h-14 w-14 rounded-full text-lg font-bold flex items-center justify-center"
+                        style={{ backgroundColor: color.bg, color: color.fg }}
+                      >
+                        {c.participant.full_name.charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                    {c.participant.is_online && (
+                      <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-paper" />
+                    )}
                   </div>
 
-                  {c.listing_title && (
-                    <span className="inline-block mt-0.5 text-[10px] text-fg/50 truncate max-w-full">
-                      Re: {c.listing_title}
-                    </span>
-                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1">
+                      <span className={`text-sm truncate ${unread ? 'font-semibold text-fg' : 'font-medium text-fg/80'}`}>
+                        {c.participant.full_name}
+                      </span>
+                      {c.participant.verified && <VerifiedBadge size={12} />}
+                    </div>
 
-                  <div className={`text-sm truncate mt-0.5 ${unread ? 'text-fg/80 font-medium' : 'text-fg/40'}`}>
-                    {c.last_message}
+                    {c.listing_title && (
+                      <span className="inline-block mt-0.5 text-[10px] text-fg/50 truncate max-w-full">
+                        Re: {c.listing_title}
+                      </span>
+                    )}
+
+                    <div className={`flex items-center gap-1 text-sm truncate mt-0.5 ${unread ? 'text-fg/80 font-medium' : 'text-fg/40'}`}>
+                      {photo && (
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="shrink-0">
+                          <rect x="3" y="5" width="18" height="14" rx="2" />
+                          <circle cx="8.5" cy="10.5" r="1.5" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M21 15l-5-5L5 19" />
+                        </svg>
+                      )}
+                      <span className="truncate">{photo ? 'Photo' : c.last_message}</span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex flex-col items-end gap-1.5 shrink-0">
-                  <span className={`text-[11px] ${unread ? 'text-green-500 font-medium' : 'text-fg/30'}`}>
-                    {formatRelativeTime(c.last_message_at)}
-                  </span>
-                  {unread && (
-                    <span className="h-5 min-w-5 px-1.5 rounded-full bg-green-500 text-white text-[11px] font-bold flex items-center justify-center">
-                      {c.unread_count > 99 ? '99+' : c.unread_count}
+                  <div className="flex flex-col items-end gap-1.5 shrink-0">
+                    <span className={`text-[11px] ${unread ? 'text-blue font-semibold' : 'text-fg/30'}`}>
+                      {formatRelativeTime(c.last_message_at)}
                     </span>
-                  )}
-                </div>
-              </Link>
+                    {unread && (
+                      <span className="h-5 min-w-5 px-1.5 rounded-full bg-blue text-black text-[11px] font-bold flex items-center justify-center">
+                        {c.unread_count > 99 ? '99+' : c.unread_count}
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              </motion.div>
             );
           })}
 

@@ -59,7 +59,7 @@ export default function BlockedAccountsPage() {
         {!listLoading && blocked.length > 0 && (
           <div className="space-y-3">
             {blocked.map((u) => (
-              <div key={u.id} className="flex items-center gap-3 bg-mist border border-line rounded-2xl p-4">
+              <div key={u.id} className="flex items-center gap-3 ripple card-elevated bg-mist border border-line rounded-2xl p-4">
                 <Avatar avatar={u.avatar} name={u.full_name} size={40} />
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-semibold text-fg truncate">{u.full_name}</div>

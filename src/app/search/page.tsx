@@ -222,7 +222,7 @@ function SearchPageInner() {
         {loading && (
           <div className="grid grid-cols-2 gap-4">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="bg-mist border border-line rounded-2xl overflow-hidden animate-pulse">
+              <div key={i} className="ripple card-elevated bg-mist border border-line rounded-2xl overflow-hidden animate-pulse">
                 <div className="aspect-video bg-line/20" />
                 <div className="p-3 space-y-2">
                   <div className="h-3 w-2/3 bg-line/20 rounded" />
@@ -251,7 +251,7 @@ function SearchPageInner() {
               <Link
                 key={item.id}
                 href={`/listing/${item.id}`}
-                className="flex gap-3 bg-mist border border-line rounded-2xl overflow-hidden active:scale-[0.98] transition-transform"
+                className="flex gap-3 ripple card-elevated bg-mist border border-line rounded-2xl overflow-hidden active:scale-[0.98] transition-transform"
               >
                 {item.images && item.images.length > 0 ? (
                   <div className="w-28 h-28 shrink-0 relative">

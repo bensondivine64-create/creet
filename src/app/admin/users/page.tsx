@@ -79,7 +79,7 @@ export default function AdminUsersPage() {
 
         <div className="space-y-4">
           {users.map((u) => (
-            <div key={u.id} className="bg-mist border border-line rounded-2xl p-4">
+            <div key={u.id} className="ripple card-elevated bg-mist border border-line rounded-2xl p-4">
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <p className="text-sm font-semibold text-fg">{u.full_name} <span className="text-muted font-normal">@{u.username}</span></p>

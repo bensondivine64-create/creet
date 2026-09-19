@@ -216,7 +216,7 @@ function ListingCard({ item }: { item: Listing }) {
   return (
     <Link
       href={`/listing/${item.id}`}
-      className="shrink-0 snap-start w-48 bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.97] transition-transform"
+      className="shrink-0 snap-start w-48 ripple card-elevated bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.97] transition-transform"
     >
       {item.images && item.images.length > 0 && (
         <div className="relative aspect-video overflow-hidden">
@@ -499,7 +499,7 @@ export default function BrowsePage() {
         {loading && (
           <div className="grid grid-cols-2 gap-4">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="bg-mist border border-line rounded-2xl overflow-hidden animate-pulse">
+              <div key={i} className="ripple card-elevated bg-mist border border-line rounded-2xl overflow-hidden animate-pulse">
                 <div className="aspect-video bg-line/20" />
                 <div className="p-3 space-y-2">
                   <div className="h-3 w-2/3 bg-line/20 rounded" />
@@ -535,7 +535,7 @@ export default function BrowsePage() {
               {rest.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30"
+                  className="ripple card-elevated bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30"
                 >
                   <Link href={`/listing/${item.id}`} className="block active:scale-[0.98] transition-transform">
                     {item.images && item.images.length > 0 && (
@@ -594,7 +594,7 @@ export default function BrowsePage() {
             <Link
               key={p.username}
               href={`/u/${p.username}`}
-              className="shrink-0 snap-start w-52 bg-mist border border-line rounded-2xl p-3 active:scale-[0.97] transition-transform"
+              className="shrink-0 snap-start w-52 ripple card-elevated bg-mist border border-line rounded-2xl p-3 active:scale-[0.97] transition-transform"
             >
               <div className="flex items-center gap-2 mb-2">
                 <Avatar avatar={p.avatar} name={p.full_name} size={36} />

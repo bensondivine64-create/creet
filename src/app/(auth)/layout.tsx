@@ -13,7 +13,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             CREET
           </Link>
         </div>
-        <div className="bg-mist border border-line rounded-2xl shadow-2xl shadow-black/40 p-6 sm:p-8">
+        <div className="ripple card-elevated bg-mist border border-line rounded-2xl shadow-2xl shadow-black/40 p-6 sm:p-8">
           {children}
         </div>
       </div>

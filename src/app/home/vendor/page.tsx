@@ -61,7 +61,7 @@ function DashboardSkeleton() {
       </div>
       <div className="px-5 pt-4 space-y-4">
         {[0, 1].map((i) => (
-          <div key={i} className="bg-mist border border-line rounded-2xl p-5">
+          <div key={i} className="ripple card-elevated bg-mist border border-line rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-3">
               <div className="h-5 w-5 rounded-full bg-line/20" />
               <div className="h-3 w-24 bg-line/20 rounded" />
@@ -79,7 +79,7 @@ function ProductsSkeleton() {
   return (
     <div className="flex gap-3 overflow-x-auto pb-1 pr-5">
       {[0, 1, 2].map((i) => (
-        <div key={i} className="shrink-0 w-40 bg-mist border border-line rounded-2xl p-4 animate-pulse">
+        <div key={i} className="shrink-0 w-40 ripple card-elevated bg-mist border border-line rounded-2xl p-4 animate-pulse">
           <div className="h-4 w-full bg-line/20 rounded mb-2" />
           <div className="h-3 w-1/2 bg-line/20 rounded" />
         </div>
@@ -175,7 +175,7 @@ export default function VendorHomePage() {
         {sectionsLoading && (
           <div className="space-y-4">
             {[0, 1].map((i) => (
-              <div key={i} className="bg-mist border border-line rounded-2xl p-5 animate-pulse">
+              <div key={i} className="ripple card-elevated bg-mist border border-line rounded-2xl p-5 animate-pulse">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="h-5 w-5 rounded-full bg-line/20" />
                   <div className="h-3 w-24 bg-line/20 rounded" />
@@ -197,7 +197,7 @@ export default function VendorHomePage() {
               <Link
                 key={item.id}
                 href={`/listing/${item.id}`}
-                className="block bg-mist border border-line rounded-2xl p-5 active:scale-[0.98] transition-transform"
+                className="block ripple card-elevated bg-mist border border-line rounded-2xl p-5 active:scale-[0.98] transition-transform"
               >
                 <div className="flex items-center gap-2 mb-2.5">
                   <Avatar avatar={item.seller.avatar} name={item.seller.full_name} size={22} />
@@ -237,7 +237,7 @@ export default function VendorHomePage() {
                 <div key={item.id} className="shrink-0 snap-start w-40">
                   <Link
                     href={`/listing/${item.id}`}
-                    className="block bg-mist border border-line rounded-2xl p-4 active:scale-[0.97] transition-transform"
+                    className="block ripple card-elevated bg-mist border border-line rounded-2xl p-4 active:scale-[0.97] transition-transform"
                   >
                     <div className="text-sm font-semibold text-fg line-clamp-2 mb-1">{item.title}</div>
                     <div className="text-xs text-muted">{item.currency} {item.price.toLocaleString()}</div>
@@ -294,7 +294,7 @@ export default function VendorHomePage() {
               <Link
                 key={p.username}
                 href={`/u/${p.username}`}
-                className="flex items-center gap-3 bg-mist border border-line rounded-2xl p-4 active:scale-[0.98] transition-transform"
+                className="flex items-center gap-3 ripple card-elevated bg-mist border border-line rounded-2xl p-4 active:scale-[0.98] transition-transform"
               >
                 <Avatar avatar={p.avatar} name={p.full_name} size={40} />
                 <div className="min-w-0 flex-1">
