@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getPublicProfile, PublicProfile } from '@/lib/profile';
 import VerifiedBadge from '@/components/VerifiedBadge';
+import RecruiterBadge from '@/components/RecruiterBadge';
 import EmptyState from '@/components/EmptyState';
 import Avatar from '@/components/Avatar';
 import ReportModal from '@/components/ReportModal';
@@ -228,6 +229,7 @@ export default function PublicProfilePage() {
             <div className="flex items-center gap-1.5">
               <h1 className="font-display text-xl font-bold text-fg truncate">{profile.full_name}</h1>
               {profile.verified_badge && <VerifiedBadge size={16} />}
+              {profile.is_recruiter && <RecruiterBadge size={16} />}
             </div>
             <div className="text-sm text-muted">@{profile.username}</div>
             <div className="text-sm text-fg/70 mt-1">{headline}</div>

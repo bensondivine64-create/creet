@@ -26,6 +26,7 @@ export interface User {
   notify_announcements: boolean;
   notify_listing_activity: boolean;
   hide_online_status: boolean;
+  is_recruiter: boolean;
   onboarding_extra: Record<string, string>;
   created_at: string;
 }

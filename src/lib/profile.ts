@@ -21,6 +21,7 @@ export interface PublicProfile {
   is_verified: boolean;
   is_premium: boolean;
   verified_badge: boolean;
+  is_recruiter: boolean;
   connection_count: number;
   created_at: string;
   listings: import('@/types/listing').Listing[];

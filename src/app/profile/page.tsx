@@ -9,6 +9,7 @@ import { getMyConnections } from '@/lib/connections';
 import { uploadAvatar, uploadCoverPhoto } from '@/lib/profile';
 import BottomNav from '@/components/BottomNav';
 import VerifiedBadge from '@/components/VerifiedBadge';
+import RecruiterBadge from '@/components/RecruiterBadge';
 import Avatar from '@/components/Avatar';
 import ImageCropModal from '@/components/ImageCropModal';
 
@@ -217,6 +218,7 @@ export default function ProfilePage() {
             <div className="flex items-center gap-1.5">
               <h1 className="font-display text-xl font-bold text-fg truncate">{user.full_name}</h1>
               {user.verified_badge && <VerifiedBadge size={16} />}
+              {user.is_recruiter && <RecruiterBadge size={16} />}
             </div>
             <div className="text-sm text-muted">@{user.username}</div>
             <div className="text-sm text-fg/70 mt-1">{headline}</div>

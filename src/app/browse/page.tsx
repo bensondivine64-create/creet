@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import { getListings } from '@/lib/listings';
+import { getListings, getFeedListings } from '@/lib/listings';
 import { Listing, ListingKind } from '@/types/listing';
 import { CATEGORY_GRADIENTS } from '@/lib/categoryColors';
 import BottomNav from '@/components/BottomNav';
@@ -334,6 +334,7 @@ export default function BrowsePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [directory, setDirectory] = useState<DirectoryProfile[]>([]);
+  const [recommended, setRecommended] = useState<Listing[]>([]);
 
   useEffect(() => {
     if (hasSetDefault) return;
@@ -342,7 +343,11 @@ export default function BrowsePage() {
       return;
     }
     if (user) {
-      setTab(tabsForRole(user.role)[0].kind);
+      if (user.role === 'buyer' && user.onboarding_extra?.buyer_intent === 'Vendors') {
+        setTab('product');
+      } else {
+        setTab(tabsForRole(user.role)[0].kind);
+      }
       setHasSetDefault(true);
     }
   }, [user, hasSetDefault]);
@@ -389,6 +394,22 @@ export default function BrowsePage() {
       .catch(() => { if (!ignore) setDirectory([]); });
     return () => { ignore = true; };
   }, [hasSetDefault, tab, user?.role]);
+
+  useEffect(() => {
+    if (!hasSetDefault || !user || user.role !== 'buyer' || tab === 'request') {
+      setRecommended([]);
+      return;
+    }
+    if (!user.categories || user.categories.length === 0) {
+      setRecommended([]);
+      return;
+    }
+    let ignore = false;
+    getFeedListings(tab, 6)
+      .then((res) => { if (!ignore) setRecommended(res.listings); })
+      .catch(() => { if (!ignore) setRecommended([]); });
+    return () => { ignore = true; };
+  }, [hasSetDefault, tab, user]);
 
   const featured = useMemo(
     () => [...listings].sort((a, b) => b.rating_avg - a.rating_avg).slice(0, 4),
@@ -455,6 +476,14 @@ export default function BrowsePage() {
           </button>
         ))}
       </div>
+
+      {recommended.length > 0 && (
+        <ScrollRow title="Recommended for you" seeAllHref="/search">
+          {recommended.map((item) => (
+            <ListingCard key={item.id} item={item} />
+          ))}
+        </ScrollRow>
+      )}
 
       <AdCarousel />
 
