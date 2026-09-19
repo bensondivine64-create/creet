@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { getListings } from '@/lib/listings';
 import { Listing, ListingKind } from '@/types/listing';
-import { CATEGORIES } from '@/lib/categories';
 import { CATEGORY_GRADIENTS } from '@/lib/categoryColors';
 import BottomNav from '@/components/BottomNav';
 import NotificationBell from '@/components/NotificationBell';
@@ -32,7 +31,7 @@ interface ThemeRow {
 const THEMES: ThemeRow[] = [
   {
     title: 'Build a website',
-    kinds: ['gig'],
+    kinds: ['gig', 'request'],
     tiles: [
       { label: 'Website Design', category: 'Web Development', search: 'website', gradient: 'linear-gradient(135deg,#7a2e1e,#a8431f)' },
       { label: 'Web App Development', category: 'Web Development', search: 'app', gradient: 'linear-gradient(135deg,#7a1a3a,#a8225a)' },
@@ -41,7 +40,7 @@ const THEMES: ThemeRow[] = [
   },
   {
     title: 'Develop a brand identity',
-    kinds: ['gig'],
+    kinds: ['gig', 'request'],
     tiles: [
       { label: 'Logo Design', category: 'Design & Creative', search: 'logo', gradient: 'linear-gradient(135deg,#3d5c1a,#6a8c2e)' },
       { label: 'Brand Kit', category: 'Design & Creative', search: 'brand', gradient: 'linear-gradient(135deg,#5c3a1a,#8c5a2e)' },
@@ -50,7 +49,7 @@ const THEMES: ThemeRow[] = [
   },
   {
     title: 'Get your content written',
-    kinds: ['gig'],
+    kinds: ['gig', 'request'],
     tiles: [
       { label: 'Blog Writing', category: 'Writing & Translation', search: 'blog', gradient: 'linear-gradient(135deg,#1f3a4d,#2c4a4a)' },
       { label: 'Translation', category: 'Writing & Translation', search: 'translat', gradient: 'linear-gradient(135deg,#3a1f4d,#4a2c5a)' },
@@ -59,7 +58,7 @@ const THEMES: ThemeRow[] = [
   },
   {
     title: 'Grow your business',
-    kinds: ['gig'],
+    kinds: ['gig', 'request'],
     tiles: [
       { label: 'Social Media Ads', category: 'Marketing', search: 'ads', gradient: 'linear-gradient(135deg,#5c1a2e,#7a3a1a)' },
       { label: 'SEO & Marketing', category: 'Marketing', search: 'SEO', gradient: 'linear-gradient(135deg,#1a4a3a,#2e6a4a)' },
@@ -68,7 +67,7 @@ const THEMES: ThemeRow[] = [
   },
   {
     title: 'Create video & audio',
-    kinds: ['gig'],
+    kinds: ['gig', 'request'],
     tiles: [
       { label: 'Video Editing', category: 'Video & Audio', search: 'video', gradient: 'linear-gradient(135deg,#0f2027,#203a43,#2c5364)' },
       { label: 'Music Production', category: 'Video & Audio', search: 'music', gradient: 'linear-gradient(135deg,#3a1a5c,#5a2e7a)' },
@@ -457,37 +456,13 @@ export default function BrowsePage() {
         </ScrollRow>
       )}
 
-      {tab === 'request' ? (
-        <section className="pt-8">
-          <div className="flex items-center justify-between px-5 mb-3">
-            <h2 className="font-display font-bold text-fg text-lg">Browse by category</h2>
-          </div>
-          <div className="relative">
-            <div className="flex gap-3 px-5 pb-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
-              {CATEGORIES.map((cat) => (
-                <Link
-                  key={cat}
-                  href={`/search?kind=request&category=${encodeURIComponent(cat)}`}
-                  style={{ backgroundImage: THEMES.flatMap((t) => t.tiles).find((t) => t.category === cat)?.gradient || 'linear-gradient(135deg,#2a2a2a,#1a1a1a)' }}
-                  className="relative shrink-0 snap-start w-36 h-28 rounded-2xl overflow-hidden text-left p-3.5 flex items-end active:scale-[0.96] transition-transform"
-                >
-                  <span className="absolute inset-0 bg-black/20" />
-                  <span className="relative text-sm font-semibold text-white leading-tight">{cat}</span>
-                </Link>
-              ))}
-            </div>
-            <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-paper to-transparent" />
-          </div>
-        </section>
-      ) : (
-        THEMES.filter((theme) => theme.kinds.includes(tab)).map((theme, i) => (
-          <div key={theme.title}>
-            <ThemeTileRow tab={tab} theme={theme} />
-            {i === 1 && <PremiumBanner />}
-            {i === 3 && <PostCtaBanner role={user?.role} />}
-          </div>
-        ))
-      )}
+      {THEMES.filter((theme) => theme.kinds.includes(tab)).map((theme, i) => (
+        <div key={theme.title}>
+          <ThemeTileRow tab={tab} theme={theme} />
+          {i === 1 && <PremiumBanner />}
+          {i === 3 && <PostCtaBanner role={user?.role} />}
+        </div>
+      ))}
 
       <section className="px-5 pt-8">
         <div className="flex items-center justify-between mb-3">
