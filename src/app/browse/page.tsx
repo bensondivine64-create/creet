@@ -26,12 +26,14 @@ interface ThemeRow {
   title: string;
   kinds: ListingKind[];
   tiles: TileDef[];
+  audience?: 'freelancer' | 'vendor';
 }
 
 const THEMES: ThemeRow[] = [
   {
     title: 'Build a website',
     kinds: ['gig', 'request'],
+    audience: 'freelancer',
     tiles: [
       { label: 'Website Design', category: 'Web Development', search: 'website', gradient: 'linear-gradient(135deg,#7a2e1e,#a8431f)' },
       { label: 'Web App Development', category: 'Web Development', search: 'app', gradient: 'linear-gradient(135deg,#7a1a3a,#a8225a)' },
@@ -41,6 +43,7 @@ const THEMES: ThemeRow[] = [
   {
     title: 'Develop a brand identity',
     kinds: ['gig', 'request'],
+    audience: 'freelancer',
     tiles: [
       { label: 'Logo Design', category: 'Design & Creative', search: 'logo', gradient: 'linear-gradient(135deg,#3d5c1a,#6a8c2e)' },
       { label: 'Brand Kit', category: 'Design & Creative', search: 'brand', gradient: 'linear-gradient(135deg,#5c3a1a,#8c5a2e)' },
@@ -50,6 +53,7 @@ const THEMES: ThemeRow[] = [
   {
     title: 'Get your content written',
     kinds: ['gig', 'request'],
+    audience: 'freelancer',
     tiles: [
       { label: 'Blog Writing', category: 'Writing & Translation', search: 'blog', gradient: 'linear-gradient(135deg,#1f3a4d,#2c4a4a)' },
       { label: 'Translation', category: 'Writing & Translation', search: 'translat', gradient: 'linear-gradient(135deg,#3a1f4d,#4a2c5a)' },
@@ -59,6 +63,7 @@ const THEMES: ThemeRow[] = [
   {
     title: 'Grow your business',
     kinds: ['gig', 'request'],
+    audience: 'freelancer',
     tiles: [
       { label: 'Social Media Ads', category: 'Marketing', search: 'ads', gradient: 'linear-gradient(135deg,#5c1a2e,#7a3a1a)' },
       { label: 'SEO & Marketing', category: 'Marketing', search: 'SEO', gradient: 'linear-gradient(135deg,#1a4a3a,#2e6a4a)' },
@@ -68,6 +73,7 @@ const THEMES: ThemeRow[] = [
   {
     title: 'Create video & audio',
     kinds: ['gig', 'request'],
+    audience: 'freelancer',
     tiles: [
       { label: 'Video Editing', category: 'Video & Audio', search: 'video', gradient: 'linear-gradient(135deg,#0f2027,#203a43,#2c5364)' },
       { label: 'Music Production', category: 'Video & Audio', search: 'music', gradient: 'linear-gradient(135deg,#3a1a5c,#5a2e7a)' },
@@ -76,7 +82,8 @@ const THEMES: ThemeRow[] = [
   },
   {
     title: 'Shop electronics',
-    kinds: ['product'],
+    kinds: ['product', 'request'],
+    audience: 'vendor',
     tiles: [
       { label: 'Phones', category: 'Electronics', search: 'phone', gradient: 'linear-gradient(135deg,#0f3d3d,#2d5c4a)' },
       { label: 'Laptops', category: 'Electronics', search: 'laptop', gradient: 'linear-gradient(135deg,#1a3a3a,#2e5a5a)' },
@@ -85,7 +92,8 @@ const THEMES: ThemeRow[] = [
   },
   {
     title: 'Shop fashion',
-    kinds: ['product'],
+    kinds: ['product', 'request'],
+    audience: 'vendor',
     tiles: [
       { label: 'Dresses', category: 'Fashion', search: 'dress', gradient: 'linear-gradient(135deg,#5c2020,#3a1030)' },
       { label: 'Bags', category: 'Fashion', search: 'bag', gradient: 'linear-gradient(135deg,#5c3a1a,#7a4a2e)' },
@@ -94,7 +102,8 @@ const THEMES: ThemeRow[] = [
   },
   {
     title: 'Upgrade your home',
-    kinds: ['product'],
+    kinds: ['product', 'request'],
+    audience: 'vendor',
     tiles: [
       { label: 'Furniture', category: 'Home & Living', search: 'sofa', gradient: 'linear-gradient(135deg,#3a2050,#1f4a48)' },
       { label: 'Interior Design', category: 'Home & Living', search: 'interior', gradient: 'linear-gradient(135deg,#1a3a2a,#2e5a4a)' },
@@ -103,7 +112,8 @@ const THEMES: ThemeRow[] = [
   },
   {
     title: 'Business essentials',
-    kinds: ['gig', 'product'],
+    kinds: ['gig', 'product', 'request'],
+    audience: 'vendor',
     tiles: [
       { label: 'Bookkeeping', category: 'Business Services', search: 'bookkeep', gradient: 'linear-gradient(135deg,#232526,#414345)' },
       { label: 'Business Plans', category: 'Business Services', search: 'business plan', gradient: 'linear-gradient(135deg,#1a2a4a,#2e3a6a)' },
@@ -456,7 +466,11 @@ export default function BrowsePage() {
         </ScrollRow>
       )}
 
-      {THEMES.filter((theme) => theme.kinds.includes(tab)).map((theme, i) => (
+      {THEMES.filter((theme) => {
+        if (!theme.kinds.includes(tab)) return false;
+        if (tab === 'request' && theme.audience) return theme.audience === user?.role;
+        return true;
+      }).map((theme, i) => (
         <div key={theme.title}>
           <ThemeTileRow tab={tab} theme={theme} />
           {i === 1 && <PremiumBanner />}
