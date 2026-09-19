@@ -81,7 +81,7 @@ export default function InboxPage() {
 
   return (
     <main className="min-h-screen bg-paper pb-20 animate-fade-in-up">
-      <div className="px-5 pt-6 pb-4">
+      <div className="px-5 pt-6 pb-4 safe-top">
         <div className="flex items-center gap-2">
           <span className="font-display text-xl font-bold text-fg">Inbox</span>
           {totalUnread > 0 && (

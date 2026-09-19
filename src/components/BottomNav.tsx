@@ -104,7 +104,7 @@ export default function BottomNav() {
     { href: user ? '/profile' : '/login', label: 'Profile', icon: 'profile' },
   ];
 
-  const postHref = postHrefForRole(user?.role);
+  const postHref = pathname.startsWith('/listing/') ? null : postHrefForRole(user?.role);
 
   const gridColsClass =
     tabs.length === 5 ? 'grid-cols-5' : tabs.length === 4 ? 'grid-cols-4' : 'grid-cols-3';

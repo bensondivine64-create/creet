@@ -125,7 +125,7 @@ export default function ConversationPage() {
 
   return (
     <main className="min-h-screen bg-paper flex flex-col">
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-line">
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-line safe-top">
         <Link href="/inbox" className="text-sm text-fg/50 hover:text-fg transition-colors shrink-0">
           ←
         </Link>

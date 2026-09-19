@@ -64,7 +64,7 @@ function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
 function DetailSkeleton() {
   return (
     <main className="min-h-screen bg-paper flex flex-col animate-pulse">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line safe-top">
         <div className="h-4 w-14 bg-line/20 rounded" />
         <div className="h-5 w-16 bg-line/20 rounded" />
         <span className="w-10" />
@@ -219,7 +219,7 @@ export default function ListingDetailPage() {
 
   return (
     <main className="min-h-screen bg-paper flex flex-col pb-52">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line safe-top">
         <Link href="/browse" className="text-sm text-muted hover:text-fg transition-colors">
           ← Back
         </Link>

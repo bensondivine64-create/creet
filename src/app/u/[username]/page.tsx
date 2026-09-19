@@ -193,7 +193,7 @@ export default function PublicProfilePage() {
 
   return (
     <main className="min-h-screen bg-black pb-16 animate-fade-in-up">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line/60 relative z-10 bg-black">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line/60 relative z-10 bg-black safe-top">
         <Link href="/browse" className="text-sm text-muted hover:text-fg transition-colors">
           ← Back
         </Link>

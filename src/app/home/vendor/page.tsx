@@ -52,7 +52,7 @@ function ListingMeta({ item }: { item: Listing }) {
 function DashboardSkeleton() {
   return (
     <main className="min-h-screen bg-black pb-40 animate-pulse">
-      <div className="flex items-center justify-between px-5 pt-5 pb-4">
+      <div className="flex items-center justify-between px-5 pt-5 pb-4 safe-top">
         <div className="h-6 w-20 bg-line/20 rounded" />
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-full bg-line/20" />
@@ -154,7 +154,7 @@ export default function VendorHomePage() {
 
   return (
     <main className="min-h-screen bg-black pb-40 animate-fade-in-up">
-      <div className="flex items-center justify-between px-5 pt-5 pb-4">
+      <div className="flex items-center justify-between px-5 pt-5 pb-4 safe-top">
         <span className="font-display text-xl font-bold tracking-tight text-fg">CREET</span>
         <div className="flex items-center gap-2">
           <NotificationBell />

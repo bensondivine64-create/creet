@@ -5,7 +5,7 @@ import Link from 'next/link';
 export default function VerifyIdentityPage() {
   return (
     <main className="min-h-screen bg-paper">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line safe-top">
         <Link href="/profile" className="text-sm text-fg/50 hover:text-fg transition-colors">
           ← Back
         </Link>

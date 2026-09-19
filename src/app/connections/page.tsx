@@ -112,7 +112,7 @@ export default function ConnectionsPage() {
 
   return (
     <main className="min-h-screen bg-black pb-40">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line/60">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line/60 safe-top">
         <Link href="/browse" className="text-sm text-muted hover:text-fg transition-colors">← Back</Link>
         <span className="font-display text-lg font-bold text-fg">Connections</span>
         <span className="w-10" />
