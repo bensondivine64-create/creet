@@ -26,6 +26,10 @@ export function getListings(params: GetListingsParams) {
   return apiCall<ListingsResponse>(`/listings?${query.toString()}`, { auth: false });
 }
 
+export function trackListingView(id: string | number) {
+  return apiCall<{ success: boolean }>(`/listings/${id}/track-view`, { method: 'POST' }).catch(() => {});
+}
+
 export function getListing(id: string | number) {
   return apiCall<Listing>(`/listings/${id}`, { auth: false });
 }
