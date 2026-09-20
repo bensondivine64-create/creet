@@ -35,9 +35,6 @@ function CommentIcon() {
 function ListingMeta({ item }: { item: Listing }) {
   return (
     <div className="flex items-center gap-2.5 text-[11px] text-muted mt-2">
-      {item.rating_count > 0 && (
-        <span>★ {item.rating_avg.toFixed(1)} ({item.rating_count})</span>
-      )}
       {typeof item.comment_count === 'number' && item.comment_count > 0 && (
         <span className="flex items-center gap-1">
           <CommentIcon /> {item.comment_count}

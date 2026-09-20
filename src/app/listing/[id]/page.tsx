@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getListing, deleteListing } from '@/lib/listings';
 import { getComments, postComment } from '@/lib/comments';
-import { getReviews, createReview, Review } from '@/lib/reviews';
 import { startConversation } from '@/lib/messages';
 import { Listing } from '@/types/listing';
 import { Comment } from '@/types/comment';
@@ -17,49 +16,6 @@ import ReportModal from '@/components/ReportModal';
 import BottomNav from '@/components/BottomNav';
 import { useToast } from '@/contexts/ToastContext';
 import { formatRelativeTime } from '@/lib/time';
-
-function StarPicker({ value, onChange }: { value: number; onChange: (v: number) => void }) {
-  return (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map((n) => (
-        <button
-          key={n}
-          type="button"
-          onClick={() => onChange(n)}
-          className="p-0.5 active:scale-90 transition-transform"
-          aria-label={`${n} star${n > 1 ? 's' : ''}`}
-        >
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill={n <= value ? '#F4F5F7' : 'none'}
-            stroke={n <= value ? '#F4F5F7' : '#8B98A5'}
-            strokeWidth={1.5}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-            />
-          </svg>
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((n) => (
-        <svg key={n} width={size} height={size} viewBox="0 0 24 24" fill={n <= rating ? '#F4F5F7' : 'none'} stroke={n <= rating ? '#F4F5F7' : '#8B98A5'} strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-        </svg>
-      ))}
-    </div>
-  );
-}
 
 function DetailSkeleton() {
   return (
@@ -110,10 +66,6 @@ export default function ListingDetailPage() {
   const [commentError, setCommentError] = useState('');
   const COMMENTS_PAGE_SIZE = 10;
 
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [submittingReview, setSubmittingReview] = useState(false);
-  const [myRating, setMyRating] = useState(0);
-
   useEffect(() => {
     if (!params.id) return;
     setLoading(true);
@@ -127,10 +79,6 @@ export default function ListingDetailPage() {
       .then((res) => { setComments(res.comments); setCommentsTotal(res.total); })
       .catch(() => setComments([]))
       .finally(() => setCommentsLoading(false));
-
-    getReviews(params.id as string)
-      .then((res) => setReviews(res.reviews))
-      .catch(() => setReviews([]));
   }, [params.id]);
 
   async function handleMessageSeller() {
@@ -191,27 +139,8 @@ export default function ListingDetailPage() {
     }
   }
 
-  async function handleRate(stars: number) {
-    if (!listing || submittingReview) return;
-    setSubmittingReview(true);
-    try {
-      await createReview(listing.id, stars);
-      const newCount = listing.rating_count + 1;
-      const newAvg = (listing.rating_avg * listing.rating_count + stars) / newCount;
-      setListing({ ...listing, rating_avg: newAvg, rating_count: newCount });
-      setMyRating(stars);
-      showToast('Thanks for rating!', 'success');
-    } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Could not submit rating', 'error');
-    } finally {
-      setSubmittingReview(false);
-    }
-  }
-
   const ctaLabel = listing?.kind === 'request' ? 'Send proposal' : 'Message seller';
   const isOwnListing = !!(user && listing && user.username === listing.seller.username);
-  const alreadyRated = !!(user && (myRating > 0 || reviews.some((r) => r.reviewer.username === user.username)));
-  const canRate = !!(user && listing && !isOwnListing && !alreadyRated);
   const outOfStock = listing?.kind === 'product' && listing.stock <= 0;
   const editHref = listing ? `/listing/${listing.id}/edit-${listing.kind}` : '';
 
@@ -295,14 +224,6 @@ export default function ListingDetailPage() {
           </Link>
 
           <div className="flex items-center gap-4 mt-4 text-sm text-muted">
-            {listing.rating_count > 0 ? (
-              <span className="flex items-center gap-1.5">
-                <StarRow rating={Math.round(listing.rating_avg)} />
-                {listing.rating_avg.toFixed(1)} ({listing.rating_count})
-              </span>
-            ) : (
-              <span className="text-muted/70">No reviews yet</span>
-            )}
             {listing.kind === 'gig' && <span>{listing.delivery_days}-day delivery</span>}
             {listing.kind === 'product' && (
               <span className={outOfStock ? 'text-red-400' : ''}>
@@ -312,13 +233,6 @@ export default function ListingDetailPage() {
           </div>
 
           <p className="text-sm text-fg/70 leading-relaxed mt-5">{listing.description}</p>
-
-          {canRate && (
-            <div className="mt-8 ripple card-elevated bg-mist border border-line rounded-2xl p-4 flex items-center justify-between">
-              <span className="text-sm text-fg font-medium">Rate this {listing.kind === 'product' ? 'product' : listing.kind === 'request' ? 'request' : 'gig'}</span>
-              <StarPicker value={myRating} onChange={handleRate} />
-            </div>
-          )}
 
           <div className="mt-10 pt-8 border-t border-line">
             <h2 className="font-display font-semibold text-fg mb-5">

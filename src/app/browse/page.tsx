@@ -239,9 +239,7 @@ function ListingCard({ item }: { item: Listing }) {
           <span className="text-xs text-muted truncate">{item.seller.full_name}</span>
         </div>
         <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1">{item.title}</div>
-        {item.rating_count > 0 && (
-          <span className="text-xs text-muted">★ {item.rating_avg.toFixed(1)}</span>
-        )}
+
       </div>
     </Link>
   );
@@ -412,7 +410,7 @@ export default function BrowsePage() {
   }, [hasSetDefault, tab, user]);
 
   const featured = useMemo(
-    () => [...listings].sort((a, b) => b.rating_avg - a.rating_avg).slice(0, 4),
+    () => [...listings].slice(0, 4),
     [listings]
   );
   const featuredIds = useMemo(() => new Set(featured.map((f) => f.id)), [featured]);
@@ -578,13 +576,7 @@ export default function BrowsePage() {
                       <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1.5">
                         {item.title}
                       </div>
-                      {item.rating_count > 0 && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-muted">
-                            ★ {item.rating_avg.toFixed(1)} ({item.rating_count})
-                          </span>
-                        </div>
-                      )}
+
                       <div className="text-xs text-muted mt-1.5 pt-1.5 border-t border-line">
                         {item.kind === 'request' ? 'Budget' : 'From'}{' '}
                         <span className="text-sm font-bold text-fg">

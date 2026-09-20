@@ -12,7 +12,7 @@ import EmptyState from '@/components/EmptyState';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import Avatar from '@/components/Avatar';
 
-type ShopByMode = 'none' | 'category' | 'price' | 'rating';
+type ShopByMode = 'none' | 'category' | 'price';
 
 interface PriceBucket {
   label: string;
@@ -27,8 +27,6 @@ const PRICE_BUCKETS: PriceBucket[] = [
   { label: '₦200,000+', min: 200000, max: null },
 ];
 
-const RATING_BUCKETS = [4, 3, 2];
-
 function SearchPageInner() {
   const params = useSearchParams();
 
@@ -36,7 +34,6 @@ function SearchPageInner() {
   const [query, setQuery] = useState(params.get('search') || '');
   const [category, setCategory] = useState(params.get('category') || '');
   const [priceBucket, setPriceBucket] = useState<PriceBucket | null>(null);
-  const [minRating, setMinRating] = useState<number | null>(null);
   const [shopByMode, setShopByMode] = useState<ShopByMode>('none');
 
   const [results, setResults] = useState<Listing[]>([]);
@@ -67,17 +64,13 @@ function SearchPageInner() {
         if (item.price < priceBucket.min) return false;
         if (priceBucket.max !== null && item.price >= priceBucket.max) return false;
       }
-      if (minRating !== null) {
-        if (item.rating_count === 0 || item.rating_avg < minRating) return false;
-      }
       return true;
     });
-  }, [results, priceBucket, minRating]);
+  }, [results, priceBucket]);
 
   const activeFilters: { label: string; onClear: () => void }[] = [];
   if (category) activeFilters.push({ label: category, onClear: () => setCategory('') });
   if (priceBucket) activeFilters.push({ label: priceBucket.label, onClear: () => setPriceBucket(null) });
-  if (minRating !== null) activeFilters.push({ label: `${minRating}★ & up`, onClear: () => setMinRating(null) });
 
   function toggleShopBy(mode: ShopByMode) {
     setShopByMode((prev) => (prev === mode ? 'none' : mode));
@@ -141,7 +134,7 @@ function SearchPageInner() {
       <div className="px-5 pt-2">
         <p className="text-xs text-muted mb-2">Shop by</p>
         <div className="flex gap-2 overflow-x-auto pb-1">
-          {(['category', 'price', 'rating'] as ShopByMode[]).map((mode) => (
+          {(['category', 'price'] as ShopByMode[]).map((mode) => (
             <button
               key={mode}
               onClick={() => toggleShopBy(mode)}
@@ -149,7 +142,7 @@ function SearchPageInner() {
                 shopByMode === mode ? 'bg-fg text-black' : 'bg-mist border border-line text-muted'
               }`}
             >
-              {mode === 'category' ? 'Category' : mode === 'price' ? 'Price' : 'Rating'}
+              {mode === 'category' ? 'Category' : 'Price'}
             </button>
           ))}
         </div>
@@ -186,21 +179,6 @@ function SearchPageInner() {
           </div>
         )}
 
-        {shopByMode === 'rating' && (
-          <div className="flex gap-2 overflow-x-auto pt-3 pb-1">
-            {RATING_BUCKETS.map((r) => (
-              <button
-                key={r}
-                onClick={() => { setMinRating(minRating === r ? null : r); setShopByMode('none'); }}
-                className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
-                  minRating === r ? 'bg-blue text-black' : 'bg-mist border border-line text-muted'
-                }`}
-              >
-                {r}★ & up
-              </button>
-            ))}
-          </div>
-        )}
 
         {activeFilters.length > 0 && (
           <div className="flex gap-2 overflow-x-auto pt-3 pb-1">
@@ -268,13 +246,6 @@ function SearchPageInner() {
                 )}
                 <div className="flex-1 min-w-0 py-2.5 pr-3 flex flex-col justify-between">
                   <div>
-                    {item.rating_count > 0 && (
-                      <div className="flex items-center gap-1 text-xs text-muted mb-1">
-                        <span>★</span>
-                        <span className="text-fg font-medium">{item.rating_avg.toFixed(1)}</span>
-                        <span>({item.rating_count})</span>
-                      </div>
-                    )}
                     <div className="text-sm font-semibold text-fg leading-snug line-clamp-2">
                       {item.title}
                     </div>
