@@ -52,6 +52,20 @@ export function getNetworkFeed(params?: { limit?: number; offset?: number }) {
   return apiCall<NetworkFeedResponse>(`/posts/feed${qs ? `?${qs}` : ''}`);
 }
 
+export interface SuggestedUser {
+  id: number;
+  username: string;
+  full_name: string;
+  avatar?: string | null;
+  role: string;
+  short_bio?: string | null;
+  verified: boolean;
+}
+
+export function getWhoToFollow(limit = 10) {
+  return apiCall<{ users: SuggestedUser[] }>(`/who-to-follow?limit=${limit}`);
+}
+
 export function getUserPosts(username: string) {
   return apiCall<{ posts: NetworkPost[] }>(`/posts/user/${username}`, { auth: false });
 }

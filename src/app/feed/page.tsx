@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getNetworkFeed, createPost, deletePost, NetworkPost } from '@/lib/network';
+import { getNetworkFeed, createPost, deletePost, NetworkPost, getWhoToFollow, SuggestedUser } from '@/lib/network';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import { useToast } from '@/contexts/ToastContext';
 import Avatar from '@/components/Avatar';
@@ -10,6 +10,7 @@ import VerifiedBadge from '@/components/VerifiedBadge';
 import BottomNav from '@/components/BottomNav';
 import NotificationBell from '@/components/NotificationBell';
 import EmptyState from '@/components/EmptyState';
+import FollowButton from '@/components/FollowButton';
 import { formatRelativeTime } from '@/lib/time';
 
 function FeedSkeleton() {
@@ -37,6 +38,7 @@ export default function NetworkFeedPage() {
   const [loading, setLoading] = useState(true);
   const [draft, setDraft] = useState('');
   const [posting, setPosting] = useState(false);
+  const [suggested, setSuggested] = useState<SuggestedUser[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -44,6 +46,9 @@ export default function NetworkFeedPage() {
       .then((res) => setPosts(res.posts))
       .catch(() => {})
       .finally(() => setLoading(false));
+    getWhoToFollow(10)
+      .then((res) => setSuggested(res.users))
+      .catch(() => {});
   }, [user]);
 
   async function handlePost() {
@@ -110,6 +115,26 @@ export default function NetworkFeedPage() {
           </div>
         </div>
       </div>
+
+      {suggested.length > 0 && (
+        <div className="pb-5">
+          <h2 className="px-5 font-display font-bold text-fg text-base mb-3">Who to follow</h2>
+          <div className="flex gap-3 overflow-x-auto px-5 pb-1 scrollbar-hide">
+            {suggested.map((s) => (
+              <div key={s.id} className="shrink-0 w-40 ripple card-elevated bg-mist border border-line rounded-2xl p-3.5 flex flex-col items-center text-center">
+                <Link href={`/u/${s.username}`} className="flex flex-col items-center">
+                  <Avatar avatar={s.avatar} name={s.full_name} size={44} />
+                  <span className="text-xs font-semibold text-fg mt-2 truncate max-w-full">{s.full_name}</span>
+                  <span className="text-[10px] text-muted capitalize">{s.role}</span>
+                </Link>
+                <div className="mt-2.5">
+                  <FollowButton userId={s.id} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {loading && <FeedSkeleton />}
 
