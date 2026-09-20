@@ -157,9 +157,9 @@ export default function ListingDetailPage() {
   const outOfStock = listing?.kind === 'product' && listing.stock <= 0;
   const editHref = listing ? `/listing/${listing.id}/edit-${listing.kind === 'hiring' ? 'request' : listing.kind}` : '';
 
-  const displayPrice = listing ? (listing as unknown as { display_price?: number }).display_price ?? listing.price : 0;
-  const displayCurrency = listing ? (listing as unknown as { display_currency?: string }).display_currency ?? listing.currency : '';
-  const commentCount = listing ? (listing as unknown as { comment_count?: number }).comment_count : undefined;
+  const displayPrice = listing?.display_price ?? listing?.price ?? 0;
+  const displayCurrency = listing?.display_currency ?? listing?.currency ?? '';
+  const commentCount = listing?.comment_count;
 
   if (loading) return <DetailSkeleton />;
 

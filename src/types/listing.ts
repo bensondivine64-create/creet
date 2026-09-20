@@ -14,8 +14,12 @@ interface ListingBase {
   category: string;
   price: number;
   currency: string;
+  display_price?: number;
+  display_currency?: string;
   images: string[];
   seller: ListingSeller;
+  rating_avg: number;
+  rating_count: number;
   comment_count?: number;
   created_at: string;
 }
