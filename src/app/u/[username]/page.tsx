@@ -250,6 +250,12 @@ export default function PublicProfilePage() {
               <span className="font-semibold text-fg">{profile.connection_count}</span>{' '}
               <span className="text-muted">connection{profile.connection_count === 1 ? '' : 's'}</span>
             </div>
+
+            {viewer && !isOwnProfile && (
+              <div className="mt-3">
+                <FollowButton userId={profile.id} />
+              </div>
+            )}
           </div>
 
           {viewer && !isOwnProfile && iBlockedThem && (

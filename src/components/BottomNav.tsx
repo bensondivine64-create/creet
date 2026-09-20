@@ -53,10 +53,8 @@ function postHrefForRole(role?: string) {
   return null;
 }
 
-function feedHrefForRole(role?: string) {
-  if (role === 'freelancer') return '/home/freelancer';
-  if (role === 'vendor') return '/home/vendor';
-  return null;
+function feedHrefForRole() {
+  return '/feed';
 }
 
 function useHideOnScroll() {
@@ -94,7 +92,7 @@ export default function BottomNav() {
   const { user } = useAuth();
   const fabHidden = useHideOnScroll();
 
-  const feedHref = feedHrefForRole(user?.role);
+  const feedHref = feedHrefForRole();
 
   const tabs = [
     { href: '/browse', label: 'Home', icon: 'home' },
