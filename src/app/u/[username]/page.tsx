@@ -14,6 +14,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
 import { getConnectionStatus, sendConnectionRequest, acceptConnection, declineConnection, ConnectionStatus } from '@/lib/connections';
 import { getBlockStatus, blockUser, unblockUser } from '@/lib/blocks';
+import FollowButton from '@/components/FollowButton';
 
 function buildHeadline(role: string, categories: string[], location?: string | null) {
   const parts = [role.charAt(0).toUpperCase() + role.slice(1)];
