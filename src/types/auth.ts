@@ -29,6 +29,7 @@ export interface User {
   is_recruiter: boolean;
   onboarding_extra: Record<string, string>;
   created_at: string;
+  needs_signup_details?: boolean;
 }
 
 export interface AuthResponse {

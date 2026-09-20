@@ -30,6 +30,13 @@ export function getListing(id: string | number) {
   return apiCall<Listing>(`/listings/${id}`, { auth: false });
 }
 
+export function postHiring(payload: import('@/types/listing').CreateHiringPayload) {
+  return apiCall<{ success: boolean; id: number }>('/listings/hiring', {
+    method: 'POST',
+    body: payload,
+  });
+}
+
 export function postRequest(payload: CreateRequestPayload) {
   return apiCall<{ success: boolean; id: number }>('/listings/requests', {
     method: 'POST',

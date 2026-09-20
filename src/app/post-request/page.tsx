@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { postRequest } from '@/lib/listings';
+import { postRequest, postHiring } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
 import { clearListingsCache } from '@/lib/listingsCache';
 import { CATEGORIES } from '@/lib/categories';
@@ -16,6 +16,8 @@ export default function PostRequestPage() {
   const router = useRouter();
 
   const [form, setForm] = useState({ title: '', description: '', category: '', price: '', deadline: '' });
+  const isRecruiter = (user?.onboarding_extra || {}).buyer_freelancer_type === 'Recruiter — hiring for a company';
+  const [mode, setMode] = useState<'request' | 'hiring'>('request');
   const [images, setImages] = useState<string[]>([]);
   const [currency, setCurrency] = useState('NGN');
   const [currencyInit, setCurrencyInit] = useState(false);
@@ -38,7 +40,7 @@ export default function PostRequestPage() {
     setError('');
     setLoading(true);
     try {
-      const res = await postRequest({
+      const payload = {
         title: form.title,
         description: form.description,
         category: form.category || 'General',
@@ -46,7 +48,8 @@ export default function PostRequestPage() {
         currency,
         deadline: form.deadline || undefined,
         images,
-      });
+      };
+      const res = mode === 'hiring' ? await postHiring(payload) : await postRequest(payload);
       clearListingsCache();
       router.push(`/listing/${res.id}`);
     } catch (err) {
@@ -66,14 +69,39 @@ export default function PostRequestPage() {
         <Link href="/browse" className="text-sm text-fg/50 hover:text-fg transition-colors">
           ← Back
         </Link>
-        <span className="font-display text-lg font-bold text-fg">Post a request</span>
+        <span className="font-display text-lg font-bold text-fg">{mode === 'hiring' ? 'Post a job' : 'Post a request'}</span>
         <span className="w-10" />
       </div>
 
       <div className="max-w-2xl mx-auto px-5 py-8">
         <p className="text-sm text-fg/50 mb-6">
-          Post literally anything you&apos;re looking to hire for or buy — big or small.
+          {mode === 'hiring'
+            ? 'Post a job opening for your company — freelancers will see it in Requests.'
+            : "Post literally anything you're looking to hire for or buy — big or small."}
         </p>
+
+        {isRecruiter && (
+          <div className="flex gap-2 mb-6">
+            <button
+              type="button"
+              onClick={() => setMode('request')}
+              className={`flex-1 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
+                mode === 'request' ? 'bg-blue text-black border-blue' : 'border-line text-muted'
+              }`}
+            >
+              Request
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('hiring')}
+              className={`flex-1 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
+                mode === 'hiring' ? 'bg-blue text-black border-blue' : 'border-line text-muted'
+              }`}
+            >
+              Hiring (job post)
+            </button>
+          </div>
+        )}
 
         {error && (
           <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
@@ -140,7 +168,7 @@ export default function PostRequestPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1.5">Budget ({currencySymbol(currency)})</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">{mode === 'hiring' ? `Salary/Budget (${currencySymbol(currency)})` : `Budget (${currencySymbol(currency)})`}</label>
               <input
                 name="price"
                 type="number"
@@ -170,7 +198,7 @@ export default function PostRequestPage() {
             disabled={loading}
             className="ripple btn-elevated w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-xl py-3.5 transition-colors active:scale-[0.98]"
           >
-            {loading ? 'Posting...' : 'Post request'}
+            {loading ? 'Posting...' : mode === 'hiring' ? 'Post job' : 'Post request'}
           </button>
         </form>
       </div>

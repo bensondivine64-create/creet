@@ -1,4 +1,4 @@
-export type ListingKind = 'gig' | 'product' | 'request';
+export type ListingKind = 'gig' | 'product' | 'request' | 'hiring';
 
 interface ListingSeller {
   username: string;
@@ -37,7 +37,12 @@ export interface BuyerRequest extends ListingBase {
   deadline?: string | null;
 }
 
-export type Listing = Gig | Product | BuyerRequest;
+export interface HiringPost extends ListingBase {
+  kind: 'hiring';
+  deadline?: string | null;
+}
+
+export type Listing = Gig | Product | BuyerRequest | HiringPost;
 
 export interface ListingsResponse {
   listings: Listing[];
@@ -45,6 +50,16 @@ export interface ListingsResponse {
 }
 
 export interface CreateRequestPayload {
+  title: string;
+  description: string;
+  category: string;
+  price: number;
+  currency?: string;
+  deadline?: string;
+  images?: string[];
+}
+
+export interface CreateHiringPayload {
   title: string;
   description: string;
   category: string;
