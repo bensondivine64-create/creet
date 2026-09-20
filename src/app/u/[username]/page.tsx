@@ -247,16 +247,16 @@ export default function PublicProfilePage() {
               )}
             </div>
 
-            <div className="text-sm mt-2">
-              <span className="font-semibold text-fg">{profile.connection_count}</span>{' '}
-              <span className="text-muted">connection{profile.connection_count === 1 ? '' : 's'}</span>
-            </div>
-
-            {viewer && !isOwnProfile && (
-              <div className="mt-3">
-                <FollowButton userId={profile.id} />
+            <div className="flex items-center justify-between mt-2">
+              <div className="text-sm">
+                <span className="font-semibold text-fg">{profile.connection_count}</span>{' '}
+                <span className="text-muted">connection{profile.connection_count === 1 ? '' : 's'}</span>
               </div>
-            )}
+
+              {viewer && !isOwnProfile && profile.verified_badge && (
+                <FollowButton userId={profile.id} />
+              )}
+            </div>
           </div>
 
           {viewer && !isOwnProfile && iBlockedThem && (
