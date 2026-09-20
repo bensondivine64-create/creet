@@ -124,8 +124,8 @@ export default function ConversationPage() {
   let lastDay = '';
 
   return (
-    <main className="min-h-screen bg-paper flex flex-col">
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-line safe-top">
+    <main className="min-h-screen bg-black flex flex-col">
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-line/60 safe-top">
         <Link href="/inbox" className="text-sm text-fg/50 hover:text-fg transition-colors shrink-0">
           ←
         </Link>
@@ -140,7 +140,7 @@ export default function ConversationPage() {
                 </span>
               )}
               {participant.is_online && (
-                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 border-2 border-paper" />
+                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 border-2 border-black" />
               )}
             </div>
             <div className="min-w-0">
@@ -210,7 +210,7 @@ export default function ConversationPage() {
         <div ref={bottomRef} />
       </div>
 
-      <form onSubmit={handleSend} className="border-t border-line px-5 py-4 flex items-center gap-2.5">
+      <form onSubmit={handleSend} className="border-t border-line/60 px-5 py-4 flex items-center gap-2.5">
         <input
           ref={fileInputRef}
           type="file"

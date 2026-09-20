@@ -5,28 +5,9 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getListing, updateListing } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
+import { localCurrencyForCountry, currencySymbol } from '@/lib/currency';
 import ImagePicker from '@/components/ImagePicker';
-
-function EditSkeleton() {
-  return (
-    <main className="min-h-screen bg-paper animate-pulse">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line safe-top">
-        <div className="h-4 w-12 bg-line/20 rounded" />
-        <div className="h-5 w-20 bg-line/20 rounded" />
-        <span className="w-10" />
-      </div>
-      <div className="max-w-2xl mx-auto px-5 py-8 space-y-5">
-        <div className="h-11 w-full bg-line/20 rounded-lg" />
-        <div className="h-24 w-full bg-line/20 rounded-lg" />
-        <div className="h-11 w-full bg-line/20 rounded-lg" />
-        <div className="grid grid-cols-2 gap-4">
-          <div className="h-11 bg-line/20 rounded-lg" />
-          <div className="h-11 bg-line/20 rounded-lg" />
-        </div>
-      </div>
-    </main>
-  );
-}
+import CurrencyToggle from '@/components/CurrencyToggle';
 
 export default function EditGigPage() {
   const { user, loading: authLoading } = useRequireAuth('freelancer');
@@ -35,9 +16,12 @@ export default function EditGigPage() {
 
   const [form, setForm] = useState({ title: '', description: '', category: '', price: '', delivery_days: '' });
   const [images, setImages] = useState<string[]>([]);
+  const [currency, setCurrency] = useState('NGN');
   const [loadingListing, setLoadingListing] = useState(true);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+
+  const localCurrency = localCurrencyForCountry(user?.country);
 
   useEffect(() => {
     if (!params.id) return;
@@ -55,6 +39,7 @@ export default function EditGigPage() {
           delivery_days: String(data.delivery_days),
         });
         setImages(data.images || []);
+        setCurrency(data.currency);
       })
       .catch((err) => setError(err instanceof Error ? err.message : 'Could not load listing'))
       .finally(() => setLoadingListing(false));
@@ -74,6 +59,7 @@ export default function EditGigPage() {
         description: form.description,
         category: form.category,
         price: Number(form.price) || 0,
+        currency,
         delivery_days: Number(form.delivery_days) || 1,
         images,
       });
@@ -86,12 +72,12 @@ export default function EditGigPage() {
   }
 
   if (authLoading || !user || loadingListing) {
-    return <EditSkeleton />;
+    return <div className="min-h-screen bg-black flex items-center justify-center text-fg/40 text-sm">Loading...</div>;
   }
 
   return (
-    <main className="min-h-screen bg-paper">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line safe-top">
+    <main className="min-h-screen bg-black">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line/60">
         <Link href={`/listing/${params.id}`} className="text-sm text-fg/50 hover:text-fg transition-colors">← Back</Link>
         <span className="font-display text-lg font-bold text-fg">Edit gig</span>
         <span className="w-10" />
@@ -107,36 +93,39 @@ export default function EditGigPage() {
             <label className="block text-sm font-medium text-fg/70 mb-1.5">Title</label>
             <input
               name="title" value={form.title} onChange={handleChange} required
-              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-mist px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-blue/40 transition-colors"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-fg/70 mb-1.5">Description</label>
             <textarea
               name="description" value={form.description} onChange={handleChange} required rows={4}
-              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg resize-none focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-mist px-3.5 py-2.5 text-sm text-fg resize-none focus:outline-none focus:ring-2 focus:ring-blue/40 transition-colors"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-fg/70 mb-1.5">Category</label>
             <input
               name="category" value={form.category} onChange={handleChange} required
-              className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+              className="w-full rounded-lg border border-line bg-mist px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-blue/40 transition-colors"
             />
           </div>
+
+          <CurrencyToggle localCurrency={localCurrency} value={currency} onChange={setCurrency} />
+
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-fg/70 mb-1.5">Price (₦)</label>
+              <label className="block text-sm font-medium text-fg/70 mb-1.5">Price ({currencySymbol(currency)})</label>
               <input
                 name="price" type="number" value={form.price} onChange={handleChange} required min={0}
-                className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+                className="w-full rounded-lg border border-line bg-mist px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-blue/40 transition-colors"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-fg/70 mb-1.5">Delivery (days)</label>
               <input
                 name="delivery_days" type="number" value={form.delivery_days} onChange={handleChange} required min={1}
-                className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
+                className="w-full rounded-lg border border-line bg-mist px-3.5 py-2.5 text-sm text-fg focus:outline-none focus:ring-2 focus:ring-blue/40 transition-colors"
               />
             </div>
           </div>
@@ -145,7 +134,7 @@ export default function EditGigPage() {
 
           <button
             type="submit" disabled={saving}
-            className="ripple btn-elevated w-full bg-blue hover:bg-blue-deep disabled:opacity-50 active:scale-[0.98] text-black text-sm font-semibold rounded-xl py-3.5 transition-colors"
+            className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3.5 transition-colors"
           >
             {saving ? 'Saving...' : 'Save changes'}
           </button>

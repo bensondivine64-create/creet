@@ -160,16 +160,6 @@ export default function SettingsPage() {
             <Row href="/admin" icon={<ShieldIcon />} title="Admin System" subtitle="Manage users, listings, and reports" delay={80} />
           )}
 
-          {!user.is_verified && (
-            <Row
-              href="/verify-identity"
-              icon={<BadgeCheckIcon />}
-              title="Get Verified"
-              subtitle="Show buyers and sellers you're trustworthy"
-              delay={100}
-            />
-          )}
-
           {!user.is_premium && (
             <Row
               href="/premium"
@@ -181,7 +171,7 @@ export default function SettingsPage() {
             />
           )}
 
-          {user.is_verified && user.is_premium && (
+          {user.is_premium && (
             <p className="text-sm text-muted text-center py-4">You&apos;re verified and on Premium. 🎉</p>
           )}
         </div>

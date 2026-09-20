@@ -23,7 +23,7 @@ export default function HomePage() {
         <span className="text-xl font-bold tracking-tight">CREET</span>
         <Link
           href="/login"
-          className="text-sm font-medium text-white/80 transition hover:text-white"
+          className="text-sm font-semibold text-white bg-white/15 border border-white/30 backdrop-blur-sm rounded-full px-4 py-2 transition hover:bg-white/25"
         >
           Log in
         </Link>
@@ -35,7 +35,7 @@ export default function HomePage() {
           Choose your role.
         </h1>
 
-        <p className="mt-3 max-w-sm text-base leading-relaxed text-white/70">
+        <p className="mt-3 max-w-sm text-sm leading-relaxed text-white/70">
           Buy products, hire freelancers, or offer your own services — all in one place.
         </p>
 

@@ -171,7 +171,7 @@ export default function VendorDashboard() {
                     </>
                   )}
                   {item.kind === 'product' && item.sold_at && (
-                    <span className="text-xs text-fg/40 ml-1">Sold</span>
+                    <><span className="text-fg/20 text-xs">·</span><span className="text-xs text-fg/40">Sold</span></>
                   )}
                 </div>
               </div>

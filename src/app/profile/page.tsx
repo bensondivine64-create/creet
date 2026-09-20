@@ -180,8 +180,8 @@ export default function ProfilePage() {
         </div>
 
         <div className="max-w-2xl mx-auto px-5">
-          <div className="relative -mt-11 flex items-end justify-between">
-            <div className="relative">
+          <div className="relative -mt-11">
+            <div className="relative inline-block">
               <div className="rounded-full ring-4 ring-black">
                 <Avatar avatar={previewAvatar || user.avatar} name={user.full_name} size={88} />
               </div>
@@ -196,7 +196,7 @@ export default function ProfilePage() {
               <input ref={avatarInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handlePickFile('avatar')} />
             </div>
 
-            <div className="flex gap-2 pb-2">
+            <div className="flex justify-end gap-2 mt-3">
               <button
                 onClick={handleShare}
                 className="px-4 py-2 rounded-full border border-line text-fg text-sm font-semibold active:scale-[0.96] transition-transform"
