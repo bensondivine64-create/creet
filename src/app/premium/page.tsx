@@ -136,9 +136,9 @@ export default function PremiumPage() {
               <button
                 key={plan.id}
                 onClick={() => setSelected(plan.id)}
-                className={`rounded-lg border py-3 px-2 text-center transition-colors ${
-                  active ? 'border-blue bg-blue/10' : 'border-line'
-                }`}
+                className={`ripple rounded-lg border py-3 px-2 text-center transition-colors active:scale-[0.96] ${
+                    active ? 'border-blue bg-blue/10' : 'border-line'
+                  }`}
               >
                 <div className={`text-sm font-semibold ${active ? 'text-blue' : 'text-fg'}`}>{plan.label}</div>
                 <div className="text-xs text-fg/60 mt-1 h-4 flex items-center justify-center">

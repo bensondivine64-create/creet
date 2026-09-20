@@ -44,7 +44,23 @@ export default function EditProfilePage() {
   }
 
   if (loading || !user) {
-    return <div className="min-h-screen bg-black flex items-center justify-center text-muted text-sm">Loading...</div>;
+    return (
+      <main className="min-h-screen bg-black pb-24 animate-pulse">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-line/60 safe-top">
+          <div className="h-4 w-12 bg-line/20 rounded" />
+          <div className="h-5 w-24 bg-line/20 rounded" />
+          <span className="w-10" />
+        </div>
+        <div className="max-w-2xl mx-auto px-5 py-8 space-y-7">
+          <div className="flex flex-col items-center">
+            <div className="h-22 w-22 rounded-full bg-line/20" style={{ height: 88, width: 88 }} />
+          </div>
+          <div className="h-11 w-full bg-line/20 rounded-xl" />
+          <div className="h-11 w-full bg-line/20 rounded-xl" />
+          <div className="h-24 w-full bg-line/20 rounded-xl" />
+        </div>
+      </main>
+    );
   }
 
   function toggleCategory(cat: string) {
@@ -189,7 +205,7 @@ export default function EditProfilePage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-70 text-black text-sm font-semibold rounded-xl py-4 transition-colors flex items-center justify-center gap-2"
+          className="ripple btn-elevated w-full bg-blue hover:bg-blue-deep disabled:opacity-70 active:scale-[0.98] text-black text-sm font-semibold rounded-xl py-4 transition-colors flex items-center justify-center gap-2"
         >
           {saving && (
             <span className="h-4 w-4 rounded-full border-2 border-black/30 border-t-black animate-spin-fast" />

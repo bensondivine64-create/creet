@@ -10,6 +10,29 @@ import { localCurrencyForCountry, currencySymbol, getRememberedCurrency, remembe
 import ImagePicker from '@/components/ImagePicker';
 import CurrencyToggle from '@/components/CurrencyToggle';
 
+function FormSkeleton() {
+  return (
+    <main className="min-h-screen bg-black animate-pulse">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line safe-top">
+        <div className="h-4 w-12 bg-line/20 rounded" />
+        <div className="h-5 w-24 bg-line/20 rounded" />
+        <span className="w-10" />
+      </div>
+      <div className="max-w-2xl mx-auto px-5 py-8 space-y-5">
+        <div className="h-3 w-48 bg-line/20 rounded mb-6" />
+        <div className="h-11 w-full bg-line/20 rounded-lg" />
+        <div className="h-24 w-full bg-line/20 rounded-lg" />
+        <div className="h-11 w-full bg-line/20 rounded-lg" />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="h-11 bg-line/20 rounded-lg" />
+          <div className="h-11 bg-line/20 rounded-lg" />
+        </div>
+        <div className="h-24 w-full bg-line/20 rounded-lg" />
+      </div>
+    </main>
+  );
+}
+
 export default function PostGigPage() {
   const { user, loading: authLoading } = useRequireAuth('freelancer');
   const router = useRouter();
@@ -56,7 +79,7 @@ export default function PostGigPage() {
   }
 
   if (authLoading || !user) {
-    return <div className="min-h-screen flex items-center justify-center text-fg/40 text-sm">Loading...</div>;
+    return <FormSkeleton />;
   }
 
   return (

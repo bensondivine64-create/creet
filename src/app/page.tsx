@@ -36,7 +36,7 @@ export default function HomePage() {
         </h1>
 
         <p className="mt-3 max-w-sm text-base leading-relaxed text-white/70">
-          One marketplace. Choose how you want to use it.
+          Buy products, hire freelancers, or offer your own services — all in one place.
         </p>
 
         <div className="mt-8 grid grid-cols-2 gap-3">

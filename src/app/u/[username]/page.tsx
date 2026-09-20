@@ -337,7 +337,12 @@ export default function PublicProfilePage() {
                     href={`/listing/${item.id}`}
                     className="block ripple card-elevated bg-mist border border-line rounded-2xl overflow-hidden shadow-lg shadow-black/30 active:scale-[0.98] transition-transform"
                   >
-                    <div className="aspect-video bg-line/20" />
+                    <div className="aspect-video bg-line/20 overflow-hidden">
+                      {item.images && item.images.length > 0 && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                      )}
+                    </div>
                     <div className="p-3">
                       <div className="text-sm font-semibold text-fg leading-snug line-clamp-2 mb-1.5">
                         {item.title}

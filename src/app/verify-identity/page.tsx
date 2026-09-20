@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function VerifyIdentityPage() {
+  const { showToast } = useToast();
   return (
     <main className="min-h-screen bg-paper">
       <div className="flex items-center justify-between px-5 py-4 border-b border-line safe-top">
@@ -22,8 +24,8 @@ export default function VerifyIdentityPage() {
           platform, helping buyers and sellers trust who they&apos;re dealing with.
         </p>
         <button
-          onClick={() => alert('Identity verification is coming soon.')}
-          className="w-full bg-blue hover:bg-blue-deep text-black text-sm font-semibold rounded-lg py-3.5 transition-colors"
+          onClick={() => showToast('Identity verification is coming soon', 'info')}
+          className="ripple btn-elevated w-full bg-blue hover:bg-blue-deep active:scale-[0.98] text-black text-sm font-semibold rounded-xl py-3.5 transition-colors"
         >
           Start verification
         </button>

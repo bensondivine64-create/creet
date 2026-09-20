@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
+import { Sora, Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { ConfirmProvider } from "@/contexts/ConfirmContext";
@@ -10,12 +10,13 @@ import AttributionCapture from "@/components/AttributionCapture";
 import PageTransition from "@/components/PageTransition";
 import "./globals.css";
 
-const display = Space_Grotesk({
+const display = Sora({
   variable: "--font-display",
   subsets: ["latin"],
+  weight: ["600", "700", "800"],
 });
 
-const body = Inter({
+const body = Plus_Jakarta_Sans({
   variable: "--font-body",
   subsets: ["latin"],
 });

@@ -7,6 +7,27 @@ import { getListing, updateListing } from '@/lib/listings';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
 import ImagePicker from '@/components/ImagePicker';
 
+function EditSkeleton() {
+  return (
+    <main className="min-h-screen bg-paper animate-pulse">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line safe-top">
+        <div className="h-4 w-12 bg-line/20 rounded" />
+        <div className="h-5 w-24 bg-line/20 rounded" />
+        <span className="w-10" />
+      </div>
+      <div className="max-w-2xl mx-auto px-5 py-8 space-y-5">
+        <div className="h-11 w-full bg-line/20 rounded-lg" />
+        <div className="h-24 w-full bg-line/20 rounded-lg" />
+        <div className="h-11 w-full bg-line/20 rounded-lg" />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="h-11 bg-line/20 rounded-lg" />
+          <div className="h-11 bg-line/20 rounded-lg" />
+        </div>
+      </div>
+    </main>
+  );
+}
+
 export default function EditRequestPage() {
   const { user, loading: authLoading } = useRequireAuth('buyer');
   const params = useParams();
@@ -65,12 +86,12 @@ export default function EditRequestPage() {
   }
 
   if (authLoading || !user || loadingListing) {
-    return <div className="min-h-screen flex items-center justify-center text-fg/40 text-sm">Loading...</div>;
+    return <EditSkeleton />;
   }
 
   return (
     <main className="min-h-screen bg-paper">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line safe-top">
         <Link href={`/listing/${params.id}`} className="text-sm text-fg/50 hover:text-fg transition-colors">← Back</Link>
         <span className="font-display text-lg font-bold text-fg">Edit request</span>
         <span className="w-10" />
@@ -124,7 +145,7 @@ export default function EditRequestPage() {
 
           <button
             type="submit" disabled={saving}
-            className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3.5 transition-colors"
+            className="ripple btn-elevated w-full bg-blue hover:bg-blue-deep disabled:opacity-50 active:scale-[0.98] text-black text-sm font-semibold rounded-xl py-3.5 transition-colors"
           >
             {saving ? 'Saving...' : 'Save changes'}
           </button>

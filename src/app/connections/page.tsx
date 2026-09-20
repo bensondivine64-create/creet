@@ -107,7 +107,16 @@ export default function ConnectionsPage() {
   }
 
   if (loading || !user) {
-    return <div className="min-h-screen bg-black flex items-center justify-center text-muted text-sm">Loading...</div>;
+    return (
+      <main className="min-h-screen bg-black pb-40">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-line/60 safe-top">
+          <div className="h-4 w-12 bg-line/20 rounded animate-pulse" />
+          <div className="h-5 w-28 bg-line/20 rounded animate-pulse" />
+          <span className="w-10" />
+        </div>
+        <ConnectionsSkeleton />
+      </main>
+    );
   }
 
   return (
