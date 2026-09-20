@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import OtpInput from '@/components/OtpInput';
 
 function VerifyForm() {
   const { verifyOtp, resendOtp } = useAuth();
@@ -17,12 +18,11 @@ function VerifyForm() {
   const [resent, setResent] = useState(false);
   const [resending, setResending] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function submitCode(fullCode: string) {
     setError('');
     setLoading(true);
     try {
-      const res = await verifyOtp({ email, code });
+      const res = await verifyOtp({ email, code: fullCode });
       if (!res.user.profile_completed) {
         router.push('/create-profile');
       } else {
@@ -30,9 +30,13 @@ function VerifyForm() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Invalid or expired code');
-    } finally {
       setLoading(false);
     }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (code.length === 6) submitCode(code);
   }
 
   async function handleResend() {
@@ -69,25 +73,16 @@ function VerifyForm() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-fg/70 mb-1.5">Verification code</label>
-          <input
-            type="text"
-            inputMode="numeric"
-            maxLength={6}
-            value={code}
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-            required
-            placeholder="123456"
-            className="w-full rounded-lg border border-line bg-white/5 px-3.5 py-3 text-center text-lg tracking-[0.4em] text-fg placeholder:text-fg/20 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-colors"
-          />
+          <label className="block text-sm font-medium text-fg/70 mb-2.5">Verification code</label>
+          <OtpInput onChange={setCode} onComplete={submitCode} disabled={loading} />
         </div>
 
         <button
           type="submit"
           disabled={loading || code.length < 6}
-          className="w-full bg-blue hover:bg-blue-deep disabled:opacity-50 text-black text-sm font-semibold rounded-lg py-3.5 transition-colors"
+          className="ripple btn-elevated w-full bg-blue hover:bg-blue-deep disabled:opacity-50 active:scale-[0.98] text-black text-sm font-semibold rounded-xl py-3.5 transition-colors"
         >
           {loading ? 'Verifying...' : 'Verify'}
         </button>
@@ -109,7 +104,7 @@ function VerifyForm() {
 
 export default function VerifyPage() {
   return (
-    <Suspense fallback={<div className="text-sm text-fg/40">Loading...</div>}>
+    <Suspense fallback={<div className="animate-pulse space-y-4"><div className="h-5 w-40 bg-line/20 rounded" /><div className="h-3 w-56 bg-line/20 rounded" /><div className="h-12 w-full bg-line/20 rounded-lg mt-6" /></div>}>
       <VerifyForm />
     </Suspense>
   );

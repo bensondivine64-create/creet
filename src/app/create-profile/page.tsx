@@ -8,6 +8,7 @@ import { updateProfile } from '@/lib/profile';
 import { CATEGORIES } from '@/lib/categories';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import CountryPicker from '@/components/CountryPicker';
+import { uploadAvatar } from '@/lib/profile';
 
 const EXPERIENCE_LEVELS = ['New to freelancing', '1-3 years', '3-5 years', '5+ years'];
 const STORE_TYPES = ['Individual seller', 'Small business', 'Registered company'];
@@ -30,6 +31,8 @@ export default function CreateProfilePage() {
   const [location, setLocation] = useState('');
   const [country, setCountry] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string>('');
   const [experience, setExperience] = useState('');
   const [storeType, setStoreType] = useState('');
   const [shipsNationwide, setShipsNationwide] = useState('');
@@ -115,6 +118,13 @@ export default function CreateProfilePage() {
     setError('');
     setSaving(true);
     try {
+      if (avatarFile) {
+        try {
+          await uploadAvatar(avatarFile);
+        } catch {
+          // non-fatal — profile setup continues even if avatar upload fails
+        }
+      }
       const onboarding_extra: Record<string, string> = {};
 
       if (user?.role === 'freelancer') {
@@ -210,6 +220,46 @@ export default function CreateProfilePage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {step === 1 && (
               <>
+                <div className="flex flex-col items-center mb-2">
+                  <label className="relative h-20 w-20 rounded-full bg-mist border border-line flex items-center justify-center overflow-hidden cursor-pointer active:scale-95 transition-transform ripple">
+                    {avatarPreview ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={avatarPreview} alt="" className="h-full w-full object-cover" />
+                    ) : (
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} className="text-muted">
+                        <circle cx="12" cy="8" r="4" />
+                        <path strokeLinecap="round" d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                      </svg>
+                    )}
+                    <span className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[10px] font-medium text-center py-1">
+                      {avatarPreview ? 'Change' : 'Add photo'}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setAvatarFile(file);
+                        setAvatarPreview(URL.createObjectURL(file));
+                      }}
+                    />
+                  </label>
+                  {avatarPreview && (
+                    <button
+                      type="button"
+                      onClick={() => { setAvatarFile(null); setAvatarPreview(''); }}
+                      className="text-xs text-muted underline underline-offset-2 mt-2"
+                    >
+                      Skip for now
+                    </button>
+                  )}
+                  {!avatarPreview && (
+                    <p className="text-xs text-muted mt-2">Optional — you can add this later</p>
+                  )}
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-fg/70 mb-1.5">Bio</label>
                   <input
@@ -262,10 +312,10 @@ export default function CreateProfilePage() {
                       key={cat}
                       type="button"
                       onClick={() => toggleCategory(cat)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
+                      className={`ripple px-3.5 py-2 rounded-full text-xs font-semibold active:scale-[0.95] transition-transform ${
                         categories.includes(cat)
                           ? 'bg-blue text-black'
-                          : 'bg-paper border border-line text-muted'
+                          : 'ripple bg-mist border border-line/80 text-fg/70 card-elevated'
                       }`}
                     >
                       {cat}
@@ -285,8 +335,8 @@ export default function CreateProfilePage() {
                         key={lvl}
                         type="button"
                         onClick={() => setExperience(experience === lvl ? '' : lvl)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
-                          experience === lvl ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
+                        className={`ripple px-3.5 py-2 rounded-full text-xs font-semibold active:scale-[0.95] transition-transform ${
+                          experience === lvl ? 'bg-blue text-black' : 'ripple bg-mist border border-line/80 text-fg/70 card-elevated'
                         }`}
                       >
                         {lvl}
@@ -338,8 +388,8 @@ export default function CreateProfilePage() {
                         key={opt}
                         type="button"
                         onClick={() => setPriorWorkType(priorWorkType === opt ? '' : opt)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
-                          priorWorkType === opt ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
+                        className={`ripple px-3.5 py-2 rounded-full text-xs font-semibold active:scale-[0.95] transition-transform ${
+                          priorWorkType === opt ? 'bg-blue text-black' : 'ripple bg-mist border border-line/80 text-fg/70 card-elevated'
                         }`}
                       >
                         {opt}
@@ -375,8 +425,8 @@ export default function CreateProfilePage() {
                         key={t}
                         type="button"
                         onClick={() => setStoreType(storeType === t ? '' : t)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
-                          storeType === t ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
+                        className={`ripple px-3.5 py-2 rounded-full text-xs font-semibold active:scale-[0.95] transition-transform ${
+                          storeType === t ? 'bg-blue text-black' : 'ripple bg-mist border border-line/80 text-fg/70 card-elevated'
                         }`}
                       >
                         {t}
@@ -392,8 +442,8 @@ export default function CreateProfilePage() {
                         key={v}
                         type="button"
                         onClick={() => setShipsNationwide(shipsNationwide === v ? '' : v)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
-                          shipsNationwide === v ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
+                        className={`ripple px-3.5 py-2 rounded-full text-xs font-semibold active:scale-[0.95] transition-transform ${
+                          shipsNationwide === v ? 'bg-blue text-black' : 'ripple bg-mist border border-line/80 text-fg/70 card-elevated'
                         }`}
                       >
                         {v}
@@ -427,8 +477,8 @@ export default function CreateProfilePage() {
                         key={v}
                         type="button"
                         onClick={() => setBuyerIntent(buyerIntent === v ? '' : v)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
-                          buyerIntent === v ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
+                        className={`ripple px-3.5 py-2 rounded-full text-xs font-semibold active:scale-[0.95] transition-transform ${
+                          buyerIntent === v ? 'bg-blue text-black' : 'ripple bg-mist border border-line/80 text-fg/70 card-elevated'
                         }`}
                       >
                         {v}
@@ -446,8 +496,8 @@ export default function CreateProfilePage() {
                           key={v}
                           type="button"
                           onClick={() => setBuyerFreelancerType(buyerFreelancerType === v ? '' : v)}
-                          className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
-                            buyerFreelancerType === v ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
+                          className={`ripple px-3.5 py-2 rounded-full text-xs font-semibold active:scale-[0.95] transition-transform ${
+                            buyerFreelancerType === v ? 'bg-blue text-black' : 'ripple bg-mist border border-line/80 text-fg/70 card-elevated'
                           }`}
                         >
                           {v}
@@ -465,8 +515,8 @@ export default function CreateProfilePage() {
                         key={r}
                         type="button"
                         onClick={() => setBudgetRange(budgetRange === r ? '' : r)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium active:scale-[0.97] transition-transform ${
-                          budgetRange === r ? 'bg-blue text-black' : 'bg-paper border border-line text-muted'
+                        className={`ripple px-3.5 py-2 rounded-full text-xs font-semibold active:scale-[0.95] transition-transform ${
+                          budgetRange === r ? 'bg-blue text-black' : 'ripple bg-mist border border-line/80 text-fg/70 card-elevated'
                         }`}
                       >
                         {r}

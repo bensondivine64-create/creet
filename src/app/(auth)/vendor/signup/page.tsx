@@ -200,16 +200,16 @@ export default function VendorSignupPage() {
 
         <div className="flex gap-3">
           {step > 1 && (
-            <button type="button" onClick={handleBack} className="flex-1 border border-line active:scale-[0.98] transition-transform text-fg text-sm font-semibold rounded-lg py-3.5">
+            <button type="button" onClick={handleBack} className="flex-1 border border-line active:scale-[0.98] transition-transform text-fg text-sm font-semibold rounded-xl py-3.5">
               Back
             </button>
           )}
           {step < TOTAL_STEPS ? (
-            <button type="button" onClick={handleNext} className="flex-1 bg-blue active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg py-3.5">
+            <button type="button" onClick={handleNext} className="ripple btn-elevated flex-1 bg-blue active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-xl py-3.5">
               Next
             </button>
           ) : (
-            <button type="submit" disabled={loading || !canSubmit} className="flex-1 bg-blue disabled:opacity-40 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-lg py-3.5">
+            <button type="submit" disabled={loading || !canSubmit} className="ripple btn-elevated flex-1 bg-blue disabled:opacity-40 active:scale-[0.98] transition-transform text-black text-sm font-semibold rounded-xl py-3.5">
               {loading ? 'Creating account...' : 'Create vendor account'}
             </button>
           )}

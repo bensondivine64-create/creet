@@ -112,6 +112,15 @@ export default function VendorHomePage() {
       .finally(() => setSectionsLoading(false));
   }, [user]);
 
+  useEffect(() => {
+    if (sectionsLoading || !user) return;
+    if (myProducts.length > 0) return;
+    const key = `creet_nudge_first_product_${user.username}`;
+    if (localStorage.getItem(key)) return;
+    localStorage.setItem(key, '1');
+    showToast('Post your first product to get started!', 'info');
+  }, [sectionsLoading, myProducts, user]);
+
   async function handleDelete(item: Listing) {
     const ok = await confirmDialog({
       title: 'Delete this listing?',

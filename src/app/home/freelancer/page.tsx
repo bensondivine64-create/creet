@@ -111,6 +111,15 @@ export default function FreelancerHomePage() {
       .finally(() => setSectionsLoading(false));
   }, [user]);
 
+  useEffect(() => {
+    if (sectionsLoading || !user) return;
+    if (myGigs.length > 0) return;
+    const key = `creet_nudge_first_gig_${user.username}`;
+    if (localStorage.getItem(key)) return;
+    localStorage.setItem(key, '1');
+    showToast('Post your first gig to get started!', 'info');
+  }, [sectionsLoading, myGigs, user]);
+
   async function handleDelete(item: Listing) {
     const ok = await confirmDialog({
       title: 'Delete this listing?',
