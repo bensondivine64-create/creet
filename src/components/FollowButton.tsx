@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { followUser, unfollowUser, getFollowStatus } from '@/lib/network';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function FollowButton({ userId }: { userId: number }) {
+  const { showToast } = useToast();
   const [following, setFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
@@ -25,6 +27,8 @@ export default function FollowButton({ userId }: { userId: number }) {
         await followUser(userId);
         setFollowing(true);
       }
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Could not update follow status', 'error');
     } finally {
       setLoading(false);
     }
