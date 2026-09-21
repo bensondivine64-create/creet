@@ -13,7 +13,22 @@ export interface NetworkPost {
   content: string;
   image_url?: string | null;
   created_at: string;
+  like_count: number;
+  comment_count: number;
+  liked_by_me: boolean;
   author: PostAuthor;
+}
+
+export interface PostComment {
+  id: number;
+  content: string;
+  created_at: string;
+  author: {
+    username: string;
+    full_name: string;
+    avatar?: string | null;
+    verified: boolean;
+  };
 }
 
 export interface NetworkFeedResponse {
@@ -37,6 +52,44 @@ export function createPost(content: string, imageUrl?: string) {
   return apiCall<{ success: boolean; post: NetworkPost }>('/posts', {
     method: 'POST',
     body: { content, image_url: imageUrl },
+  });
+}
+
+export async function uploadPostImage(file: File): Promise<string> {
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+  const token = typeof window !== 'undefined' ? localStorage.getItem('creet_token') : null;
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const res = await fetch(`${API_BASE}/posts/upload-image`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    body: formData,
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.detail || 'Could not upload image');
+  }
+  return data.url as string;
+}
+
+export function likePost(postId: number) {
+  return apiCall<{ success: boolean; liked: boolean; like_count: number }>(`/posts/${postId}/like`, { method: 'POST' });
+}
+
+export function unlikePost(postId: number) {
+  return apiCall<{ success: boolean; liked: boolean; like_count: number }>(`/posts/${postId}/like`, { method: 'DELETE' });
+}
+
+export function getPostComments(postId: number) {
+  return apiCall<{ comments: PostComment[] }>(`/posts/${postId}/comments`, { auth: false });
+}
+
+export function addPostComment(postId: number, content: string) {
+  return apiCall<{ success: boolean; comment: PostComment }>(`/posts/${postId}/comments`, {
+    method: 'POST',
+    body: { content },
   });
 }
 
