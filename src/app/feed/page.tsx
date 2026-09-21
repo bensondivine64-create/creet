@@ -39,6 +39,7 @@ export default function NetworkFeedPage() {
   const [draft, setDraft] = useState('');
   const [posting, setPosting] = useState(false);
   const [suggested, setSuggested] = useState<SuggestedUser[]>([]);
+  const [showSuggested, setShowSuggested] = useState(true);
 
   useEffect(() => {
     if (!user) return;
@@ -49,6 +50,8 @@ export default function NetworkFeedPage() {
     getWhoToFollow(10)
       .then((res) => setSuggested(res.users))
       .catch(() => {});
+    const timer = setTimeout(() => setShowSuggested(false), 60000);
+    return () => clearTimeout(timer);
   }, [user]);
 
   async function handlePost() {
@@ -116,7 +119,7 @@ export default function NetworkFeedPage() {
         </div>
       </div>
 
-      {suggested.length > 0 && (
+      {showSuggested && suggested.length > 0 && (
         <div className="pb-5">
           <h2 className="px-5 font-display font-bold text-fg text-base mb-3">Who to follow</h2>
           <div className="flex gap-3 overflow-x-auto px-5 pb-1 scrollbar-hide">
@@ -124,7 +127,10 @@ export default function NetworkFeedPage() {
               <div key={s.id} className="shrink-0 w-40 ripple card-elevated bg-mist border border-line rounded-2xl p-3.5 flex flex-col items-center text-center">
                 <Link href={`/u/${s.username}`} className="flex flex-col items-center">
                   <Avatar avatar={s.avatar} name={s.full_name} size={44} />
-                  <span className="text-xs font-semibold text-fg mt-2 truncate max-w-full">{s.full_name}</span>
+                  <div className="flex items-center gap-1 mt-2 max-w-full">
+                    <span className="text-xs font-semibold text-fg truncate">{s.full_name}</span>
+                    {s.verified && <VerifiedBadge size={10} />}
+                  </div>
                   <span className="text-[10px] text-muted capitalize">{s.role}</span>
                 </Link>
                 <div className="mt-2.5">

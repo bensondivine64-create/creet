@@ -10,6 +10,8 @@ import { formatRelativeTime } from '@/lib/time';
 import Avatar from '@/components/Avatar';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import BottomNav from '@/components/BottomNav';
+import FollowButton from '@/components/FollowButton';
+import { getWhoToFollow, SuggestedUser } from '@/lib/network';
 
 function Chevron() {
   return (
@@ -60,6 +62,7 @@ export default function ConnectionsPage() {
   const [pending, setPending] = useState<ConnectionUser[]>([]);
   const [feed, setFeed] = useState<Listing[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
+  const [suggested, setSuggested] = useState<SuggestedUser[]>([]);
 
   function fetchFresh() {
     return Promise.all([getMyConnections(), getConnectionsFeed()]).then(([connRes, feedRes]) => {
@@ -77,6 +80,8 @@ export default function ConnectionsPage() {
 
   useEffect(() => {
     if (!user) return;
+
+    getWhoToFollow(10).then((res) => setSuggested(res.users)).catch(() => {});
 
     const cached = getCachedConnections();
     if (cached) {
@@ -257,6 +262,29 @@ export default function ConnectionsPage() {
               </div>
             )}
           </section>
+
+          {suggested.length > 0 && (
+            <section>
+              <h2 className="font-display font-bold text-fg text-base mb-3">Who to follow</h2>
+              <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
+                {suggested.map((s) => (
+                  <div key={s.id} className="shrink-0 w-40 ripple card-elevated bg-mist border border-line rounded-2xl p-3.5 flex flex-col items-center text-center">
+                    <Link href={`/u/${s.username}`} className="flex flex-col items-center">
+                      <Avatar avatar={s.avatar} name={s.full_name} size={44} />
+                      <div className="flex items-center gap-1 mt-2 max-w-full">
+                        <span className="text-xs font-semibold text-fg truncate">{s.full_name}</span>
+                        {s.verified && <VerifiedBadge size={10} />}
+                      </div>
+                      <span className="text-[10px] text-muted capitalize">{s.role}</span>
+                    </Link>
+                    <div className="mt-2.5">
+                      <FollowButton userId={s.id} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       )}
 
