@@ -6,6 +6,8 @@ interface EmptyStateProps {
   subtitle?: string;
   ctaLabel?: string;
   ctaHref?: string;
+  onRetry?: () => void;
+  retryLabel?: string;
 }
 
 function StateIcon({ icon }: { icon: EmptyStateProps['icon'] }) {
@@ -49,7 +51,7 @@ function StateIcon({ icon }: { icon: EmptyStateProps['icon'] }) {
   );
 }
 
-export default function EmptyState({ icon, title, subtitle, ctaLabel, ctaHref }: EmptyStateProps) {
+export default function EmptyState({ icon, title, subtitle, ctaLabel, ctaHref, onRetry, retryLabel }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center text-center py-16 px-6">
       <div className="h-14 w-14 rounded-full bg-mist flex items-center justify-center text-ink/40 mb-4">
@@ -60,10 +62,18 @@ export default function EmptyState({ icon, title, subtitle, ctaLabel, ctaHref }:
       {ctaLabel && ctaHref && (
         <Link
           href={ctaHref}
-          className="mt-4 text-sm font-semibold text-fg underline underline-offset-2 hover:text-white"
+          className="ripple mt-4 text-sm font-semibold text-fg underline underline-offset-2 hover:text-white"
         >
           {ctaLabel}
         </Link>
+      )}
+      {onRetry && (
+        <button
+          onClick={onRetry}
+          className="ripple btn-elevated mt-4 bg-mist border border-line text-fg text-sm font-semibold rounded-full px-5 py-2.5 active:scale-[0.96] transition-transform"
+        >
+          {retryLabel || 'Try again'}
+        </button>
       )}
     </div>
   );

@@ -159,6 +159,7 @@ export default function InboxPage() {
           icon="inbox"
           title="Couldn't load your inbox"
           subtitle="Check your connection and try again."
+          onRetry={() => { setLoading(true); setError(''); window.location.reload(); }}
         />
       )}
 

@@ -528,7 +528,7 @@ export default function BrowsePage() {
         )}
 
         {!loading && error && (
-          <EmptyState icon="search" title="Couldn't load listings" subtitle="Check your connection and try again." />
+          <EmptyState icon="search" title="Couldn't load listings" subtitle="Check your connection and try again." onRetry={() => { setLoading(true); setError(''); window.location.reload(); }} />
         )}
 
         {!loading && !error && listings.length === 0 && (
