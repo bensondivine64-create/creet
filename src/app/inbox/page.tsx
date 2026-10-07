@@ -134,8 +134,17 @@ export default function InboxPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search messages"
-              className="w-full bg-mist rounded-2xl pl-10 pr-4 py-3.5 text-sm text-fg placeholder:text-fg/30 outline-none focus:ring-2 focus:ring-white/20 transition-all"
+              className="w-full bg-mist rounded-2xl pl-10 pr-10 py-3.5 text-sm text-fg placeholder:text-fg/30 outline-none focus:ring-2 focus:ring-white/20 transition-all"
             />
+            {query && (
+              <button
+                onClick={() => setQuery('')}
+                aria-label="Clear search"
+                className="ripple absolute right-3 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-line/30 flex items-center justify-center text-fg/50 active:scale-90 transition-transform"
+              >
+                ✕
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -174,7 +183,12 @@ export default function InboxPage() {
       )}
 
       {!loading && !error && conversations.length > 0 && filtered.length === 0 && (
-        <p className="text-sm text-fg/40 text-center py-16">No conversations match &ldquo;{query}&rdquo;</p>
+        <div className="text-center py-16 px-6">
+          <p className="text-sm text-fg/40 mb-3">No conversations match &ldquo;{query}&rdquo;</p>
+          <button onClick={() => setQuery('')} className="ripple text-sm text-fg font-medium underline underline-offset-2">
+            Clear search
+          </button>
+        </div>
       )}
 
       {!loading && !error && filtered.length > 0 && (

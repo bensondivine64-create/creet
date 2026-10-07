@@ -144,7 +144,22 @@ export default function ProfilePage() {
   }
 
   if (loading || !user) {
-    return <div className="min-h-screen bg-black flex items-center justify-center text-muted text-sm">Loading...</div>;
+    return (
+      <main className="min-h-screen bg-black pb-24 animate-pulse">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-line/60 safe-top">
+          <div className="h-4 w-12 bg-line/20 rounded" />
+          <div className="h-5 w-16 bg-line/20 rounded" />
+          <span className="w-5" />
+        </div>
+        <div className="h-36 bg-mist" />
+        <div className="max-w-2xl mx-auto px-5">
+          <div className="-mt-11 h-[88px] w-[88px] rounded-full bg-line/20 ring-4 ring-black" />
+          <div className="h-5 w-40 bg-line/20 rounded mt-5" />
+          <div className="h-3 w-24 bg-line/20 rounded mt-2" />
+          <div className="h-3 w-56 bg-line/20 rounded mt-2" />
+        </div>
+      </main>
+    );
   }
 
   const headline = buildHeadline(user.role, user.categories || [], user.location);
@@ -199,7 +214,7 @@ export default function ProfilePage() {
             <div className="flex justify-end gap-2 mt-3">
               <button
                 onClick={handleShare}
-                className="px-4 py-2 rounded-full border border-line text-fg text-sm font-semibold active:scale-[0.96] transition-transform"
+                className="ripple px-4 py-2 rounded-full border border-line text-fg text-sm font-semibold active:scale-[0.96] transition-transform"
               >
                 Share
               </button>

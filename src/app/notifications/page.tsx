@@ -34,7 +34,7 @@ function BellIcon() {
 
 export default function NotificationsPage() {
   const { user, loading: authLoading } = useRequireAnyAuth();
-  const { notifications, loading, loaded, refresh, markRead, markAllRead } = useNotifications();
+  const { notifications, loading, loaded, error, refresh, markRead, markAllRead } = useNotifications();
 
   // Refresh in the background every time this page is opened, without blocking
   // display of whatever's already cached from the shared context.
@@ -51,7 +51,7 @@ export default function NotificationsPage() {
 
   return (
     <main className="min-h-screen bg-black pb-10">
-      <div className="flex items-center justify-between px-5 py-6">
+      <div className="flex items-center justify-between px-5 py-6 safe-top">
         <Link href="/browse" className="text-sm text-fg/50 hover:text-fg transition-colors">
           ← Back
         </Link>
@@ -75,7 +75,11 @@ export default function NotificationsPage() {
         </div>
       )}
 
-      {!showSkeleton && loaded && notifications.length === 0 && (
+      {!showSkeleton && loaded && error && notifications.length === 0 && (
+        <EmptyState icon="bell" title="Couldn't load notifications" subtitle="Check your connection and try again." onRetry={refresh} />
+      )}
+
+      {!showSkeleton && loaded && !error && notifications.length === 0 && (
         <EmptyState icon="bell" title="You're all caught up" subtitle="Nothing new right now." />
       )}
 

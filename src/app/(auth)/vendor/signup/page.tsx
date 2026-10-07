@@ -200,7 +200,7 @@ export default function VendorSignupPage() {
 
         <div className="flex gap-3">
           {step > 1 && (
-            <button type="button" onClick={handleBack} className="flex-1 border border-line active:scale-[0.98] transition-transform text-fg text-sm font-semibold rounded-xl py-3.5">
+            <button type="button" onClick={handleBack} className="ripple flex-1 border border-line active:scale-[0.98] transition-transform text-fg text-sm font-semibold rounded-xl py-3.5">
               Back
             </button>
           )}
