@@ -10,6 +10,7 @@ interface NotificationsContextValue {
   unreadCount: number;
   loading: boolean;
   loaded: boolean;
+  error: boolean;
   refresh: () => void;
   markRead: (id: number) => void;
   markAllRead: () => void;
@@ -31,17 +32,19 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fetchNotifications = useCallback((silent: boolean) => {
     if (!silent) setLoading(true);
+    setError(false);
     getNotifications()
       .then((res) => {
         setNotifications(res.notifications);
         setUnreadCount(res.unread_count);
         setLoaded(true);
       })
-      .catch(() => {})
+      .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -81,7 +84,7 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
 
   return (
     <NotificationsContext.Provider
-      value={{ notifications, unreadCount, loading, loaded, refresh, markRead, markAllRead }}
+      value={{ notifications, unreadCount, loading, loaded, error, refresh, markRead, markAllRead }}
     >
       {children}
     </NotificationsContext.Provider>
