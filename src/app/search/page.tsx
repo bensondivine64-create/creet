@@ -1,5 +1,6 @@
 'use client';
 
+import { optimizeImg } from '@/lib/img';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -234,7 +235,7 @@ function SearchPageInner() {
                 {item.images && item.images.length > 0 ? (
                   <div className="w-28 h-28 shrink-0 relative">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover"  loading="lazy" decoding="async" />
+                    <img src={optimizeImg(item.images[0], 400)} alt={item.title} className="h-full w-full object-cover"  loading="lazy" decoding="async" />
                   </div>
                 ) : (
                   <div

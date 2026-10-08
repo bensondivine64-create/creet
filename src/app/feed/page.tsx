@@ -1,5 +1,6 @@
 'use client';
 
+import { optimizeImg } from '@/lib/img';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
@@ -138,7 +139,7 @@ function PostCard({ post, isMine, onDelete }: { post: NetworkPost; isMine: boole
       {post.image_url && (
         <div className="mt-3 rounded-xl overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={post.image_url} alt="" className="w-full max-h-96 object-cover" loading="lazy" />
+          <img src={optimizeImg(post.image_url, 900)} alt="" className="w-full max-h-96 object-cover" loading="lazy" />
         </div>
       )}
 

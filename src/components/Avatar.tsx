@@ -1,3 +1,4 @@
+import { optimizeImg } from '@/lib/img';
 interface AvatarProps {
   avatar?: string | null;
   name: string;
@@ -11,7 +12,7 @@ export default function Avatar({ avatar, name, size = 32 }: AvatarProps) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={avatar}
+        src={optimizeImg(avatar, Math.max(size * 2, 64))}
         alt={name}
         style={style}
         className="rounded-full object-cover shrink-0 border border-line"

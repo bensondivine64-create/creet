@@ -1,5 +1,6 @@
 'use client';
 
+import { optimizeImg } from '@/lib/img';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
@@ -243,7 +244,7 @@ export default function ConnectionsPage() {
                     {item.images && item.images.length > 0 && (
                       <div className="aspect-video overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                        <img src={optimizeImg(item.images[0], 640)} alt={item.title} className="h-full w-full object-cover" loading="lazy" decoding="async" />
                       </div>
                     )}
                     <div className="p-3">

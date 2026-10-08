@@ -1,5 +1,6 @@
 'use client';
 
+import { optimizeImg } from '@/lib/img';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -200,7 +201,7 @@ export default function InboxPage() {
                   <div className="relative shrink-0">
                     {c.participant.avatar ? (
                       <img
-                        src={c.participant.avatar}
+                        src={optimizeImg(c.participant.avatar, 112)}
                         alt=""
                         className="h-14 w-14 rounded-full object-cover"
                       />

@@ -1,5 +1,6 @@
 'use client';
 
+import { optimizeImg } from '@/lib/img';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
@@ -133,7 +134,7 @@ export default function ConversationPage() {
           <Link href={`/u/${participant.username}`} className="flex items-center gap-2.5 min-w-0 flex-1 active:opacity-70">
             <div className="relative shrink-0">
               {participant.avatar ? (
-                <img src={participant.avatar} alt="" className="h-9 w-9 rounded-full object-cover" />
+                <img src={optimizeImg(participant.avatar, 80)} alt="" className="h-9 w-9 rounded-full object-cover" />
               ) : (
                 <span className="h-9 w-9 rounded-full bg-fg text-black text-sm font-bold flex items-center justify-center">
                   {participant.full_name.charAt(0).toUpperCase()}
@@ -190,7 +191,7 @@ export default function ConversationPage() {
                         className="rounded-2xl overflow-hidden active:opacity-90 transition-opacity"
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={m.image_url} alt="" className="max-w-full max-h-72 object-cover" />
+                        <img src={optimizeImg(m.image_url, 700)} alt="" className="max-w-full max-h-72 object-cover" />
                       </button>
                     ) : (
                       <div

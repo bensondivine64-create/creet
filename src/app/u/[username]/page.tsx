@@ -1,5 +1,6 @@
 'use client';
 
+import { optimizeImg } from '@/lib/img';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
@@ -347,7 +348,7 @@ export default function PublicProfilePage() {
                     <div className="aspect-video bg-line/20 overflow-hidden">
                       {item.images && item.images.length > 0 && (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                        <img src={optimizeImg(item.images[0], 640)} alt={item.title} className="h-full w-full object-cover" loading="lazy" decoding="async" />
                       )}
                     </div>
                     <div className="p-3">
