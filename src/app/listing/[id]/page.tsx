@@ -14,6 +14,7 @@ import VerifiedBadge from '@/components/VerifiedBadge';
 import Avatar from '@/components/Avatar';
 import ReportModal from '@/components/ReportModal';
 import BottomNav from '@/components/BottomNav';
+import EmptyState from '@/components/EmptyState';
 import { useToast } from '@/contexts/ToastContext';
 import { formatRelativeTime } from '@/lib/time';
 
@@ -176,9 +177,7 @@ export default function ListingDetailPage() {
       </div>
 
       {error && (
-        <p className="text-sm text-muted text-center py-24">
-          This listing couldn&apos;t be found.
-        </p>
+        <EmptyState icon="search" title="Listing not available" subtitle="It may have been removed or expired." ctaLabel="Back to browse" ctaHref="/browse" />
       )}
 
       {!error && listing && (

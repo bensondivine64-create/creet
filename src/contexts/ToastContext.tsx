@@ -54,13 +54,13 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     setToasts((prev) => [...prev, { id, message, kind }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 3000);
+    }, kind === 'error' ? 5000 : 3000);
   }, []);
 
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed bottom-24 left-0 right-0 z-[100] flex flex-col items-center gap-2 px-5 pointer-events-none">
+      <div role="status" aria-live="polite" className="fixed bottom-24 left-0 right-0 z-[100] flex flex-col items-center gap-2 px-5 pointer-events-none">
         {toasts.map((t) => (
           <div
             key={t.id}

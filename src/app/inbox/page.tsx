@@ -29,21 +29,8 @@ function formatRelativeTime(iso: string): string {
   return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
 }
 
-const AVATAR_PALETTE = [
-  { bg: '#2D3A8C', fg: '#C9D2FF' },
-  { bg: '#8C2D5C', fg: '#FFD4E8' },
-  { bg: '#1F6B4F', fg: '#C6F5DE' },
-  { bg: '#8C5A1F', fg: '#FFE0BC' },
-  { bg: '#5C2D8C', fg: '#E6D4FF' },
-  { bg: '#1F5C8C', fg: '#C6E6FF' },
-  { bg: '#8C1F2E', fg: '#FFCBD1' },
-  { bg: '#3D6B1F', fg: '#DCF5C6' },
-];
-
-function avatarColor(name: string) {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length];
+function avatarColor() {
+  return { bg: '#000000', fg: '#F4F5F7' };
 }
 
 function isPhotoMessage(text: string) {
@@ -195,7 +182,7 @@ export default function InboxPage() {
         <div className="px-5 space-y-2.5">
           {filtered.map((c, i) => {
             const unread = c.unread_count > 0;
-            const color = avatarColor(c.participant.full_name);
+            const color = avatarColor();
             const photo = isPhotoMessage(c.last_message);
 
             return (
@@ -219,7 +206,7 @@ export default function InboxPage() {
                       />
                     ) : (
                       <span
-                        className="h-14 w-14 rounded-full text-lg font-bold flex items-center justify-center"
+                        className="h-14 w-14 rounded-full text-lg font-bold flex items-center justify-center border border-line"
                         style={{ backgroundColor: color.bg, color: color.fg }}
                       >
                         {c.participant.full_name.charAt(0).toUpperCase()}

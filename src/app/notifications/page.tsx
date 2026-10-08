@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
@@ -34,12 +34,13 @@ function BellIcon() {
 
 export default function NotificationsPage() {
   const { user, loading: authLoading } = useRequireAnyAuth();
-  const { notifications, loading, loaded, error, refresh, markRead, markAllRead } = useNotifications();
+  const { notifications, loading, loaded, refresh, markRead, markAllRead } = useNotifications();
+  const [loadError, setLoadError] = useState(false);
 
   // Refresh in the background every time this page is opened, without blocking
   // display of whatever's already cached from the shared context.
   useEffect(() => {
-    if (user) refresh();
+    if (user) Promise.resolve(refresh()).then(() => setLoadError(false)).catch(() => setLoadError(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -47,7 +48,7 @@ export default function NotificationsPage() {
     return <PageLoader />;
   }
 
-  const showSkeleton = loading && !loaded;
+  const showSkeleton = loading && !loaded && !loadError;
 
   return (
     <main className="min-h-screen bg-black pb-10">
@@ -75,11 +76,11 @@ export default function NotificationsPage() {
         </div>
       )}
 
-      {!showSkeleton && loaded && error && notifications.length === 0 && (
+      {!showSkeleton && loadError && notifications.length === 0 && (
         <EmptyState icon="bell" title="Couldn't load notifications" subtitle="Check your connection and try again." onRetry={refresh} />
       )}
 
-      {!showSkeleton && loaded && !error && notifications.length === 0 && (
+      {!showSkeleton && loaded && !loadError && notifications.length === 0 && (
         <EmptyState icon="bell" title="You're all caught up" subtitle="Nothing new right now." />
       )}
 

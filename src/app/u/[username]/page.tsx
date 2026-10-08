@@ -66,7 +66,7 @@ function MoreMenu({
       {open && (
         <>
           <div className="fixed inset-0 z-20" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-10 z-30 w-44 bg-mist border border-line rounded-xl overflow-hidden shadow-lg shadow-black/50">
+          <div className="modal-in absolute right-0 top-10 z-30 w-44 bg-mist border border-line rounded-xl overflow-hidden shadow-lg shadow-black/50">
             <button
               onClick={() => { setOpen(false); onReport(); }}
               className="w-full text-left px-4 py-3 text-sm text-fg active:bg-black/50"
