@@ -15,6 +15,7 @@ import Avatar from '@/components/Avatar';
 import ReportModal from '@/components/ReportModal';
 import BottomNav from '@/components/BottomNav';
 import EmptyState from '@/components/EmptyState';
+import EmptyState from '@/components/EmptyState';
 import { useToast } from '@/contexts/ToastContext';
 import { formatRelativeTime } from '@/lib/time';
 

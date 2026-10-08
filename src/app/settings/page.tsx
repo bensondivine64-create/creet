@@ -8,6 +8,7 @@ import { getPremiumQuote } from '@/lib/payments';
 import { writeCachedQuote } from '@/lib/premiumQuoteCache';
 import BottomNav from '@/components/BottomNav';
 import { useConfirm } from '@/contexts/ConfirmContext';
+import { useConfirm } from '@/contexts/ConfirmContext';
 import Avatar from '@/components/Avatar';
 import VerifiedBadge from '@/components/VerifiedBadge';
 
@@ -124,6 +125,16 @@ export default function SettingsPage() {
     });
     if (ok) logout();
   }
+  const confirmDialog = useConfirm();
+  async function handleLogout() {
+    const ok = await confirmDialog({
+      title: 'Log out?',
+      description: "You'll need to sign in again to use CREET.",
+      confirmLabel: 'Log out',
+      danger: true,
+    });
+    if (ok) logout();
+  }
 
   useEffect(() => {
     if (!user || user.is_premium) return;
@@ -162,6 +173,15 @@ export default function SettingsPage() {
           <Row href="/settings/account" icon={<KeyIcon />} title="Account & password" subtitle="Security and login details" delay={40} />
           <Row href="/settings/blocked" icon={<PersonIcon />} title="Blocked accounts" subtitle="Manage who you've blocked" delay={50} />
           <Row href="/settings/privacy" icon={<ShieldIcon />} title="Privacy" subtitle="Control your online status visibility" delay={55} />
+          {(user.role === 'freelancer' || user.role === 'vendor') && (
+            <Row
+              href={user.role === 'freelancer' ? '/home/freelancer' : '/home/vendor'}
+              icon={<ListBulletIcon />}
+              title={user.role === 'freelancer' ? 'My gigs' : 'My products'}
+              subtitle="Manage, edit, and remove your listings"
+              delay={58}
+            />
+          )}
           {(user.role === 'freelancer' || user.role === 'vendor') && (
             <Row
               href={user.role === 'freelancer' ? '/home/freelancer' : '/home/vendor'}
