@@ -7,41 +7,42 @@ import { useAuth } from '@/contexts/AuthContext';
 
 function Icon({ name, active }: { name: string; active: boolean }) {
   const stroke = active ? '#FFFFFF' : '#8B98A5';
-  const common = { fill: 'none', stroke, strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+  const fill = active ? '#FFFFFF' : 'none';
+  const common = { stroke, strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
 
   if (name === 'home') {
     return (
-      <svg width="22" height="22" viewBox="0 0 24 24" {...common}>
-        <path d="M4 11l8-7 8 7M6 9.5V20h12V9.5" />
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? stroke : 'none'} {...common}>
+        <path d="M4 11l8-7 8 7M6 9.5V20h12V9.5" fill={active ? '#FFFFFF' : 'none'} fillOpacity={active ? 0.15 : 0} />
       </svg>
     );
   }
   if (name === 'inbox') {
     return (
-      <svg width="22" height="22" viewBox="0 0 24 24" {...common}>
-        <path d="M3 6h18v12H3V6zm0 0l9 7 9-7" />
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" {...common}>
+        <path d="M3 6h18v12H3V6zm0 0l9 7 9-7" fill={active ? '#FFFFFF' : 'none'} fillOpacity={active ? 0.15 : 0} />
       </svg>
     );
   }
   if (name === 'connections') {
     return (
-      <svg width="22" height="22" viewBox="0 0 24 24" {...common}>
-        <circle cx="8" cy="8" r="3" />
-        <circle cx="16" cy="16" r="3" />
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" {...common}>
+        <circle cx="8" cy="8" r="3" fill={active ? '#FFFFFF' : 'none'} fillOpacity={active ? 0.2 : 0} />
+        <circle cx="16" cy="16" r="3" fill={active ? '#FFFFFF' : 'none'} fillOpacity={active ? 0.2 : 0} />
         <path d="M10.1 9.9L13.9 14.1" />
       </svg>
     );
   }
   if (name === 'feed') {
     return (
-      <svg width="22" height="22" viewBox="0 0 24 24" {...common}>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" {...common}>
         <path d="M4 6h16M4 12h16M4 18h10" />
       </svg>
     );
   }
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" {...common}>
-      <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0" />
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" {...common}>
+      <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0" fill={active ? '#FFFFFF' : 'none'} fillOpacity={active ? 0.15 : 0} />
     </svg>
   );
 }
@@ -131,10 +132,13 @@ export default function BottomNav() {
             <Link
               key={i}
               href={tab.href}
-              className="flex flex-col items-center justify-center gap-1 py-2.5"
+              className="relative flex flex-col items-center justify-center gap-1 py-2.5"
             >
+              {active && (
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full bg-blue" />
+              )}
               <Icon name={tab.icon} active={active} />
-              <span className={`text-[10px] ${active ? 'text-fg font-medium' : 'text-muted'}`}>
+              <span className={`text-[10px] ${active ? 'text-fg font-semibold' : 'text-muted'}`}>
                 {tab.label}
               </span>
             </Link>
