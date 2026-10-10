@@ -266,7 +266,10 @@ export default function ConnectionsPage() {
 
           {suggested.length > 0 && (
             <section>
-              <h2 className="font-display font-bold text-fg text-base mb-3">Who to follow</h2>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-display font-bold text-fg text-base">Who to follow</h2>
+                <Link href="/people" className="text-xs text-fg underline underline-offset-2">Find people</Link>
+              </div>
               <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
                 {suggested.map((s) => (
                   <div key={s.id} className="shrink-0 w-40 ripple card-elevated bg-mist border border-line rounded-2xl p-3.5 flex flex-col items-center text-center">

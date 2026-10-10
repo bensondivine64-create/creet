@@ -8,6 +8,7 @@ import { getMessages, sendMessage, sendMessageImage } from '@/lib/messages';
 import { Message } from '@/types/message';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import { useToast } from '@/contexts/ToastContext';
+import EmptyState from '@/components/EmptyState';
 
 interface Participant {
   username: string;
@@ -161,7 +162,7 @@ export default function ConversationPage() {
       <div className="flex-1 overflow-y-auto px-5 py-5 space-y-1">
         {loading && <p className="text-sm text-fg/40 text-center py-10">Loading...</p>}
         {!loading && error && (
-          <p className="text-sm text-fg/40 text-center py-10">Couldn&apos;t load this conversation.</p>
+          <EmptyState icon="inbox" title="Couldn't load this conversation" subtitle="Check your connection and try again." onRetry={() => window.location.reload()} />
         )}
         {!loading && !error && messages.length === 0 && (
           <p className="text-sm text-fg/40 text-center py-10">Say hello 👋</p>

@@ -16,6 +16,7 @@ import { useToast } from '@/contexts/ToastContext';
 import { getConnectionStatus, sendConnectionRequest, acceptConnection, declineConnection, ConnectionStatus } from '@/lib/connections';
 import { getBlockStatus, blockUser, unblockUser } from '@/lib/blocks';
 import FollowButton from '@/components/FollowButton';
+import ProfilePosts from '@/components/ProfilePosts';
 
 function buildHeadline(role: string, categories: string[], location?: string | null) {
   const parts = [role.charAt(0).toUpperCase() + role.slice(1)];
@@ -185,7 +186,7 @@ export default function PublicProfilePage() {
   if (error || !profile) {
     return (
       <main className="min-h-screen bg-black">
-        <EmptyState icon="search" title="Profile not found" subtitle="This user may not exist." />
+        <EmptyState icon="search" title="Profile not found" subtitle="This user may not exist." ctaLabel="Back to browse" ctaHref="/browse" />
       </main>
     );
   }
@@ -328,6 +329,7 @@ export default function PublicProfilePage() {
             </div>
           )}
 
+            <ProfilePosts username={profile.username} />
           <div className="mt-8">
             <h2 className="font-display font-bold text-fg text-lg mb-4">
               {profile.role === 'vendor' ? 'Products' : 'Gigs'}

@@ -12,6 +12,7 @@ export interface NetworkPost {
   id: number;
   content: string;
   image_url?: string | null;
+  video_url?: string | null;
   created_at: string;
   like_count: number;
   comment_count: number;
@@ -48,10 +49,10 @@ export function getFollowStatus(userId: number) {
   return apiCall<{ following: boolean; follower_count: number; following_count: number }>(`/follow/status/${userId}`);
 }
 
-export function createPost(content: string, imageUrl?: string) {
+export function createPost(content: string, imageUrl?: string, videoUrl?: string) {
   return apiCall<{ success: boolean; post: NetworkPost }>('/posts', {
     method: 'POST',
-    body: { content, image_url: imageUrl },
+    body: { content, image_url: imageUrl, video_url: videoUrl },
   });
 }
 
@@ -121,4 +122,39 @@ export function getWhoToFollow(limit = 10) {
 
 export function getUserPosts(username: string) {
   return apiCall<{ posts: NetworkPost[] }>(`/posts/user/${username}`, { auth: false });
+}
+
+export async function uploadPostVideo(file: File): Promise<string> {
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+  const token = typeof window !== 'undefined' ? localStorage.getItem('creet_token') : null;
+  const formData = new FormData();
+  formData.append('video', file);
+  const res = await fetch(`${API_BASE}/posts/upload-video`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    body: formData,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.detail || 'Could not upload video');
+  return data.url as string;
+}
+
+export interface PersonResult {
+  id: number;
+  username: string;
+  full_name: string;
+  avatar?: string | null;
+  role: string;
+  short_bio?: string | null;
+  location?: string | null;
+  verified: boolean;
+}
+
+export function searchPeople(params: { q?: string; role?: string; limit?: number }) {
+  const q = new URLSearchParams();
+  if (params.q) q.set('q', params.q);
+  if (params.role) q.set('role', params.role);
+  if (params.limit) q.set('limit', String(params.limit));
+  const qs = q.toString();
+  return apiCall<{ users: PersonResult[] }>(`/people/search${qs ? `?${qs}` : ''}`);
 }

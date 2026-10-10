@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   getNetworkFeed, createPost, deletePost, NetworkPost,
-  getWhoToFollow, SuggestedUser, uploadPostImage,
+  getWhoToFollow, SuggestedUser, uploadPostImage, uploadPostVideo,
   likePost, unlikePost, getPostComments, addPostComment, PostComment,
 } from '@/lib/network';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
@@ -143,6 +143,12 @@ function PostCard({ post, isMine, onDelete }: { post: NetworkPost; isMine: boole
         </div>
       )}
 
+      {post.video_url && (
+        <div className="mt-3 rounded-xl overflow-hidden bg-black">
+          <video src={post.video_url} controls playsInline preload="metadata" className="w-full max-h-96" />
+        </div>
+      )}
+
       <div className="flex items-center gap-5 mt-3.5 pt-3 border-t border-line/60">
         <button onClick={toggleLike} disabled={likeLoading} className="flex items-center gap-1.5 active:scale-95 transition-transform disabled:opacity-50">
           <HeartIcon filled={liked} />
@@ -201,6 +207,8 @@ export default function NetworkFeedPage() {
   const [suggested, setSuggested] = useState<SuggestedUser[]>([]);
   const [showSuggested, setShowSuggested] = useState(true);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoPreview, setVideoPreview] = useState<string>('');
   const [imagePreview, setImagePreview] = useState<string>('');
   const [uploadingImage, setUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -221,14 +229,18 @@ export default function NetworkFeedPage() {
   function handleImageSelected(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      showToast('Please choose an image file', 'error');
+    if (file.type.startsWith('video/')) {
+      if (file.size > 30 * 1024 * 1024) { showToast('Video must be under 30MB', 'error'); return; }
+      setImageFile(null);
+      setImagePreview('');
+      setVideoFile(file);
+      setVideoPreview(URL.createObjectURL(file));
       return;
     }
-    if (file.size > 8 * 1024 * 1024) {
-      showToast('Image must be under 8MB', 'error');
-      return;
-    }
+    if (!file.type.startsWith('image/')) { showToast('Please choose a photo or video', 'error'); return; }
+    if (file.size > 8 * 1024 * 1024) { showToast('Image must be under 8MB', 'error'); return; }
+    setVideoFile(null);
+    setVideoPreview('');
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
   }
@@ -238,16 +250,16 @@ export default function NetworkFeedPage() {
     setPosting(true);
     try {
       let imageUrl: string | undefined;
-      if (imageFile) {
-        setUploadingImage(true);
-        imageUrl = await uploadPostImage(imageFile);
-        setUploadingImage(false);
-      }
-      const res = await createPost(draft.trim(), imageUrl);
+      let videoUrl: string | undefined;
+      if (imageFile || videoFile) setUploadingImage(true);
+      if (imageFile) imageUrl = await uploadPostImage(imageFile);
+      if (videoFile) videoUrl = await uploadPostVideo(videoFile);
+      setUploadingImage(false);
+      const res = await createPost(draft.trim(), imageUrl, videoUrl);
       setPosts((prev) => [res.post, ...prev]);
       setDraft('');
       setImageFile(null);
-      setImagePreview('');
+      setImagePreview(''); setVideoFile(null); setVideoPreview('');
       if (fileInputRef.current) fileInputRef.current.value = '';
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Could not post', 'error');
@@ -310,8 +322,21 @@ export default function NetworkFeedPage() {
             </div>
           )}
 
+          {videoPreview && (
+            <div className="relative mt-2 ml-[44px] rounded-xl overflow-hidden">
+              <video src={videoPreview} controls playsInline className="w-full max-h-64 bg-black" />
+              <button
+                onClick={() => { setVideoFile(null); setVideoPreview(''); }}
+                className="absolute top-2 right-2 h-7 w-7 rounded-full bg-black/70 text-white flex items-center justify-center"
+                aria-label="Remove video"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
           <div className="flex items-center justify-between mt-2">
-            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelected} className="hidden" />
+            <input ref={fileInputRef} type="file" accept="image/*,video/mp4,video/webm,video/quicktime" onChange={handleImageSelected} className="hidden" />
             <button
               onClick={() => fileInputRef.current?.click()}
               className="ripple h-8 w-8 rounded-full bg-black/40 border border-line flex items-center justify-center text-muted active:scale-95 transition-transform"
