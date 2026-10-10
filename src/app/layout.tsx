@@ -6,6 +6,7 @@ import { ConfirmProvider } from "@/contexts/ConfirmContext";
 import { NotificationsProvider } from "@/contexts/NotificationsContext";
 import IntroSplash from "@/components/IntroSplash";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
+import AppEnhancements from "@/components/AppEnhancements";
 import AttributionCapture from "@/components/AttributionCapture";
 import PageTransition from "@/components/PageTransition";
 import "./globals.css";
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </ConfirmProvider>
           </ToastProvider>
         </AuthProvider>
+        <AppEnhancements />
         <CookieConsentBanner />
         <AttributionCapture />
       </body>

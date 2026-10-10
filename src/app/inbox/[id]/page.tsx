@@ -62,6 +62,7 @@ export default function ConversationPage() {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const firstScrollRef = useRef(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -76,7 +77,8 @@ export default function ConversationPage() {
   }, [user, params.id]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({ behavior: firstScrollRef.current ? 'auto' : 'smooth' });
+    if (messages.length > 0) firstScrollRef.current = false;
   }, [messages]);
 
   async function handleSend(e: React.FormEvent) {
@@ -243,7 +245,7 @@ export default function ConversationPage() {
           type="text"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder="Message..."
+          placeholder="Message..." enterKeyHint="send" autoComplete="off"
           className="flex-1 rounded-full border border-line bg-mist px-4 py-3 text-sm text-fg placeholder:text-fg/40 focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
         />
         <button

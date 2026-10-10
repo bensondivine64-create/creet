@@ -86,6 +86,7 @@ export default function OtpInput({ length = 6, onChange, onComplete, disabled }:
           type="text"
           inputMode="numeric"
           maxLength={1}
+          autoComplete={i === 0 ? 'one-time-code' : 'off'}
           value={digit}
           disabled={disabled}
           onChange={(e) => handleChange(i, e.target.value)}

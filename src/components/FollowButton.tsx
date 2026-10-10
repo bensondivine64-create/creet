@@ -1,5 +1,6 @@
 'use client';
 
+// optimistic
 import { useEffect, useState } from 'react';
 import { followUser, unfollowUser, getFollowStatus } from '@/lib/network';
 import { useToast } from '@/contexts/ToastContext';
@@ -18,16 +19,15 @@ export default function FollowButton({ userId }: { userId: number }) {
   }, [userId]);
 
   async function toggle() {
+    if (loading) return;
+    const next = !following;
+    setFollowing(next);
     setLoading(true);
     try {
-      if (following) {
-        await unfollowUser(userId);
-        setFollowing(false);
-      } else {
-        await followUser(userId);
-        setFollowing(true);
-      }
+      if (next) await followUser(userId);
+      else await unfollowUser(userId);
     } catch (err) {
+      setFollowing(!next);
       showToast(err instanceof Error ? err.message : 'Could not update follow status', 'error');
     } finally {
       setLoading(false);
@@ -42,11 +42,12 @@ export default function FollowButton({ userId }: { userId: number }) {
     <button
       onClick={toggle}
       disabled={loading}
-      className={`ripple text-sm font-semibold rounded-full px-5 py-2 active:scale-[0.96] transition-transform disabled:opacity-50 ${
+      aria-pressed={following}
+      className={`ripple text-sm font-semibold rounded-full px-5 py-2 active:scale-[0.96] transition-transform disabled:opacity-70 ${
         following ? 'border border-line text-fg' : 'bg-fg text-black'
       }`}
     >
-      {loading ? '...' : following ? 'Following' : 'Follow'}
+      {following ? 'Following' : 'Follow'}
     </button>
   );
 }

@@ -329,6 +329,11 @@ export default function BrowsePage() {
   const [tab, setTab] = useState<ListingKind>('gig');
   const [hasSetDefault, setHasSetDefault] = useState(false);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(t);
+  }, [search]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -354,27 +359,27 @@ export default function BrowsePage() {
   useEffect(() => {
     if (!hasSetDefault) return;
     let ignore = false;
-    const cached = getCachedListings(tab, search);
+    const cached = getCachedListings(tab, debouncedSearch);
 
     if (cached) {
       // Show cached data immediately, no skeleton — then quietly refresh in the background.
       setListings(cached);
       setLoading(false);
       setError('');
-      getListings({ kind: tab, search: search || undefined })
+      getListings({ kind: tab, search: debouncedSearch || undefined })
         .then((res) => {
           if (ignore) return;
-          setCachedListings(tab, search, res.listings);
+          setCachedListings(tab, debouncedSearch, res.listings);
           setListings(res.listings);
         })
         .catch(() => {});
     } else {
       setLoading(true);
       setError('');
-      getListings({ kind: tab, search: search || undefined })
+      getListings({ kind: tab, search: debouncedSearch || undefined })
         .then((res) => {
           if (ignore) return;
-          setCachedListings(tab, search, res.listings);
+          setCachedListings(tab, debouncedSearch, res.listings);
           setListings(res.listings);
         })
         .catch((err) => { if (!ignore) setError(err instanceof Error ? err.message : 'Could not load listings'); })
@@ -382,7 +387,7 @@ export default function BrowsePage() {
     }
 
     return () => { ignore = true; };
-  }, [hasSetDefault, tab, search]);
+  }, [hasSetDefault, tab, debouncedSearch]);
 
   useEffect(() => {
     if (!hasSetDefault) return;
@@ -420,7 +425,7 @@ export default function BrowsePage() {
   const directoryRole = directoryRoleForTab(user?.role, tab);
   const directoryLabel = directoryRole === 'freelancer' ? 'Popular freelancers' : 'Popular vendors';
 
-  if (!hasSetDefault || loading) {
+  if (!hasSetDefault || (loading && listings.length === 0 && !search)) {
     return <BrowseSkeleton />;
   }
 
@@ -457,8 +462,18 @@ export default function BrowsePage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={`Search ${kindLabel(tab)}`}
-            className="w-full rounded-2xl border border-line bg-mist pl-10 pr-4 py-3.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
+            className="w-full rounded-2xl border border-line bg-mist pl-10 pr-10 py-3.5 text-sm text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
           />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch('')}
+              aria-label="Clear search"
+              className="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-line/30 flex items-center justify-center text-fg/50 active:scale-90 transition-transform"
+            >
+              ✕
+            </button>
+          )}
         </div>
       </div>
 

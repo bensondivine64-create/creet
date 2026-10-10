@@ -132,11 +132,11 @@ export default function FreelancerSignupPage() {
           <>
             <div>
               <label className="block text-sm font-medium text-fg/70 mb-1.5">Full name</label>
-              <input name="full_name" value={form.full_name} onChange={handleChange} required className={inputClass} />
+              <input name="full_name" value={form.full_name} onChange={handleChange} required autoComplete="name" className={inputClass} />
             </div>
             <div>
               <label className="block text-sm font-medium text-fg/70 mb-1.5">Username</label>
-              <input name="username" value={form.username} onChange={handleChange} required minLength={3} className={inputClass} />
+              <input name="username" value={form.username} onChange={handleChange} required minLength={3} autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false} className={inputClass} />
             </div>
             <div>
               <label className="block text-sm font-medium text-fg/70 mb-1.5">Date of birth</label>
@@ -144,7 +144,7 @@ export default function FreelancerSignupPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-fg/70 mb-1.5">Phone number</label>
-              <input type="tel" name="phone_number" value={form.phone_number} onChange={handleChange} required placeholder="e.g. 08012345678" className={inputClass} />
+              <input type="tel" name="phone_number" value={form.phone_number} onChange={handleChange} required placeholder="e.g. 08012345678" autoComplete="tel" inputMode="tel" className={inputClass} />
             </div>
           </>
         )}
@@ -153,11 +153,11 @@ export default function FreelancerSignupPage() {
           <>
             <div>
               <label className="block text-sm font-medium text-fg/70 mb-1.5">Email</label>
-              <input type="email" name="email" value={form.email} onChange={handleChange} required className={inputClass} />
+              <input type="email" name="email" value={form.email} onChange={handleChange} required autoComplete="email" inputMode="email" autoCapitalize="none" className={inputClass} />
             </div>
             <div>
               <label className="block text-sm font-medium text-fg/70 mb-1.5">Password</label>
-              <PasswordInput name="password" value={form.password} onChange={handleChange} required minLength={8} className={inputClass} />
+              <PasswordInput name="password" value={form.password} onChange={handleChange} required minLength={8} autoComplete="new-password" className={inputClass} />
             </div>
           </>
         )}

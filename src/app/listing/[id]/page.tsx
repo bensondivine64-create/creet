@@ -167,9 +167,7 @@ export default function ListingDetailPage() {
   return (
     <main className="min-h-screen bg-black flex flex-col pb-52">
       <div className="flex items-center justify-between px-5 py-4 border-b border-line/60 safe-top">
-        <Link href="/browse" className="text-sm text-muted hover:text-fg transition-colors">
-          ← Back
-        </Link>
+        <button type="button" onClick={() => (window.history.length > 1 ? router.back() : router.push('/browse'))} className="text-sm text-muted hover:text-fg transition-colors">← Back</button>
         <Link href="/" className="font-display text-lg font-bold tracking-tight text-fg">
           CREET
         </Link>

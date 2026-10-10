@@ -116,3 +116,24 @@ a[aria-disabled="true"] {
 }
 
 /* Toast: slightly stronger depth so feedback reads as unmistakably "on top" */
+
+/* ux-pass-2 */
+a, button, input, select, textarea, label, summary { touch-action: manipulation; }
+h1, h2, h3 { text-wrap: balance; }
+::selection { background: rgba(244, 245, 247, 0.22); }
+
+/* Inline validation: red edge only once the user has touched an invalid field */
+input:user-invalid, textarea:user-invalid, select:user-invalid {
+  border-color: rgba(248, 113, 113, 0.7) !important;
+  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.25);
+}
+
+@media (hover: hover) {
+  .card-elevated { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+  .card-elevated:hover { box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55), 0 2px 4px rgba(0, 0, 0, 0.35); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up, .modal-in { animation: none !important; opacity: 1 !important; transform: none !important; }
+  html { scroll-behavior: auto; }
+}
