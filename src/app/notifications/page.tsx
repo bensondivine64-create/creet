@@ -36,7 +36,6 @@ export default function NotificationsPage() {
   const { user, loading: authLoading } = useRequireAnyAuth();
   const { notifications, loading, loaded, refresh, markRead, markAllRead } = useNotifications();
   const [loadError, setLoadError] = useState(false);
-  const [loadError, setLoadError] = useState(false);
 
   // Refresh in the background every time this page is opened, without blocking
   // display of whatever's already cached from the shared context.
