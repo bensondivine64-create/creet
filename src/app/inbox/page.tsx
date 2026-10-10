@@ -102,6 +102,28 @@ export default function InboxPage() {
         </div>
       </div>
 
+      <div className="px-5 pb-4">
+        <Link
+          href="/inbox/support"
+          className="ripple flex items-center gap-3 p-3.5 rounded-2xl bg-mist border border-blue/20 active:scale-[0.98] transition-transform"
+        >
+          <div className="h-12 w-12 rounded-full bg-blue flex items-center justify-center shrink-0 overflow-hidden">
+            {/* Swap for <img src="/creet-logo.png" alt="" className="h-full w-full object-cover" /> once a logo asset is uploaded */}
+            <span className="font-display font-bold text-black text-lg">C</span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm font-semibold text-fg">CREET Support</span>
+              <VerifiedBadge size={12} />
+            </div>
+            <span className="text-xs text-fg/50">Get help with your account or report an issue</span>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="text-fg/30 shrink-0">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 6l6 6-6 6" />
+          </svg>
+        </Link>
+      </div>
+
       {!loading && !error && conversations.length > 0 && (
         <div className="px-5 pb-4">
           <div className="relative">
