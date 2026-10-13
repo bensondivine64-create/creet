@@ -1,9 +1,12 @@
+const API_ORIGIN = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api').replace(/\/api\/?$/, '');
+
 export default function FileAttachment({ url, name }: { url: string; name?: string | null }) {
+  const href = url.startsWith('/') ? API_ORIGIN + url : url;
   const label = name || 'Attachment';
   const ext = (label.includes('.') ? label.split('.').pop() || 'FILE' : 'FILE').slice(0, 4).toUpperCase();
   return (
     <a
-      href={url}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       className="ripple mt-3 flex items-center gap-3 rounded-xl border border-line bg-black/40 px-3 py-2.5 active:scale-[0.98] transition-transform"
