@@ -13,6 +13,8 @@ export interface NetworkPost {
   content: string;
   image_url?: string | null;
   video_url?: string | null;
+  file_url?: string | null;
+  file_name?: string | null;
   created_at: string;
   like_count: number;
   comment_count: number;
@@ -49,10 +51,10 @@ export function getFollowStatus(userId: number) {
   return apiCall<{ following: boolean; follower_count: number; following_count: number }>(`/follow/status/${userId}`);
 }
 
-export function createPost(content: string, imageUrl?: string, videoUrl?: string) {
+export function createPost(content: string, imageUrl?: string, videoUrl?: string, fileMeta?: { url: string; name: string }) {
   return apiCall<{ success: boolean; post: NetworkPost }>('/posts', {
     method: 'POST',
-    body: { content, image_url: imageUrl, video_url: videoUrl },
+    body: { content, image_url: imageUrl, video_url: videoUrl, file_url: fileMeta?.url, file_name: fileMeta?.name },
   });
 }
 
@@ -157,4 +159,19 @@ export function searchPeople(params: { q?: string; role?: string; limit?: number
   if (params.limit) q.set('limit', String(params.limit));
   const qs = q.toString();
   return apiCall<{ users: PersonResult[] }>(`/people/search${qs ? `?${qs}` : ''}`);
+}
+
+export async function uploadPostFile(file: File): Promise<{ url: string; name: string }> {
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+  const token = typeof window !== 'undefined' ? localStorage.getItem('creet_token') : null;
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetch(`${API_BASE}/posts/upload-file`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    body: formData,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.detail || 'Could not upload file');
+  return { url: data.url as string, name: (data.name as string) || file.name };
 }

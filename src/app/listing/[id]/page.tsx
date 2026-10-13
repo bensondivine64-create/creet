@@ -14,6 +14,7 @@ import VerifiedBadge from '@/components/VerifiedBadge';
 import Avatar from '@/components/Avatar';
 import ReportModal from '@/components/ReportModal';
 import BottomNav from '@/components/BottomNav';
+import { rememberViewed } from '@/lib/recentlyViewed';
 import EmptyState from '@/components/EmptyState';
 import { useToast } from '@/contexts/ToastContext';
 import { formatRelativeTime } from '@/lib/time';
@@ -81,6 +82,7 @@ export default function ListingDetailPage() {
     getListing(params.id as string)
       .then((data) => {
         setListing(data);
+        rememberViewed(data);
         if (user) trackListingView(params.id as string);
       })
       .catch((err) => setError(err instanceof Error ? err.message : 'Could not load listing'))
@@ -93,6 +95,25 @@ export default function ListingDetailPage() {
       .finally(() => setCommentsLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id, user]);
+
+  async function handleShare() {
+    if (!listing) return;
+    const url = `${window.location.origin}/listing/${listing.id}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: listing.title, url });
+      } catch {
+        // share sheet dismissed
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast('Link copied', 'success');
+    } catch {
+      showToast('Could not copy link', 'error');
+    }
+  }
 
   async function handleMessageSeller() {
     if (!user) {
@@ -204,14 +225,19 @@ export default function ListingDetailPage() {
               </div>
               <h1 className="font-display text-2xl font-bold text-fg mt-1">{listing.title}</h1>
             </div>
-            {!isOwnListing && (
-              <button
-                onClick={() => setShowReport(true)}
-                className="text-xs text-muted underline underline-offset-2 shrink-0 mt-1"
-              >
-                Report
+            <div className="flex items-center gap-3 shrink-0 mt-1">
+              <button type="button" onClick={handleShare} className="text-xs text-fg/70 underline underline-offset-2">
+                Share
               </button>
-            )}
+              {!isOwnListing && (
+                <button
+                  onClick={() => setShowReport(true)}
+                  className="text-xs text-muted underline underline-offset-2"
+                >
+                  Report
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-3 mt-2 text-xs text-muted">

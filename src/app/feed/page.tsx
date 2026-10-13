@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   getNetworkFeed, createPost, deletePost, NetworkPost,
-  getWhoToFollow, SuggestedUser, uploadPostImage, uploadPostVideo,
+  getWhoToFollow, SuggestedUser, uploadPostImage, uploadPostVideo, uploadPostFile,
   likePost, unlikePost, getPostComments, addPostComment, PostComment,
 } from '@/lib/network';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
@@ -16,6 +16,7 @@ import BottomNav from '@/components/BottomNav';
 import NotificationBell from '@/components/NotificationBell';
 import EmptyState from '@/components/EmptyState';
 import FollowButton from '@/components/FollowButton';
+import FileAttachment from '@/components/FileAttachment';
 import { formatRelativeTime } from '@/lib/time';
 
 function FeedSkeleton() {
@@ -149,6 +150,8 @@ function PostCard({ post, isMine, onDelete }: { post: NetworkPost; isMine: boole
         </div>
       )}
 
+      {post.file_url && <FileAttachment url={post.file_url} name={post.file_name} />}
+
       <div className="flex items-center gap-5 mt-3.5 pt-3 border-t border-line/60">
         <button onClick={toggleLike} disabled={likeLoading} className="flex items-center gap-1.5 active:scale-95 transition-transform disabled:opacity-50">
           <HeartIcon filled={liked} />
@@ -209,9 +212,22 @@ export default function NetworkFeedPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState<string>('');
+  const [docFile, setDocFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [uploadingImage, setUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
+  const docInputRef = useRef<HTMLInputElement>(null);
+  const composerRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    function focusComposer() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => composerRef.current?.focus(), 250);
+    }
+    window.addEventListener('creet:compose', focusComposer);
+    return () => window.removeEventListener('creet:compose', focusComposer);
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -245,21 +261,33 @@ export default function NetworkFeedPage() {
     setImagePreview(URL.createObjectURL(file));
   }
 
+  function handleDocSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 15 * 1024 * 1024) {
+      showToast('File must be under 15MB', 'error');
+      return;
+    }
+    setDocFile(file);
+  }
+
   async function handlePost() {
     if (!draft.trim()) return;
     setPosting(true);
     try {
       let imageUrl: string | undefined;
       let videoUrl: string | undefined;
-      if (imageFile || videoFile) setUploadingImage(true);
+      if (imageFile || videoFile || docFile) setUploadingImage(true);
       if (imageFile) imageUrl = await uploadPostImage(imageFile);
       if (videoFile) videoUrl = await uploadPostVideo(videoFile);
       setUploadingImage(false);
-      const res = await createPost(draft.trim(), imageUrl, videoUrl);
+      let fileMeta: { url: string; name: string } | undefined;
+      if (docFile) fileMeta = await uploadPostFile(docFile);
+      const res = await createPost(draft.trim(), imageUrl, videoUrl, fileMeta);
       setPosts((prev) => [res.post, ...prev]);
       setDraft('');
       setImageFile(null);
-      setImagePreview(''); setVideoFile(null); setVideoPreview('');
+      setImagePreview(''); setVideoFile(null); setVideoPreview(''); setDocFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Could not post', 'error');
@@ -301,6 +329,7 @@ export default function NetworkFeedPage() {
           <div className="flex items-start gap-3">
             <Avatar avatar={user.avatar} name={user.full_name} size={36} />
             <textarea
+              ref={composerRef}
               value={draft}
               onChange={(e) => setDraft(e.target.value.slice(0, 2000))}
               placeholder="Share an update, a project, or what you're looking for..."
@@ -335,19 +364,37 @@ export default function NetworkFeedPage() {
             </div>
           )}
 
+          {docFile && (
+            <div className="mt-2 ml-[44px] flex items-center gap-2 rounded-xl border border-line bg-black/40 px-3 py-2">
+              <span className="text-xs text-fg truncate flex-1">{docFile.name}</span>
+              <button type="button" onClick={() => setDocFile(null)} aria-label="Remove file" className="text-muted text-xs px-1">✕</button>
+            </div>
+          )}
+
           <div className="flex items-center justify-between mt-2">
-            <input ref={fileInputRef} type="file" accept="image/*,video/mp4,video/webm,video/quicktime" onChange={handleImageSelected} className="hidden" />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="ripple h-8 w-8 rounded-full bg-black/40 border border-line flex items-center justify-center text-muted active:scale-95 transition-transform"
-              aria-label="Add image"
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-                <rect x="3" y="5" width="18" height="14" rx="2" />
-                <circle cx="8.5" cy="10.5" r="1.5" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 15l-5-5L5 19" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-2">
+              <input ref={fileInputRef} type="file" accept="image/*" onChange={(e) => { handleImageSelected(e); e.target.value = ''; }} className="hidden" />
+              <input ref={videoInputRef} type="file" accept="video/mp4,video/webm,video/quicktime" onChange={(e) => { handleImageSelected(e); e.target.value = ''; }} className="hidden" />
+              <input ref={docInputRef} type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip" onChange={(e) => { handleDocSelected(e); e.target.value = ''; }} className="hidden" />
+              <button type="button" onClick={() => fileInputRef.current?.click()} aria-label="Add photo" title="Photo" className="ripple h-9 w-9 rounded-full bg-black/40 border border-line flex items-center justify-center text-muted active:scale-95 transition-transform">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <circle cx="8.5" cy="10.5" r="1.5" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 15l-5-5L5 19" />
+                </svg>
+              </button>
+              <button type="button" onClick={() => videoInputRef.current?.click()} aria-label="Add video" title="Video" className="ripple h-9 w-9 rounded-full bg-black/40 border border-line flex items-center justify-center text-muted active:scale-95 transition-transform">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="6" width="14" height="12" rx="2" />
+                  <path d="M16 10l6-3v10l-6-3" />
+                </svg>
+              </button>
+              <button type="button" onClick={() => docInputRef.current?.click()} aria-label="Attach file" title="File" className="ripple h-9 w-9 rounded-full bg-black/40 border border-line flex items-center justify-center text-muted active:scale-95 transition-transform">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 12.5l-8.5 8.5a5.5 5.5 0 01-7.8-7.8l9-9a3.7 3.7 0 015.2 5.2l-9 9a1.8 1.8 0 01-2.6-2.6l8.3-8.3" />
+                </svg>
+              </button>
+            </div>
             <button
               onClick={handlePost}
               disabled={posting || !draft.trim()}

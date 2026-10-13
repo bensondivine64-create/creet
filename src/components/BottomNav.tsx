@@ -113,7 +113,13 @@ export default function BottomNav() {
       {postHref && (
         <Link
           href={postHref}
-          aria-label="Post"
+          aria-label={pathname === '/feed' ? 'Write a post' : 'Post'}
+          onClick={(e) => {
+            if (pathname === '/feed') {
+              e.preventDefault();
+              window.dispatchEvent(new Event('creet:compose'));
+            }
+          }}
           className={`fixed right-5 z-30 h-14 w-14 rounded-full bg-fg shadow-lg shadow-black/50 flex items-center justify-center active:scale-95 transition-all duration-200 ${
             fabHidden ? 'opacity-0 translate-y-3 pointer-events-none' : 'opacity-100 translate-y-0'
           }`}

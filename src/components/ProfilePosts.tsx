@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getUserPosts, NetworkPost } from '@/lib/network';
 import { formatRelativeTime } from '@/lib/time';
 import { optimizeImg } from '@/lib/img';
+import FileAttachment from '@/components/FileAttachment';
 
 export default function ProfilePosts({ username }: { username: string }) {
   const [posts, setPosts] = useState<NetworkPost[] | null>(null);
@@ -34,6 +35,7 @@ export default function ProfilePosts({ username }: { username: string }) {
                 <video src={p.video_url} controls playsInline preload="metadata" className="w-full max-h-72" />
               </div>
             )}
+            {p.file_url && <FileAttachment url={p.file_url} name={p.file_name} />}
             <div className="flex items-center gap-3 mt-3 text-xs text-muted">
               <span>{formatRelativeTime(p.created_at)}</span>
               {p.like_count > 0 && <span>{p.like_count} like{p.like_count === 1 ? '' : 's'}</span>}

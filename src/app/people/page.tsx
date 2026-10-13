@@ -9,6 +9,7 @@ import VerifiedBadge from '@/components/VerifiedBadge';
 import FollowButton from '@/components/FollowButton';
 import EmptyState from '@/components/EmptyState';
 import BottomNav from '@/components/BottomNav';
+import RecentSearches from '@/components/RecentSearches';
 
 const ROLES = [
   { id: '', label: 'Everyone' },
@@ -94,6 +95,8 @@ export default function PeoplePage() {
           )}
         </div>
       </div>
+
+      <RecentSearches scope="people" current={query} onPick={setQuery} />
 
       <div className="flex gap-2 px-5 pb-4 overflow-x-auto scrollbar-hide">
         {ROLES.map((r) => (

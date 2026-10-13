@@ -8,6 +8,9 @@ import { getListings, getFeedListings } from '@/lib/listings';
 import { Listing, ListingKind } from '@/types/listing';
 import { CATEGORY_GRADIENTS } from '@/lib/categoryColors';
 import BottomNav from '@/components/BottomNav';
+import TileArt from '@/components/TileArt';
+import RecentSearches from '@/components/RecentSearches';
+import RecentlyViewed from '@/components/RecentlyViewed';
 import NotificationBell from '@/components/NotificationBell';
 import EmptyState from '@/components/EmptyState';
 import VerifiedBadge from '@/components/VerifiedBadge';
@@ -275,7 +278,7 @@ function ThemeTileRow({ tab, theme }: { tab: ListingKind; theme: ThemeRow }) {
           style={{ backgroundImage: tile.gradient }}
           className="relative shrink-0 snap-start w-36 h-28 rounded-2xl overflow-hidden text-left p-3.5 flex items-end active:scale-[0.96] transition-transform"
         >
-          <span className="absolute inset-0 bg-black/20" />
+          <TileArt label={tile.label} />
           <span className="relative text-sm font-semibold text-white leading-tight">{tile.label}</span>
         </Link>
       ))}
@@ -498,6 +501,10 @@ export default function BrowsePage() {
           ))}
         </ScrollRow>
       )}
+
+      <RecentSearches scope="browse" current={search} onPick={setSearch} />
+
+      <RecentlyViewed />
 
       <AdCarousel />
 
