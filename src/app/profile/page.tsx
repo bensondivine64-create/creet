@@ -12,6 +12,7 @@ import VerifiedBadge from '@/components/VerifiedBadge';
 import RecruiterBadge from '@/components/RecruiterBadge';
 import Avatar from '@/components/Avatar';
 import ImageCropModal from '@/components/ImageCropModal';
+import ViewableImage from '@/components/ViewableImage';
 
 function GearIcon() {
   return (
@@ -181,7 +182,7 @@ export default function ProfilePage() {
       <div className="relative">
         <div className="h-36 bg-mist relative overflow-hidden">
           {coverSrc && (
-            <img src={coverSrc} alt="" className="w-full h-full object-cover" />
+            <ViewableImage src={coverSrc} alt="Cover photo" className="block h-full w-full" imgClassName="h-full w-full object-cover" width={1200} onEdit={() => coverInputRef.current?.click()} editLabel="Change cover" />
           )}
           <button
             onClick={() => coverInputRef.current?.click()}
@@ -198,7 +199,7 @@ export default function ProfilePage() {
           <div className="relative -mt-11">
             <div className="relative inline-block">
               <div className="rounded-full ring-4 ring-black">
-                <Avatar avatar={previewAvatar || user.avatar} name={user.full_name} size={88} />
+                <Avatar avatar={previewAvatar || user.avatar} name={user.full_name} size={88} viewable onEdit={() => avatarInputRef.current?.click()} editLabel="Change photo" />
               </div>
               <button
                 onClick={() => avatarInputRef.current?.click()}

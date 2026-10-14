@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { optimizeImg } from '@/lib/img';
 import Link from 'next/link';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
 import { getFeedListings, getMyListings, deleteListing } from '@/lib/listings';
@@ -199,6 +200,12 @@ export default function FreelancerHomePage() {
                 </div>
                 <h3 className="font-semibold text-fg text-sm">{item.title}</h3>
                 <p className="text-xs text-muted mt-1 line-clamp-2">{item.description}</p>
+                {item.images && item.images.length > 0 && (
+                  <div className="mt-3 aspect-video overflow-hidden rounded-xl bg-line/20">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={optimizeImg(item.images[0], 600)} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                  </div>
+                )}
                 <div className="text-sm font-bold text-fg mt-2">
                   Budget: {item.currency} {item.price.toLocaleString()}
                 </div>
@@ -231,7 +238,13 @@ export default function FreelancerHomePage() {
                     href={`/listing/${item.id}`}
                     className="block ripple card-elevated bg-mist border border-line rounded-2xl p-4 active:scale-[0.97] transition-transform"
                   >
-                    <div className="text-sm font-semibold text-fg line-clamp-2 mb-1">{item.title}</div>
+                    {item.images && item.images.length > 0 && (
+                    <div className="-mx-4 -mt-4 mb-3 aspect-video overflow-hidden rounded-t-2xl bg-line/20">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={optimizeImg(item.images[0], 400)} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                    </div>
+                  )}
+                  <div className="text-sm font-semibold text-fg line-clamp-2 mb-1">{item.title}</div>
                     <div className="text-xs text-muted">{item.currency} {item.price.toLocaleString()}</div>
                     <div className="text-[10px] text-muted mt-1">{formatRelativeTime(item.created_at)}</div>
                   </Link>

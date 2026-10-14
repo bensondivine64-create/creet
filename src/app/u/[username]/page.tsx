@@ -9,6 +9,7 @@ import VerifiedBadge from '@/components/VerifiedBadge';
 import RecruiterBadge from '@/components/RecruiterBadge';
 import EmptyState from '@/components/EmptyState';
 import Avatar from '@/components/Avatar';
+import ViewableImage from '@/components/ViewableImage';
 import ReportModal from '@/components/ReportModal';
 import PageLoader from '@/components/PageLoader';
 import { useAuth } from '@/contexts/AuthContext';
@@ -216,14 +217,14 @@ export default function PublicProfilePage() {
       <div className="relative">
         <div className="h-36 bg-mist relative overflow-hidden">
           {profile.cover_photo && (
-            <img src={profile.cover_photo} alt="" className="w-full h-full object-cover" />
+            <ViewableImage src={profile.cover_photo} alt="Cover photo" className="block h-full w-full" imgClassName="h-full w-full object-cover" width={1200} />
           )}
         </div>
 
         <div className="max-w-2xl mx-auto px-5">
           <div className="relative -mt-11">
             <div className="rounded-full ring-4 ring-black inline-block">
-              <Avatar avatar={profile.avatar} name={profile.full_name} size={88} />
+              <Avatar avatar={profile.avatar} name={profile.full_name} size={88} viewable />
             </div>
           </div>
 

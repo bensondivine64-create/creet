@@ -16,6 +16,8 @@ import BottomNav from '@/components/BottomNav';
 import NotificationBell from '@/components/NotificationBell';
 import EmptyState from '@/components/EmptyState';
 import FollowButton from '@/components/FollowButton';
+import ImagePreviewSheet from '@/components/ImagePreviewSheet';
+import ViewableImage from '@/components/ViewableImage';
 import FileAttachment from '@/components/FileAttachment';
 import { formatRelativeTime } from '@/lib/time';
 
@@ -140,7 +142,7 @@ function PostCard({ post, isMine, onDelete }: { post: NetworkPost; isMine: boole
       {post.image_url && (
         <div className="mt-3 rounded-xl overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={optimizeImg(post.image_url, 900)} alt="" className="w-full max-h-96 object-cover" loading="lazy" />
+          <ViewableImage src={post.image_url} alt="" imgClassName="w-full max-h-96 object-cover" />
         </div>
       )}
 
@@ -223,6 +225,7 @@ export default function NetworkFeedPage() {
   const [docFile, setDocFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [reviewFile, setReviewFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
@@ -275,8 +278,7 @@ export default function NetworkFeedPage() {
     if (file.size > 8 * 1024 * 1024) { showToast('Image must be under 8MB', 'error'); return; }
     setVideoFile(null);
     setVideoPreview('');
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
+    setReviewFile(file);
   }
 
   function handleDocSelected(e: React.ChangeEvent<HTMLInputElement>) {
@@ -379,7 +381,10 @@ export default function NetworkFeedPage() {
           {imagePreview && (
             <div className="relative mt-2 ml-[44px] rounded-xl overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imagePreview} alt="" className="w-full max-h-64 object-cover" />
+              <button type="button" onClick={() => imageFile && setReviewFile(imageFile)} aria-label="Preview and edit photo" className="block w-full">
+                <img src={imagePreview} alt="" className="w-full max-h-64 object-cover" />
+              </button>
+              <span className="absolute bottom-2 left-2 rounded-full bg-black/70 px-2.5 py-1 text-[11px] text-white pointer-events-none">Tap to edit</span>
               <button
                 onClick={() => { setImageFile(null); setImagePreview(''); }}
                 className="absolute top-2 right-2 h-7 w-7 rounded-full bg-black/70 text-white flex items-center justify-center"
@@ -465,6 +470,19 @@ export default function NetworkFeedPage() {
             ))}
           </div>
         </div>
+      )}
+
+      {reviewFile && (
+        <ImagePreviewSheet
+          file={reviewFile}
+          confirmLabel="Use photo"
+          onCancel={() => setReviewFile(null)}
+          onConfirm={(f) => {
+            setImageFile(f);
+            setImagePreview(URL.createObjectURL(f));
+            setReviewFile(null);
+          }}
+        />
       )}
 
       {loading && <FeedSkeleton />}

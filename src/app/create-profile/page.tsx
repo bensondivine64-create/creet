@@ -7,6 +7,7 @@ import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import { updateProfile } from '@/lib/profile';
 import { CATEGORIES } from '@/lib/categories';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import ImagePreviewSheet from '@/components/ImagePreviewSheet';
 import CountryPicker from '@/components/CountryPicker';
 import { uploadAvatar } from '@/lib/profile';
 
@@ -33,6 +34,7 @@ export default function CreateProfilePage() {
   const [categories, setCategories] = useState<string[]>([]);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string>('');
+  const [avatarReview, setAvatarReview] = useState<File | null>(null);
   const [experience, setExperience] = useState('');
   const [storeType, setStoreType] = useState('');
   const [shipsNationwide, setShipsNationwide] = useState('');
@@ -190,6 +192,20 @@ export default function CreateProfilePage() {
   return (
     <main className="min-h-screen bg-paper flex items-center justify-center px-5 py-10">
       {saving && <LoadingOverlay label="Saving your profile..." />}
+      {avatarReview && (
+        <ImagePreviewSheet
+          file={avatarReview}
+          lockAspect={1}
+          round
+          confirmLabel="Use as profile photo"
+          onCancel={() => setAvatarReview(null)}
+          onConfirm={(f) => {
+            setAvatarFile(f);
+            setAvatarPreview(URL.createObjectURL(f));
+            setAvatarReview(null);
+          }}
+        />
+      )}
 
       <div className="w-full max-w-md">
         <div className="mb-6">
@@ -241,8 +257,8 @@ export default function CreateProfilePage() {
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (!file) return;
-                        setAvatarFile(file);
-                        setAvatarPreview(URL.createObjectURL(file));
+                        setAvatarReview(file);
+                        e.target.value = '';
                       }}
                     />
                   </label>

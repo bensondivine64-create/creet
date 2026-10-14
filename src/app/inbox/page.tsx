@@ -10,6 +10,7 @@ import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import BottomNav from '@/components/BottomNav';
 import EmptyState from '@/components/EmptyState';
 import VerifiedBadge from '@/components/VerifiedBadge';
+import Avatar from '@/components/Avatar';
 import PageLoader from '@/components/PageLoader';
 
 function formatRelativeTime(iso: string): string {
@@ -30,9 +31,6 @@ function formatRelativeTime(iso: string): string {
   return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
 }
 
-function avatarColor() {
-  return { bg: '#000000', fg: '#F4F5F7' };
-}
 
 function isPhotoMessage(text: string) {
   return text.trim().toLowerCase() === '📷 photo';
@@ -184,7 +182,6 @@ export default function InboxPage() {
         <div className="px-5 space-y-2.5">
           {filtered.map((c, i) => {
             const unread = c.unread_count > 0;
-            const color = avatarColor();
             const photo = isPhotoMessage(c.last_message);
 
             return (
@@ -200,20 +197,7 @@ export default function InboxPage() {
                   style={{ boxShadow: unread ? '0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3)' : 'none' }}
                 >
                   <div className="relative shrink-0">
-                    {c.participant.avatar ? (
-                      <img
-                        src={optimizeImg(c.participant.avatar, 112)}
-                        alt=""
-                        className="h-14 w-14 rounded-full object-cover"
-                      />
-                    ) : (
-                      <span
-                        className="h-14 w-14 rounded-full text-lg font-bold flex items-center justify-center border border-line"
-                        style={{ backgroundColor: color.bg, color: color.fg }}
-                      >
-                        {c.participant.full_name.charAt(0).toUpperCase()}
-                      </span>
-                    )}
+                    <Avatar avatar={c.participant.avatar} name={c.participant.full_name} size={56} />
                     {c.participant.is_online && (
                       <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-paper" />
                     )}

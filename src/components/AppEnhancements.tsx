@@ -43,6 +43,31 @@ export default function AppEnhancements() {
     return () => document.removeEventListener('click', onClick);
   }, []);
 
+  useEffect(() => {
+    const RAW = /\/image\/upload\/f_auto,q_auto,w_\d+,c_limit\//;
+    function onImgError(e: Event) {
+      const img = e.target;
+      if (!(img instanceof HTMLImageElement)) return;
+      if (img.dataset.managed === '1') return;
+      if (!img.dataset.retried && RAW.test(img.src)) {
+        img.dataset.retried = '1';
+        img.src = img.src.replace(RAW, '/image/upload/');
+        return;
+      }
+      img.style.visibility = 'hidden';
+    }
+    function onImgLoad(e: Event) {
+      const img = e.target;
+      if (img instanceof HTMLImageElement && img.style.visibility === 'hidden') img.style.visibility = '';
+    }
+    document.addEventListener('error', onImgError, true);
+    document.addEventListener('load', onImgLoad, true);
+    return () => {
+      document.removeEventListener('error', onImgError, true);
+      document.removeEventListener('load', onImgLoad, true);
+    };
+  }, []);
+
   if (online && !justBack) return null;
 
   return (

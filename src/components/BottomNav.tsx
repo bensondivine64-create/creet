@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import Avatar from '@/components/Avatar';
 
 function Icon({ name, active }: { name: string; active: boolean }) {
   const stroke = active ? '#FFFFFF' : '#8B98A5';
@@ -143,7 +144,13 @@ export default function BottomNav() {
               {active && (
                 <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full bg-blue" />
               )}
-              <Icon name={tab.icon} active={active} />
+              {tab.icon === 'profile' && user?.avatar ? (
+                  <span className={`block rounded-full ${active ? 'ring-2 ring-white' : 'ring-1 ring-line'}`}>
+                    <Avatar avatar={user.avatar} name={user.full_name} size={24} />
+                  </span>
+                ) : (
+                  <Icon name={tab.icon} active={active} />
+                )}
               <span className={`text-[10px] ${active ? 'text-fg font-semibold' : 'text-muted'}`}>
                 {tab.label}
               </span>

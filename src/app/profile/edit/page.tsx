@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import { updateProfile, uploadAvatar } from '@/lib/profile';
 import Avatar from '@/components/Avatar';
+import ImagePreviewSheet from '@/components/ImagePreviewSheet';
 import { CATEGORIES } from '@/lib/categories';
 import BottomNav from '@/components/BottomNav';
 
@@ -25,10 +26,16 @@ export default function EditProfilePage() {
   const [error, setError] = useState('');
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState(user?.avatar || null);
+  const [avatarReview, setAvatarReview] = useState<File | null>(null);
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    e.target.value = '';
+    setAvatarReview(file);
+  }
+
+  async function uploadChosenAvatar(file: File) {
     setError('');
     setAvatarUploading(true);
     try {
@@ -39,7 +46,6 @@ export default function EditProfilePage() {
       setError(err instanceof Error ? err.message : 'Could not upload photo');
     } finally {
       setAvatarUploading(false);
-      e.target.value = '';
     }
   }
 
@@ -102,7 +108,7 @@ export default function EditProfilePage() {
 
         <div className="flex flex-col items-center">
           <div className="relative">
-            <Avatar avatar={avatarUrl} name={fullName || user.full_name} size={88} />
+            <Avatar avatar={avatarUrl} name={fullName || user.full_name} size={88} viewable />
             <label className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-blue border-2 border-black flex items-center justify-center cursor-pointer active:scale-90 transition-transform">
               {avatarUploading ? (
                 <span className="h-3 w-3 rounded-full border-2 border-black/30 border-t-black animate-spin-fast" />
@@ -213,6 +219,20 @@ export default function EditProfilePage() {
           {saving ? 'Saving changes...' : 'Save changes'}
         </button>
       </div>
+
+      {avatarReview && (
+        <ImagePreviewSheet
+          file={avatarReview}
+          lockAspect={1}
+          round
+          confirmLabel="Save photo"
+          onCancel={() => setAvatarReview(null)}
+          onConfirm={async (f) => {
+            setAvatarReview(null);
+            await uploadChosenAvatar(f);
+          }}
+        />
+      )}
 
       <BottomNav />
     </main>

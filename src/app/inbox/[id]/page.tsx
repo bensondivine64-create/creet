@@ -8,6 +8,8 @@ import { getMessages, sendMessage, sendMessageImage } from '@/lib/messages';
 import { Message } from '@/types/message';
 import { useRequireAnyAuth } from '@/contexts/useRequireAnyAuth';
 import { useToast } from '@/contexts/ToastContext';
+import Avatar from '@/components/Avatar';
+import ImagePreviewSheet from '@/components/ImagePreviewSheet';
 import EmptyState from '@/components/EmptyState';
 
 interface Participant {
@@ -60,6 +62,7 @@ export default function ConversationPage() {
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [pendingImage, setPendingImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const firstScrollRef = useRef(true);
@@ -108,6 +111,12 @@ export default function ConversationPage() {
       showToast('Image must be under 8MB', 'error');
       return;
     }
+    setPendingImage(file);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
+  async function sendImageFile(file: File) {
+    if (!params.id) return;
     setUploadingImage(true);
     try {
       const res = await sendMessageImage(params.id as string, file);
@@ -136,13 +145,7 @@ export default function ConversationPage() {
         {participant ? (
           <Link href={`/u/${participant.username}`} className="flex items-center gap-2.5 min-w-0 flex-1 active:opacity-70">
             <div className="relative shrink-0">
-              {participant.avatar ? (
-                <img src={optimizeImg(participant.avatar, 80)} alt="" className="h-9 w-9 rounded-full object-cover" />
-              ) : (
-                <span className="h-9 w-9 rounded-full bg-fg text-black text-sm font-bold flex items-center justify-center">
-                  {participant.full_name.charAt(0).toUpperCase()}
-                </span>
-              )}
+              <Avatar avatar={participant.avatar} name={participant.full_name} size={36} />
               {participant.is_online && (
                 <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 border-2 border-black" />
               )}
@@ -258,6 +261,19 @@ export default function ConversationPage() {
           </svg>
         </button>
       </form>
+
+      {pendingImage && (
+        <ImagePreviewSheet
+          file={pendingImage}
+          busy={uploadingImage}
+          confirmLabel="Send"
+          onCancel={() => setPendingImage(null)}
+          onConfirm={async (f) => {
+            setPendingImage(null);
+            await sendImageFile(f);
+          }}
+        />
+      )}
 
       {previewImage && (
         <div

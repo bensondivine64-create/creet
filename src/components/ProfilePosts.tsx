@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getUserPosts, NetworkPost } from '@/lib/network';
 import { formatRelativeTime } from '@/lib/time';
 import { optimizeImg } from '@/lib/img';
+import ViewableImage from '@/components/ViewableImage';
 import FileAttachment from '@/components/FileAttachment';
 
 export default function ProfilePosts({ username }: { username: string }) {
@@ -27,7 +28,7 @@ export default function ProfilePosts({ username }: { username: string }) {
             {p.image_url && (
               <div className="mt-3 rounded-xl overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={optimizeImg(p.image_url, 700)} alt="" className="w-full max-h-72 object-cover" loading="lazy" />
+                <ViewableImage src={p.image_url} alt="" imgClassName="w-full max-h-72 object-cover" />
               </div>
             )}
             {p.video_url && (
