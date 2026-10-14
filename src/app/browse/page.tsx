@@ -11,6 +11,7 @@ import BottomNav from '@/components/BottomNav';
 import TileArt from '@/components/TileArt';
 import RecentSearches from '@/components/RecentSearches';
 import RecentlyViewed from '@/components/RecentlyViewed';
+import SavedListings from '@/components/SavedListings';
 import NotificationBell from '@/components/NotificationBell';
 import EmptyState from '@/components/EmptyState';
 import VerifiedBadge from '@/components/VerifiedBadge';
@@ -503,6 +504,8 @@ export default function BrowsePage() {
       )}
 
       <RecentSearches scope="browse" current={search} onPick={setSearch} />
+
+      <SavedListings />
 
       <RecentlyViewed />
 

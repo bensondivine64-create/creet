@@ -8,6 +8,7 @@ import Recaptcha from '@/components/Recaptcha';
 import GoogleButton from '@/components/GoogleButton';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import PasswordInput from '@/components/PasswordInput';
+import PasswordStrength from '@/components/PasswordStrength';
 
 const TOTAL_STEPS = 3;
 const STEP_TITLES = ['Your details', 'Contact & password', 'Finish up'];
@@ -136,7 +137,9 @@ export default function FreelancerSignupPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-fg/70 mb-1.5">Username</label>
-              <input name="username" value={form.username} onChange={handleChange} required minLength={3} autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false} className={inputClass} />
+              <input name="username" value={form.username} onChange={handleChange} required minLength={3} autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false} className={inputClass} />\n              {form.username.length > 0 && form.username.trim().length < 3 && (
+                <p className="text-xs text-red-400 mt-1">Use at least 3 characters</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-fg/70 mb-1.5">Date of birth</label>
@@ -158,6 +161,7 @@ export default function FreelancerSignupPage() {
             <div>
               <label className="block text-sm font-medium text-fg/70 mb-1.5">Password</label>
               <PasswordInput name="password" value={form.password} onChange={handleChange} required minLength={8} autoComplete="new-password" className={inputClass} />
+              <PasswordStrength value={form.password} />
             </div>
           </>
         )}

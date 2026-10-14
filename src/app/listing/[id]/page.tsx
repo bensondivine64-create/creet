@@ -14,6 +14,7 @@ import VerifiedBadge from '@/components/VerifiedBadge';
 import Avatar from '@/components/Avatar';
 import ReportModal from '@/components/ReportModal';
 import BottomNav from '@/components/BottomNav';
+import SaveButton from '@/components/SaveButton';
 import { rememberViewed } from '@/lib/recentlyViewed';
 import EmptyState from '@/components/EmptyState';
 import { useToast } from '@/contexts/ToastContext';
@@ -217,6 +218,7 @@ export default function ListingDetailPage() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-medium text-blue">{listing.category}</span>
+              <span className="text-xs text-muted"> · {formatRelativeTime(listing.created_at)}</span>
                 {isHiring && (
                   <span className="text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-blue/15 text-blue">
                     Hiring
@@ -226,6 +228,7 @@ export default function ListingDetailPage() {
               <h1 className="font-display text-2xl font-bold text-fg mt-1">{listing.title}</h1>
             </div>
             <div className="flex items-center gap-3 shrink-0 mt-1">
+              <SaveButton listing={listing} />
               <button type="button" onClick={handleShare} className="text-xs text-fg/70 underline underline-offset-2">
                 Share
               </button>
@@ -280,6 +283,9 @@ export default function ListingDetailPage() {
 
           <div className="flex items-center gap-4 mt-4 text-sm text-muted">
             {listing.kind === 'gig' && <span>{listing.delivery_days}-day delivery</span>}
+            {listing.kind === 'request' && listing.deadline && (
+              <span>Deadline: {new Date(listing.deadline).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+            )}
             {listing.kind === 'product' && (
               <span className={outOfStock ? 'text-red-400' : ''}>
                 {listing.condition === 'new' ? 'New' : 'Used'} · {outOfStock ? 'Out of stock' : `${listing.stock} in stock`}

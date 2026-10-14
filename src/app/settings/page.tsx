@@ -162,6 +162,7 @@ export default function SettingsPage() {
           <Row href="/settings/account" icon={<KeyIcon />} title="Account & password" subtitle="Security and login details" delay={40} />
           <Row href="/settings/blocked" icon={<PersonIcon />} title="Blocked accounts" subtitle="Manage who you've blocked" delay={50} />
           <Row href="/settings/privacy" icon={<ShieldIcon />} title="Privacy" subtitle="Control your online status visibility" delay={55} />
+          <Row href="/saved" icon={<ListBulletIcon />} title="Saved listings" subtitle="Gigs and products you bookmarked" delay={56} />
           {(user.role === 'freelancer' || user.role === 'vendor') && (
             <Row
               href={user.role === 'freelancer' ? '/home/freelancer' : '/home/vendor'}
@@ -204,6 +205,11 @@ export default function SettingsPage() {
           <span className="text-red-400 shrink-0"><LogoutIcon /></span>
           <span className="text-red-400 font-medium text-sm">Log out</span>
         </button>
+      </div>
+
+      <div className="text-center text-xs text-muted pb-8 pt-2 space-x-4">
+        <Link href="/terms" className="underline underline-offset-2">Terms</Link>
+        <Link href="/privacy" className="underline underline-offset-2">Privacy</Link>
       </div>
 
       <BottomNav />

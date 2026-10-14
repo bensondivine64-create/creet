@@ -205,9 +205,17 @@ export default function NetworkFeedPage() {
 
   const [posts, setPosts] = useState<NetworkPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [draft, setDraft] = useState('');
+  const [draft, setDraft] = useState(() => {
+    try {
+      return typeof window !== 'undefined' ? localStorage.getItem('creet_feed_draft') || '' : '';
+    } catch {
+      return '';
+    }
+  });
   const [posting, setPosting] = useState(false);
   const [suggested, setSuggested] = useState<SuggestedUser[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [showSuggested, setShowSuggested] = useState(true);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -221,6 +229,16 @@ export default function NetworkFeedPage() {
   const composerRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    try {
+      if (draft) localStorage.setItem('creet_feed_draft', draft);
+      else localStorage.removeItem('creet_feed_draft');
+    } catch {
+      // storage unavailable
+    }
+    if (!draft && composerRef.current) composerRef.current.style.height = 'auto';
+  }, [draft]);
+
+  useEffect(() => {
     function focusComposer() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => composerRef.current?.focus(), 250);
@@ -232,7 +250,7 @@ export default function NetworkFeedPage() {
   useEffect(() => {
     if (!user) return;
     getNetworkFeed({ limit: 30 })
-      .then((res) => setPosts(res.posts))
+      .then((res) => { setPosts(res.posts); setHasMore(res.posts.length >= 30); })
       .catch(() => {})
       .finally(() => setLoading(false));
     getWhoToFollow(10)
@@ -297,6 +315,22 @@ export default function NetworkFeedPage() {
     }
   }
 
+  async function loadMore() {
+    setLoadingMore(true);
+    try {
+      const res = await getNetworkFeed({ limit: 30, offset: posts.length });
+      setPosts((prev) => {
+        const seen = new Set(prev.map((p) => p.id));
+        return [...prev, ...res.posts.filter((p) => !seen.has(p.id))];
+      });
+      setHasMore(res.posts.length >= 30);
+    } catch {
+      showToast('Could not load more posts', 'error');
+    } finally {
+      setLoadingMore(false);
+    }
+  }
+
   async function handleDelete(postId: number) {
     setPosts((prev) => prev.filter((p) => p.id !== postId));
     try {
@@ -331,7 +365,11 @@ export default function NetworkFeedPage() {
             <textarea
               ref={composerRef}
               value={draft}
-              onChange={(e) => setDraft(e.target.value.slice(0, 2000))}
+              onChange={(e) => {
+                setDraft(e.target.value.slice(0, 2000));
+                e.target.style.height = 'auto';
+                e.target.style.height = Math.min(e.target.scrollHeight, 220) + 'px';
+              }}
               placeholder="Share an update, a project, or what you're looking for..."
               rows={2}
               className="flex-1 bg-transparent text-sm text-fg placeholder:text-fg/40 resize-none focus:outline-none"
@@ -449,6 +487,19 @@ export default function NetworkFeedPage() {
               onDelete={handleDelete}
             />
           ))}
+        </div>
+      )}
+
+      {!loading && hasMore && (
+        <div className="px-5 py-6 text-center">
+          <button
+            type="button"
+            onClick={loadMore}
+            disabled={loadingMore}
+            className="ripple card-elevated bg-mist border border-line text-fg text-sm font-semibold rounded-full px-6 py-2.5 active:scale-[0.96] transition-transform disabled:opacity-60"
+          >
+            {loadingMore ? 'Loading...' : 'Load more posts'}
+          </button>
         </div>
       )}
 
