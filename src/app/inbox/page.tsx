@@ -261,7 +261,7 @@ export default function InboxPage() {
       <Link
         href="/inbox/support"
         aria-label="CREET Support AI"
-        className="fixed right-5 z-30 h-14 w-14 rounded-full bg-blue shadow-lg shadow-blue/30 flex items-center justify-center active:scale-95 transition-transform"
+        className="fixed left-5 z-30 h-14 w-14 rounded-full bg-blue shadow-lg shadow-blue/30 flex items-center justify-center active:scale-95 transition-transform"
         style={{ bottom: 'calc(6rem + env(safe-area-inset-bottom))' }}
       >
         <span className="absolute inset-0 rounded-full bg-blue animate-ping opacity-20" />
