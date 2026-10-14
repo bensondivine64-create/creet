@@ -241,23 +241,41 @@ export default function SupportConversationPage() {
       )}
 
       <form onSubmit={handleSubmit} className="border-t border-line/60 px-5 py-4 flex items-center gap-2.5 safe-bottom">
-        <input
-          ref={inputRef}
-          type="text"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          placeholder="Message CREET Support..."
-          disabled={sending}
-          className="flex-1 rounded-full border border-line bg-mist px-4 py-3 text-sm text-fg placeholder:text-fg/40 focus:outline-none focus:ring-2 focus:ring-blue/40 transition-colors disabled:opacity-50"
-        />
+        <div className="relative flex-1">
+          <input
+            ref={inputRef}
+            type="text"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder={sending ? 'Waiting for reply...' : 'Message CREET Support...'}
+            disabled={sending}
+            className={`w-full rounded-full border px-4 py-3 text-sm placeholder:text-fg/40 focus:outline-none transition-all ${
+              sending
+                ? 'border-line/40 bg-mist/50 text-fg/40 cursor-not-allowed'
+                : 'border-line bg-mist text-fg focus:ring-2 focus:ring-blue/40'
+            }`}
+          />
+          {sending && (
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-fg/30">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <rect x="5" y="11" width="14" height="9" rx="2" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 11V8a4 4 0 118 0v3" />
+              </svg>
+            </span>
+          )}
+        </div>
         <button
           type="submit"
           disabled={sending || !draft.trim()}
-          className="h-10 w-10 rounded-full bg-blue hover:bg-blue-deep disabled:opacity-40 text-black flex items-center justify-center shrink-0 transition-colors active:scale-95"
+          className="h-11 w-11 rounded-full bg-blue hover:bg-blue-deep disabled:opacity-40 text-black flex items-center justify-center shrink-0 transition-all active:scale-95"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-          </svg>
+          {sending ? (
+            <span className="h-4 w-4 rounded-full border-2 border-black/30 border-t-black animate-spin" />
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+            </svg>
+          )}
         </button>
       </form>
     </main>
