@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRequireAuth } from '@/contexts/useRequireAuth';
-import { getMyListings, deleteListing, markSold } from '@/lib/listings';
+import { getMyListings, deleteListing } from '@/lib/listings';
 import { Listing } from '@/types/listing';
 import BottomNav from '@/components/BottomNav';
 import EmptyState from '@/components/EmptyState';
@@ -30,7 +30,7 @@ export default function BuyerDashboard() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-fg/40 text-sm">
+      <div className="min-h-screen bg-black flex items-center justify-center text-fg/40 text-sm">
         Loading...
       </div>
     );
@@ -38,7 +38,7 @@ export default function BuyerDashboard() {
 
   return (
     <div className="min-h-screen bg-black pb-20 animate-fade-in-up">
-      <header className="border-b border-line px-5 py-4 flex items-center justify-between">
+      <header className="border-b border-line/60 px-5 py-4 flex items-center justify-between safe-top">
         <span className="font-display text-lg font-bold tracking-tight text-fg">CREET</span>
         <button onClick={logout} className="text-sm text-fg/50 hover:text-blue transition-colors">
           Log out
@@ -52,24 +52,24 @@ export default function BuyerDashboard() {
         {user.is_admin && (
           <Link
             href="/admin"
-            className="flex items-center justify-between bg-mist rounded-2xl px-5 py-4 mb-4 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform"
+            className="flex items-center justify-between ripple card-elevated bg-mist border border-line rounded-2xl px-5 py-4 mb-4 active:scale-[0.98] transition-transform"
           >
             <span className="font-semibold text-fg text-sm">Admin System</span>
             <span className="text-fg/40 text-sm">→</span>
           </Link>
         )}
 
-        <div className="grid grid-cols-2 gap-4 mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "80ms" }}>
+        <div className="grid grid-cols-2 gap-4 mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: '80ms' }}>
           <Link
             href="/post-request"
-            className="bg-blue shadow-lg shadow-black/30 active:scale-[0.98] transition-transform text-black rounded-2xl px-5 py-5"
+            className="ripple btn-elevated bg-blue active:scale-[0.98] transition-transform text-black rounded-2xl px-5 py-5"
           >
             <div className="font-semibold text-sm">Post a request</div>
             <div className="text-xs text-black/60 mt-0.5">Say what you need</div>
           </Link>
           <Link
             href="/browse"
-            className="bg-mist shadow-lg shadow-black/40 active:scale-[0.98] transition-transform rounded-2xl px-5 py-5"
+            className="ripple card-elevated bg-mist border border-line active:scale-[0.98] transition-transform rounded-2xl px-5 py-5"
           >
             <div className="font-semibold text-fg text-sm">Browse marketplace</div>
             <div className="text-xs text-fg/50 mt-0.5">Find gigs & products</div>
@@ -81,7 +81,7 @@ export default function BuyerDashboard() {
         {listingsLoading && (
           <div className="space-y-3">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="flex items-center gap-3 bg-mist rounded-2xl p-4 animate-pulse">
+              <div key={i} className="flex items-center gap-3 bg-mist border border-line rounded-2xl p-4 animate-pulse">
                 <div className="h-14 w-14 rounded-xl bg-line/20 shrink-0" />
                 <div className="flex-1 space-y-2">
                   <div className="h-3 w-2/3 bg-line/20 rounded" />
@@ -108,7 +108,7 @@ export default function BuyerDashboard() {
               <div key={item.id} style={{ animationDelay: `${i * 60}ms` }} className="opacity-0 animate-fade-in-up">
                 <Link
                   href={`/listing/${item.id}`}
-                  className="flex items-center gap-3 bg-mist rounded-2xl p-4 shadow-lg shadow-black/40 active:scale-[0.98] transition-transform"
+                  className="flex items-center gap-3 ripple card-elevated bg-mist border border-line rounded-2xl p-4 active:scale-[0.98] transition-transform"
                 >
                   {item.images && item.images.length > 0 && (
                     <div className="h-14 w-14 rounded-xl shrink-0 overflow-hidden">
@@ -120,7 +120,8 @@ export default function BuyerDashboard() {
                     <div className="text-sm font-semibold text-fg truncate">{item.title}</div>
                     <div className="text-sm font-bold text-blue mt-0.5">
                       Budget: {item.currency} {item.price.toLocaleString()}
-                    </div><div className="text-[11px] text-fg/40 mt-0.5">{formatRelativeTime(item.created_at)}</div>
+                    </div>
+                    <div className="text-[11px] text-fg/40 mt-0.5">{formatRelativeTime(item.created_at)}</div>
                   </div>
                 </Link>
 

@@ -42,8 +42,8 @@ export default function BlockedAccountsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-paper pb-24">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-line">
+    <main className="min-h-screen bg-black pb-24">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-line/60">
         <Link href="/settings" className="text-sm text-muted hover:text-fg transition-colors">← Back</Link>
         <span className="font-display text-lg font-bold text-fg">Blocked accounts</span>
         <span className="w-10" />
@@ -68,7 +68,7 @@ export default function BlockedAccountsPage() {
                 <button
                   onClick={() => handleUnblock(u.id)}
                   disabled={unblockingId === u.id}
-                  className="shrink-0 text-xs bg-paper border border-line text-fg font-semibold rounded-full px-3.5 py-1.5 disabled:opacity-50"
+                  className="shrink-0 text-xs border border-line text-fg font-semibold rounded-full px-3.5 py-1.5 disabled:opacity-50"
                 >
                   {unblockingId === u.id ? 'Working...' : 'Unblock'}
                 </button>
