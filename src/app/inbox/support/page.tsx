@@ -22,7 +22,7 @@ function SupportLogo({ size = 36 }: { size?: number }) {
       style={{ width: size, height: size }}
       className="rounded-full bg-blue flex items-center justify-center shrink-0 overflow-hidden"
     >
-      {/* Swap this span for <img src="/creet-logo.png" alt="" className="h-full w-full object-cover" /> once a logo asset is uploaded */}
+      {/* Swap for <img src="/creet-logo.png" alt="" className="h-full w-full object-cover" /> once a logo asset is uploaded */}
       <span className="font-display font-bold text-black" style={{ fontSize: size * 0.45 }}>C</span>
     </div>
   );
@@ -31,7 +31,8 @@ function SupportLogo({ size = 36 }: { size?: number }) {
 function SenderBadge({ status }: { status: SupportStatus }) {
   if (status === 'human') {
     return (
-      <span className="text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-green-500/15 text-green-400">
+      <span className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-green-500/15 text-green-400">
+        <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
         Human agent
       </span>
     );
@@ -43,17 +44,21 @@ function SenderBadge({ status }: { status: SupportStatus }) {
   );
 }
 
+function formatTime(iso: string) {
+  return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+}
+
 function MessageBubble({ msg, mine }: { msg: SupportMessage; mine: boolean }) {
   if (msg.sender_type === 'system') {
     return (
-      <div className="text-center my-3">
+      <div className="text-center my-3 animate-fade-in-up">
         <span className="text-[11px] text-muted bg-mist px-3 py-1.5 rounded-full">{msg.content}</span>
       </div>
     );
   }
 
   return (
-    <div className={`flex ${mine ? 'justify-end' : 'justify-start'} mt-3`}>
+    <div className={`flex ${mine ? 'justify-end' : 'justify-start'} mt-3 animate-fade-in-up`}>
       <div className={`max-w-[80%] flex flex-col ${mine ? 'items-end' : 'items-start'}`}>
         {!mine && (
           <span className="text-[10px] text-muted mb-1 px-1">
@@ -61,12 +66,25 @@ function MessageBubble({ msg, mine }: { msg: SupportMessage; mine: boolean }) {
           </span>
         )}
         <div
-          className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+          className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm ${
             mine ? 'bg-blue text-black' : 'bg-mist text-fg'
           }`}
         >
           {msg.content}
         </div>
+        <span className="text-[10px] text-fg/25 mt-1 px-1">{formatTime(msg.created_at)}</span>
+      </div>
+    </div>
+  );
+}
+
+function TypingIndicator() {
+  return (
+    <div className="flex justify-start mt-3 animate-fade-in-up">
+      <div className="bg-mist rounded-2xl px-4 py-3 flex items-center gap-1.5">
+        <span className="h-1.5 w-1.5 rounded-full bg-fg/40 animate-bounce" style={{ animationDelay: '0ms' }} />
+        <span className="h-1.5 w-1.5 rounded-full bg-fg/40 animate-bounce" style={{ animationDelay: '150ms' }} />
+        <span className="h-1.5 w-1.5 rounded-full bg-fg/40 animate-bounce" style={{ animationDelay: '300ms' }} />
       </div>
     </div>
   );
@@ -83,6 +101,7 @@ export default function SupportConversationPage() {
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -98,7 +117,7 @@ export default function SupportConversationPage() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, sending]);
 
   async function submit(text: string) {
     if (!text.trim() || sending) return;
@@ -131,6 +150,7 @@ export default function SupportConversationPage() {
       showToast(err instanceof Error ? err.message : 'Could not send message', 'error');
     } finally {
       setSending(false);
+      inputRef.current?.focus();
     }
   }
 
@@ -143,12 +163,12 @@ export default function SupportConversationPage() {
     return <div className="min-h-screen bg-black flex items-center justify-center text-fg/40 text-sm">Loading...</div>;
   }
 
-  const showQuickActions = !loading && messages.length === 0;
-  const isWaitingForAgent = status === 'human' && messages.length > 0 && messages[messages.length - 1].sender_type !== 'agent';
+  const showQuickActions = !loading && messages.length === 0 && !sending;
+  const isWaitingForAgent = status === 'human' && messages.length > 0 && messages[messages.length - 1].sender_type !== 'agent' && !sending;
 
   return (
     <main className="min-h-screen bg-black flex flex-col">
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-line/60 safe-top">
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-line/60 safe-top header-blur">
         <Link href="/inbox" className="text-sm text-fg/50 hover:text-fg transition-colors shrink-0">
           ←
         </Link>
@@ -168,11 +188,19 @@ export default function SupportConversationPage() {
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 py-5">
-        {loading && <p className="text-sm text-fg/40 text-center py-10">Loading...</p>}
+        {loading && (
+          <div className="space-y-3 animate-pulse">
+            {[0, 1].map((i) => (
+              <div key={i} className={`flex ${i === 1 ? 'justify-end' : 'justify-start'}`}>
+                <div className="h-10 w-48 bg-mist rounded-2xl" />
+              </div>
+            ))}
+          </div>
+        )}
 
         {!loading && messages.length === 0 && (
-          <div className="flex flex-col items-center text-center py-10 px-4">
-            <SupportLogo />
+          <div className="flex flex-col items-center text-center py-10 px-4 animate-fade-in-up">
+            <SupportLogo size={56} />
             <p className="text-sm font-medium text-fg mt-4 mb-1">Hi, I&apos;m CREET Support</p>
             <p className="text-xs text-muted max-w-[260px] leading-relaxed">
               Ask me anything about using CREET, or pick a quick topic below.
@@ -184,8 +212,10 @@ export default function SupportConversationPage() {
           <MessageBubble key={m.id} msg={m} mine={m.sender_type === 'user'} />
         ))}
 
+        {sending && <TypingIndicator />}
+
         {isWaitingForAgent && (
-          <div className="text-center my-3">
+          <div className="text-center my-3 animate-fade-in-up">
             <span className="text-[11px] text-muted bg-mist px-3 py-1.5 rounded-full">
               Waiting for a human agent to respond...
             </span>
@@ -196,7 +226,7 @@ export default function SupportConversationPage() {
       </div>
 
       {showQuickActions && (
-        <div className="px-5 pb-3 flex flex-wrap gap-2">
+        <div className="px-5 pb-3 flex flex-wrap gap-2 animate-fade-in-up">
           {QUICK_ACTIONS.map((action) => (
             <button
               key={action}
@@ -212,6 +242,7 @@ export default function SupportConversationPage() {
 
       <form onSubmit={handleSubmit} className="border-t border-line/60 px-5 py-4 flex items-center gap-2.5 safe-bottom">
         <input
+          ref={inputRef}
           type="text"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
@@ -222,7 +253,7 @@ export default function SupportConversationPage() {
         <button
           type="submit"
           disabled={sending || !draft.trim()}
-          className="h-10 w-10 rounded-full bg-blue hover:bg-blue-deep disabled:opacity-40 text-black flex items-center justify-center shrink-0 transition-colors"
+          className="h-10 w-10 rounded-full bg-blue hover:bg-blue-deep disabled:opacity-40 text-black flex items-center justify-center shrink-0 transition-colors active:scale-95"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
