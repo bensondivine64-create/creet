@@ -9,6 +9,7 @@ import CookieConsentBanner from "@/components/CookieConsentBanner";
 import AppEnhancements from "@/components/AppEnhancements";
 import NavProgress from "@/components/NavProgress";
 import AttributionCapture from "@/components/AttributionCapture";
+import FeedbackPrompt from "@/components/FeedbackPrompt";
 import PageTransition from "@/components/PageTransition";
 import "./globals.css";
 
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <AppEnhancements />
         <CookieConsentBanner />
         <AttributionCapture />
+        <FeedbackPrompt />
       </body>
     </html>
   );

@@ -48,6 +48,17 @@ function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 }
 
+function formatDayLabel(iso: string): string {
+  const date = new Date(iso);
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+
+  if (date.toDateString() === today.toDateString()) return 'Today';
+  if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+  return date.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short' });
+}
+
 function MessageBubble({ msg, mine }: { msg: SupportMessage; mine: boolean }) {
   if (msg.sender_type === 'system') {
     return (
@@ -208,9 +219,24 @@ export default function SupportConversationPage() {
           </div>
         )}
 
-        {messages.map((m) => (
-          <MessageBubble key={m.id} msg={m} mine={m.sender_type === 'user'} />
-        ))}
+        {(() => {
+          let lastDay = '';
+          return messages.map((m) => {
+            const day = formatDayLabel(m.created_at);
+            const showDayLabel = day !== lastDay;
+            lastDay = day;
+            return (
+              <div key={m.id}>
+                {showDayLabel && (
+                  <div className="text-center my-4">
+                    <span className="text-[11px] text-fg/40 bg-mist px-3 py-1 rounded-full">{day}</span>
+                  </div>
+                )}
+                <MessageBubble msg={m} mine={m.sender_type === 'user'} />
+              </div>
+            );
+          });
+        })()}
 
         {sending && <TypingIndicator />}
 

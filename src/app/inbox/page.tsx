@@ -141,7 +141,8 @@ export default function InboxPage() {
   const hasConversations = conversations.length > 0;
 
   return (
-    <main className="min-h-screen bg-paper pb-32">
+    <main className="min-h-screen bg-black pb-32">
+      <div className="max-w-2xl mx-auto">
       <div className="px-5 pt-5 pb-3 safe-top">
         <h1 className="font-display text-2xl font-bold text-fg">Inbox</h1>
         {!loading && !error && hasConversations && (
@@ -211,7 +212,7 @@ export default function InboxPage() {
                   >
                     <span className="relative">
                       <Avatar avatar={c.participant.avatar} name={c.participant.full_name} size={52} />
-                      <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-paper" />
+                      <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-black" />
                     </span>
                     <span className="text-[11px] text-fg/70 truncate w-full text-center">
                       {c.participant.full_name.split(' ')[0]}
@@ -283,7 +284,7 @@ export default function InboxPage() {
                   <div className="relative shrink-0">
                     <Avatar avatar={c.participant.avatar} name={c.participant.full_name} size={56} />
                     {c.participant.is_online && (
-                      <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-paper" />
+                      <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-green-500 border-2 border-black" />
                     )}
                   </div>
 
@@ -339,6 +340,20 @@ export default function InboxPage() {
           )}
         </div>
       )}
+      </div>
+
+      <Link
+        href="/inbox/support"
+        aria-label="Ask CREET Support"
+        className="fixed left-5 z-30 flex items-center gap-2 bg-mist border border-line rounded-full pl-2 pr-4 py-2 shadow-lg shadow-black/40 active:scale-95 transition-transform"
+        style={{ bottom: 'calc(6rem + env(safe-area-inset-bottom))' }}
+      >
+        <span className="relative h-8 w-8 rounded-full bg-blue flex items-center justify-center shrink-0">
+          <span className="absolute inset-0 rounded-full bg-blue animate-ping opacity-25" />
+          <span className="relative font-display font-bold text-black text-sm">C</span>
+        </span>
+        <span className="text-sm font-semibold text-fg">Ask CREET AI</span>
+      </Link>
 
       <BottomNav />
     </main>
