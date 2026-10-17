@@ -63,6 +63,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <ConfirmProvider>
               <NotificationsProvider>
                 <PageTransition>{children}</PageTransition>
+                <FeedbackPrompt />
               </NotificationsProvider>
             </ConfirmProvider>
           </ToastProvider>
@@ -71,7 +72,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <AppEnhancements />
         <CookieConsentBanner />
         <AttributionCapture />
-        <FeedbackPrompt />
       </body>
     </html>
   );
