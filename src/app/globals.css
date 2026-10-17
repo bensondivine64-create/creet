@@ -137,3 +137,13 @@ input:user-invalid, textarea:user-invalid, select:user-invalid {
   .animate-fade-in-up, .modal-in { animation: none !important; opacity: 1 !important; transform: none !important; }
   html { scroll-behavior: auto; }
 }
+
+/* nav-v2 */
+@keyframes navPop {
+  0% { transform: scale(0.88); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.nav-pop { animation: navPop 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+@media (prefers-reduced-motion: reduce) {
+  .nav-pop { animation: none !important; }
+}

@@ -380,7 +380,7 @@ export default function ListingDetailPage() {
       {!error && listing && (
         <div
           className="fixed inset-x-0 z-20 bg-black border-t border-line/60 px-5 py-4 flex items-center justify-between"
-          style={{ bottom: 'calc(4.25rem + env(safe-area-inset-bottom))' }}
+          style={{ bottom: 'calc(5.25rem + env(safe-area-inset-bottom))' }}
         >
           <span className="font-display text-xl font-bold text-fg">
             {displayCurrency} {displayPrice.toLocaleString()}
